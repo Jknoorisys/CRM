@@ -75,7 +75,6 @@ class ManageDesignationController extends Controller
         try {
             $insert = Designation::create([
                 'designation' => $request->designation,
-                'color' => $request->color,
             ]);
 
             if ($insert) {

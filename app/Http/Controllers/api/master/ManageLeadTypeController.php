@@ -75,7 +75,6 @@ class ManageLeadTypeController extends Controller
         try {
             $insert = LeadType::create([
                 'type' => $request->type,
-                'color' => $request->color,
             ]);
 
             if ($insert) {

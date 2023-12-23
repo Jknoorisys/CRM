@@ -7,6 +7,7 @@ use App\Http\Controllers\api\master\ManageContactStatusController;
 use App\Http\Controllers\api\master\ManageCountryController;
 use App\Http\Controllers\api\master\ManageDesignationController;
 use App\Http\Controllers\api\master\ManageLeadTypeController;
+use App\Http\Controllers\api\master\ManageMediumController;
 use App\Http\Controllers\api\master\ManageTaskStatusController;
 use App\Http\Controllers\api\ProfileController;
 use Illuminate\Http\Request;
@@ -89,6 +90,14 @@ Route::middleware('set.locale')->group(function () {
             Route::post('lead-type/update' , [ManageLeadTypeController::class, 'update']);
             Route::post('lead-type/change-status' , [ManageLeadTypeController::class, 'changeStatus']);
             Route::post('lead-type/delete' , [ManageLeadTypeController::class, 'delete']);
+
+            // Manage Activity Medium
+            Route::post('medium/list' , [ManageMediumController::class, 'list']);
+            Route::post('medium/add' , [ManageMediumController::class, 'add']);
+            Route::post('medium/view' , [ManageMediumController::class, 'view']);
+            Route::post('medium/update' , [ManageMediumController::class, 'update']);
+            Route::post('medium/change-status' , [ManageMediumController::class, 'changeStatus']);
+            Route::post('medium/delete' , [ManageMediumController::class, 'delete']);
         });
     });
 });
