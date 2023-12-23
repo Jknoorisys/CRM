@@ -11,9 +11,14 @@ class Country extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'countries';
+
     protected $fillable = [
         'country',
         'status',
+    ];
+
+    protected $hidden = [
+        'deleted_at',
     ];
 
     public function cities() : HasMany

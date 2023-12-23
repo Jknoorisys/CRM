@@ -10,8 +10,13 @@ class LeadStage extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'lead_stages';
+
     protected $fillable = [
         'stage',
         'status',
+    ];
+
+    protected $hidden = [
+        'deleted_at',
     ];
 }

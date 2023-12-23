@@ -10,8 +10,13 @@ class RefferedBy extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'reffered_by';
+
     protected $fillable = [
         'reffered_by',
         'status',
+    ];
+
+    protected $hidden = [
+        'deleted_at',
     ];
 }

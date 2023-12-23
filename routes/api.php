@@ -6,6 +6,7 @@ use App\Http\Controllers\api\master\ManageCityController;
 use App\Http\Controllers\api\master\ManageContactStatusController;
 use App\Http\Controllers\api\master\ManageCountryController;
 use App\Http\Controllers\api\master\ManageDesignationController;
+use App\Http\Controllers\api\master\ManageLeadTypeController;
 use App\Http\Controllers\api\master\ManageTaskStatusController;
 use App\Http\Controllers\api\ProfileController;
 use Illuminate\Http\Request;
@@ -80,6 +81,14 @@ Route::middleware('set.locale')->group(function () {
             Route::post('designation/update' , [ManageDesignationController::class, 'update']);
             Route::post('designation/change-status' , [ManageDesignationController::class, 'changeStatus']);
             Route::post('designation/delete' , [ManageDesignationController::class, 'delete']);
+
+            // Manage Lead Type
+            Route::post('lead-type/list' , [ManageLeadTypeController::class, 'list']);
+            Route::post('lead-type/add' , [ManageLeadTypeController::class, 'add']);
+            Route::post('lead-type/view' , [ManageLeadTypeController::class, 'view']);
+            Route::post('lead-type/update' , [ManageLeadTypeController::class, 'update']);
+            Route::post('lead-type/change-status' , [ManageLeadTypeController::class, 'changeStatus']);
+            Route::post('lead-type/delete' , [ManageLeadTypeController::class, 'delete']);
         });
     });
 });

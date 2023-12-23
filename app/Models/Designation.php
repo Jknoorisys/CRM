@@ -10,8 +10,13 @@ class Designation extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'designations';
+
     protected $fillable = [
         'designation',
         'status',
+    ];
+
+    protected $hidden = [
+        'deleted_at',
     ];
 }

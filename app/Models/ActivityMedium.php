@@ -10,8 +10,13 @@ class ActivityMedium extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'activity_medium';
+    
     protected $fillable = [
         'medium',
         'status',
+    ];
+
+    protected $hidden = [
+        'deleted_at',
     ];
 }

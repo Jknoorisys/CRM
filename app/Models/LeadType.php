@@ -10,8 +10,13 @@ class LeadType extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'lead_types';
+
     protected $fillable = [
         'type',
         'status',
+    ];
+
+    protected $hidden = [
+        'deleted_at',
     ];
 }

@@ -18,6 +18,10 @@ class Tasks extends Model
         'status',
     ];
 
+    protected $hidden = [
+        'deleted_at',
+    ];
+
     public function user() : BelongsTo
     {
         return $this->belongsTo(User::class);

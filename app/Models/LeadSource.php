@@ -10,8 +10,13 @@ class LeadSource extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'lead_sources';
+
     protected $fillable = [
         'source',
         'status',
+    ];
+
+    protected $hidden = [
+        'deleted_at',
     ];
 }
