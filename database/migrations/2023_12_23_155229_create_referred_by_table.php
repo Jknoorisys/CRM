@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reffered_by', function (Blueprint $table) {
+        Schema::create('referred_by', function (Blueprint $table) {
             $table->id();
-            $table->string('reffered_by')->unique();
+            $table->string('referred_by')->unique();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->softDeletes();
             $table->timestamps();
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reffered_by');
+        Schema::dropIfExists('referred_by');
     }
 };

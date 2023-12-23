@@ -8,6 +8,9 @@ use App\Http\Controllers\api\master\ManageCountryController;
 use App\Http\Controllers\api\master\ManageDesignationController;
 use App\Http\Controllers\api\master\ManageLeadTypeController;
 use App\Http\Controllers\api\master\ManageMediumController;
+use App\Http\Controllers\api\master\ManageReferredByController;
+use App\Http\Controllers\api\master\ManageSourceController;
+use App\Http\Controllers\api\master\ManageStageController;
 use App\Http\Controllers\api\master\ManageTaskStatusController;
 use App\Http\Controllers\api\ProfileController;
 use Illuminate\Http\Request;
@@ -98,6 +101,30 @@ Route::middleware('set.locale')->group(function () {
             Route::post('medium/update' , [ManageMediumController::class, 'update']);
             Route::post('medium/change-status' , [ManageMediumController::class, 'changeStatus']);
             Route::post('medium/delete' , [ManageMediumController::class, 'delete']);
+
+            // Manage Lead Stages
+            Route::post('stage/list' , [ManageStageController::class, 'list']);
+            Route::post('stage/add' , [ManageStageController::class, 'add']);
+            Route::post('stage/view' , [ManageStageController::class, 'view']);
+            Route::post('stage/update' , [ManageStageController::class, 'update']);
+            Route::post('stage/change-status' , [ManageStageController::class, 'changeStatus']);
+            Route::post('stage/delete' , [ManageStageController::class, 'delete']);
+
+            // Manage Lead Sources
+            Route::post('source/list' , [ManageSourceController::class, 'list']);
+            Route::post('source/add' , [ManageSourceController::class, 'add']);
+            Route::post('source/view' , [ManageSourceController::class, 'view']);
+            Route::post('source/update' , [ManageSourceController::class, 'update']);
+            Route::post('source/change-status' , [ManageSourceController::class, 'changeStatus']);
+            Route::post('source/delete' , [ManageSourceController::class, 'delete']);
+
+            // Manage Referred By
+            Route::post('referred-by/list' , [ManageReferredByController::class, 'list']);
+            Route::post('referred-by/add' , [ManageReferredByController::class, 'add']);
+            Route::post('referred-by/view' , [ManageReferredByController::class, 'view']);
+            Route::post('referred-by/update' , [ManageReferredByController::class, 'update']);
+            Route::post('referred-by/change-status' , [ManageReferredByController::class, 'changeStatus']);
+            Route::post('referred-by/delete' , [ManageReferredByController::class, 'delete']);
         });
     });
 });

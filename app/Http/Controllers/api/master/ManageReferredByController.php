@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\api\master;
 
 use App\Http\Controllers\Controller;
-use App\Models\LeadStage;
+use App\Models\ReferredBy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class ManageStageController extends Controller
+class ManageReferredByController extends Controller
 {
     public function list(Request $request) {
         $validator = Validator::make($request->all(), [
@@ -28,21 +28,21 @@ class ManageStageController extends Controller
             $pageNo = $request->query('page_no', 1); 
             $offset = ($pageNo - 1) * $limit;
 
-            $query = LeadStage::query();
+            $query = ReferredBy::query();
 
             if ($request->has('search')) {
-                $query->where('stage', 'like', '%' . $request->search . '%');
+                $query->where('referred_by', 'like', '%' . $request->search . '%');
             }
 
-            $stages = $query->limit($limit)->offset($offset)->get();
+            $referred_by = $query->limit($limit)->offset($offset)->get();
             $total = $query->count();
 
-            if (!empty($stages)) {
+            if (!empty($referred_by)) {
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.list.success'),
                     'total'     => $total,
-                    'data'      => $stages,
+                    'data'      => $referred_by,
                 ], 200);
             } else {
                 return response()->json([
@@ -61,7 +61,7 @@ class ManageStageController extends Controller
 
     public function add(Request $request) {
         $validator = Validator::make($request->all(), [
-            'stage'   => ['required','string','max:255', Rule::unique('lead_stages')],
+            'referred_by'   => ['required','string','max:255', Rule::unique('referred_by')],
         ]);
 
         if ($validator->fails()) {
@@ -73,8 +73,8 @@ class ManageStageController extends Controller
         }
 
         try {
-            $insert = LeadStage::create([
-                'stage' => $request->stage,
+            $insert = ReferredBy::create([
+                'referred_by' => $request->referred_by,
             ]);
 
             if ($insert) {
@@ -99,7 +99,7 @@ class ManageStageController extends Controller
 
     public function view(Request $request) {
         $validator = Validator::make($request->all(), [
-            'stage_id'   => ['required','numeric'],
+            'referred_by_id'   => ['required','numeric'],
         ]);
 
         if ($validator->fails()) {
@@ -111,12 +111,12 @@ class ManageStageController extends Controller
         }
 
         try {
-            $stage = LeadStage::where('id', '=', $request->stage_id)->first();
-            if (!empty($stage)) {
+            $referred_by = ReferredBy::where('id', '=', $request->referred_by_id)->first();
+            if (!empty($referred_by)) {
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.detail.success'),
-                    'data'      => $stage,
+                    'data'      => $referred_by,
                 ], 200);
             } else {
                 return response()->json([
@@ -135,8 +135,8 @@ class ManageStageController extends Controller
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-            'stage_id'   => ['required','numeric'],
-            'stage'      => ['required','string','max:255', Rule::unique('lead_stages')->ignore($request->stage_id)],
+            'referred_by_id'   => ['required','numeric'],
+            'referred_by'      => ['required','string','max:255', Rule::unique('referred_by')->ignore($request->referred_by_id)],
         ]);
 
         if ($validator->fails()) {
@@ -148,16 +148,16 @@ class ManageStageController extends Controller
         }
 
         try {
-            $stage = LeadStage::where('id', '=', $request->stage_id)->first();
-            if (empty($stage)) {
+            $referred_by = ReferredBy::where('id', '=', $request->referred_by_id)->first();
+            if (empty($referred_by)) {
                 return response()->json([
                     'status'    => 'failed',
-                    'message'   => trans('msg.update.not-found', ['entity' => 'lead stage']),
+                    'message'   => trans('msg.update.not-found', ['entity' => 'referred_by']),
                 ], 400);
             }
 
-            $update = LeadStage::where('id', '=', $request->stage_id)->update([
-                'stage' => $request->stage ? $request->stage : $stage->stage,
+            $update = ReferredBy::where('id', '=', $request->referred_by_id)->update([
+                'referred_by' => $request->referred_by ? $request->referred_by : $referred_by->referred_by,
             ]);
 
             if ($update) {
@@ -182,7 +182,7 @@ class ManageStageController extends Controller
 
     public function changeStatus(Request $request) {
         $validator = Validator::make($request->all(), [
-            'stage_id' => ['required','numeric'],
+            'referred_by_id' => ['required','numeric'],
             'status'   => ['required', Rule::in(['active', 'inactive'])],
         ]);
 
@@ -195,15 +195,15 @@ class ManageStageController extends Controller
         }
 
         try {
-            $stage = LeadStage::where('id', '=', $request->stage_id)->first();
-            if (empty($stage)) {
+            $referred_by = ReferredBy::where('id', '=', $request->referred_by_id)->first();
+            if (empty($referred_by)) {
                 return response()->json([
                     'status'    => 'failed',
-                    'message'   => trans('msg.change-status.not-found', ['entity' => 'lead stage']),
+                    'message'   => trans('msg.change-status.not-found', ['entity' => 'referred by']),
                 ], 400);
             }
 
-            $update = LeadStage::where('id', '=', $request->stage_id)->update(['status' => $request->status]);
+            $update = ReferredBy::where('id', '=', $request->referred_by_id)->update(['status' => $request->status]);
 
             if ($update) {
                 return response()->json([
@@ -227,7 +227,7 @@ class ManageStageController extends Controller
     
     public function delete(Request $request) {
         $validator = Validator::make($request->all(), [
-            'stage_id' => ['required','numeric'],
+            'referred_by_id' => ['required','numeric'],
         ]);
 
         if ($validator->fails()) {
@@ -239,15 +239,15 @@ class ManageStageController extends Controller
         }
 
         try {
-            $stage = LeadStage::where('id', '=', $request->stage_id)->first();
-            if (empty($stage)) {
+            $referred_by = ReferredBy::where('id', '=', $request->referred_by_id)->first();
+            if (empty($referred_by)) {
                 return response()->json([
                     'status'    => 'failed',
-                    'message'   => trans('msg.change-status.not-found', ['entity' => 'stage']),
+                    'message'   => trans('msg.change-status.not-found', ['entity' => 'referred by']),
                 ], 400);
             }
 
-            $delete = LeadStage::where('id', '=', $request->stage_id)->delete();
+            $delete = ReferredBy::where('id', '=', $request->referred_by_id)->delete();
 
             if ($delete) {
                 return response()->json([

@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class RefferedBy extends Model
+class ReferredBy extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $table = 'reffered_by';
+    protected $table = 'referred_by';
 
     protected $fillable = [
-        'reffered_by',
+        'referred_by',
         'status',
     ];
 
