@@ -5,6 +5,7 @@ use App\Http\Controllers\api\ManageUserController;
 use App\Http\Controllers\api\master\ManageCityController;
 use App\Http\Controllers\api\master\ManageContactStatusController;
 use App\Http\Controllers\api\master\ManageCountryController;
+use App\Http\Controllers\api\master\ManageDesignationController;
 use App\Http\Controllers\api\master\ManageTaskStatusController;
 use App\Http\Controllers\api\ProfileController;
 use Illuminate\Http\Request;
@@ -71,6 +72,14 @@ Route::middleware('set.locale')->group(function () {
             Route::post('task-status/update' , [ManageTaskStatusController::class, 'update']);
             Route::post('task-status/change-status' , [ManageTaskStatusController::class, 'changeStatus']);
             Route::post('task-status/delete' , [ManageTaskStatusController::class, 'delete']);
+
+            // Manage Designation
+            Route::post('designation/list' , [ManageDesignationController::class, 'list']);
+            Route::post('designation/add' , [ManageDesignationController::class, 'add']);
+            Route::post('designation/view' , [ManageDesignationController::class, 'view']);
+            Route::post('designation/update' , [ManageDesignationController::class, 'update']);
+            Route::post('designation/change-status' , [ManageDesignationController::class, 'changeStatus']);
+            Route::post('designation/delete' , [ManageDesignationController::class, 'delete']);
         });
     });
 });
