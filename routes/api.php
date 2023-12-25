@@ -13,6 +13,7 @@ use App\Http\Controllers\api\master\ManageReferredByController;
 use App\Http\Controllers\api\master\ManageSourceController;
 use App\Http\Controllers\api\master\ManageStageController;
 use App\Http\Controllers\api\master\ManageTaskStatusController;
+use App\Http\Controllers\api\MastersController;
 use App\Http\Controllers\api\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -134,5 +135,18 @@ Route::middleware('set.locale')->group(function () {
         Route::post('task/update' , [ManageTaskController::class, 'update']);
         Route::post('task/change-status' , [ManageTaskController::class, 'changeStatus']);
         Route::post('task/delete' , [ManageTaskController::class, 'delete']);
+
+        // Master APIs for dropdown
+        Route::get('master/referred-by' , [MastersController::class, 'referredBy']);
+        Route::get('master/country' , [MastersController::class, 'country']);
+        Route::get('master/city' , [MastersController::class, 'city']);
+        Route::get('master/designation' , [MastersController::class, 'designation']);
+        Route::get('master/contact-status' , [MastersController::class, 'contactStatus']);
+        Route::get('master/lead-stage' , [MastersController::class, 'leadStage']);
+        Route::get('master/lead-type' , [MastersController::class, 'leadType']);
+        Route::get('master/lead-source' , [MastersController::class, 'leadSource']);
+        Route::get('master/activity-medium' , [MastersController::class, 'activityMedium']);
+        Route::get('master/task-status' , [MastersController::class, 'taskStatus']);
+        Route::get('master/users' , [MastersController::class, 'users']);
     });
 });
