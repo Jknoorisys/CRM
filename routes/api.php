@@ -173,7 +173,7 @@ Route::middleware('set.locale')->group(function () {
         Route::post('activity/add' , [ManageActivityController::class, 'add']);
         Route::post('activity/view' , [ManageActivityController::class, 'view']);
         Route::post('activity/update' , [ManageActivityController::class, 'update']);
-        Route::post('activity/change-status' , [ManageActivityController::class, 'changeStatus']);
+        Route::post('activity/change-stage' , [ManageActivityController::class, 'changeStage']);
         Route::post('activity/delete' , [ManageActivityController::class, 'delete']);
     });
 });

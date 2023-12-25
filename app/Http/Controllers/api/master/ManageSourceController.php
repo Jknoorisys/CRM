@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\api\master;
 
 use App\Http\Controllers\Controller;
-use App\Models\LeadSource;
+use App\Models\Source;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -28,7 +28,7 @@ class ManageSourceController extends Controller
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
-            $query = LeadSource::query();
+            $query = Source::query();
 
             if ($request->has('search')) {
                 $query->where('source', 'like', '%' . $request->search . '%');
@@ -61,7 +61,7 @@ class ManageSourceController extends Controller
 
     public function add(Request $request) {
         $validator = Validator::make($request->all(), [
-            'source'   => ['required','string','max:255', Rule::unique('lead_sources')],
+            'source'   => ['required','string','max:255', Rule::unique('sources')],
         ]);
 
         if ($validator->fails()) {
@@ -73,7 +73,7 @@ class ManageSourceController extends Controller
         }
 
         try {
-            $insert = LeadSource::create([
+            $insert = Source::create([
                 'source' => $request->source,
             ]);
 
@@ -111,7 +111,7 @@ class ManageSourceController extends Controller
         }
 
         try {
-            $source = LeadSource::where('id', '=', $request->source_id)->first();
+            $source = Source::where('id', '=', $request->source_id)->first();
             if (!empty($source)) {
                 return response()->json([
                     'status'    => 'success',
@@ -136,7 +136,7 @@ class ManageSourceController extends Controller
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
             'source_id'   => ['required','numeric'],
-            'source'      => ['required','string','max:255', Rule::unique('lead_sources')->ignore($request->source_id)],
+            'source'      => ['required','string','max:255', Rule::unique('sources')->ignore($request->source_id)],
         ]);
 
         if ($validator->fails()) {
@@ -148,7 +148,7 @@ class ManageSourceController extends Controller
         }
 
         try {
-            $source = LeadSource::where('id', '=', $request->source_id)->first();
+            $source = Source::where('id', '=', $request->source_id)->first();
             if (empty($source)) {
                 return response()->json([
                     'status'    => 'failed',
@@ -156,7 +156,7 @@ class ManageSourceController extends Controller
                 ], 400);
             }
 
-            $update = LeadSource::where('id', '=', $request->source_id)->update([
+            $update = Source::where('id', '=', $request->source_id)->update([
                 'source' => $request->source ? $request->source : $source->source,
             ]);
 
@@ -195,7 +195,7 @@ class ManageSourceController extends Controller
         }
 
         try {
-            $source = LeadSource::where('id', '=', $request->source_id)->first();
+            $source = Source::where('id', '=', $request->source_id)->first();
             if (empty($source)) {
                 return response()->json([
                     'status'    => 'failed',
@@ -203,7 +203,7 @@ class ManageSourceController extends Controller
                 ], 400);
             }
 
-            $update = LeadSource::where('id', '=', $request->source_id)->update(['status' => $request->status]);
+            $update = Source::where('id', '=', $request->source_id)->update(['status' => $request->status]);
 
             if ($update) {
                 return response()->json([
@@ -239,7 +239,7 @@ class ManageSourceController extends Controller
         }
 
         try {
-            $source = LeadSource::where('id', '=', $request->source_id)->first();
+            $source = Source::where('id', '=', $request->source_id)->first();
             if (empty($source)) {
                 return response()->json([
                     'status'    => 'failed',
@@ -247,7 +247,7 @@ class ManageSourceController extends Controller
                 ], 400);
             }
 
-            $delete = LeadSource::where('id', '=', $request->source_id)->delete();
+            $delete = Source::where('id', '=', $request->source_id)->delete();
 
             if ($delete) {
                 return response()->json([

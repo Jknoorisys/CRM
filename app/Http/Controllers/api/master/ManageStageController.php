@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\api\master;
 
 use App\Http\Controllers\Controller;
-use App\Models\LeadStage;
+use App\Models\Stage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -28,7 +28,7 @@ class ManageStageController extends Controller
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
-            $query = LeadStage::query();
+            $query = Stage::query();
 
             if ($request->has('search')) {
                 $query->where('stage', 'like', '%' . $request->search . '%');
@@ -61,7 +61,7 @@ class ManageStageController extends Controller
 
     public function add(Request $request) {
         $validator = Validator::make($request->all(), [
-            'stage'   => ['required','string','max:255', Rule::unique('lead_stages')],
+            'stage'   => ['required','string','max:255', Rule::unique('stages')],
         ]);
 
         if ($validator->fails()) {
@@ -73,7 +73,7 @@ class ManageStageController extends Controller
         }
 
         try {
-            $insert = LeadStage::create([
+            $insert = Stage::create([
                 'stage' => $request->stage,
             ]);
 
@@ -111,7 +111,7 @@ class ManageStageController extends Controller
         }
 
         try {
-            $stage = LeadStage::where('id', '=', $request->stage_id)->first();
+            $stage = Stage::where('id', '=', $request->stage_id)->first();
             if (!empty($stage)) {
                 return response()->json([
                     'status'    => 'success',
@@ -136,7 +136,7 @@ class ManageStageController extends Controller
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
             'stage_id'   => ['required','numeric'],
-            'stage'      => ['required','string','max:255', Rule::unique('lead_stages')->ignore($request->stage_id)],
+            'stage'      => ['required','string','max:255', Rule::unique('stages')->ignore($request->stage_id)],
         ]);
 
         if ($validator->fails()) {
@@ -148,7 +148,7 @@ class ManageStageController extends Controller
         }
 
         try {
-            $stage = LeadStage::where('id', '=', $request->stage_id)->first();
+            $stage = Stage::where('id', '=', $request->stage_id)->first();
             if (empty($stage)) {
                 return response()->json([
                     'status'    => 'failed',
@@ -156,7 +156,7 @@ class ManageStageController extends Controller
                 ], 400);
             }
 
-            $update = LeadStage::where('id', '=', $request->stage_id)->update([
+            $update = Stage::where('id', '=', $request->stage_id)->update([
                 'stage' => $request->stage ? $request->stage : $stage->stage,
             ]);
 
@@ -195,7 +195,7 @@ class ManageStageController extends Controller
         }
 
         try {
-            $stage = LeadStage::where('id', '=', $request->stage_id)->first();
+            $stage = Stage::where('id', '=', $request->stage_id)->first();
             if (empty($stage)) {
                 return response()->json([
                     'status'    => 'failed',
@@ -203,7 +203,7 @@ class ManageStageController extends Controller
                 ], 400);
             }
 
-            $update = LeadStage::where('id', '=', $request->stage_id)->update(['status' => $request->status]);
+            $update = Stage::where('id', '=', $request->stage_id)->update(['status' => $request->status]);
 
             if ($update) {
                 return response()->json([
@@ -239,7 +239,7 @@ class ManageStageController extends Controller
         }
 
         try {
-            $stage = LeadStage::where('id', '=', $request->stage_id)->first();
+            $stage = Stage::where('id', '=', $request->stage_id)->first();
             if (empty($stage)) {
                 return response()->json([
                     'status'    => 'failed',
@@ -247,7 +247,7 @@ class ManageStageController extends Controller
                 ], 400);
             }
 
-            $delete = LeadStage::where('id', '=', $request->stage_id)->delete();
+            $delete = Stage::where('id', '=', $request->stage_id)->delete();
 
             if ($delete) {
                 return response()->json([

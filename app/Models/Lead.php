@@ -33,12 +33,12 @@ class Lead extends Model
 
     public function stage() : BelongsTo
     {
-        return $this->belongsTo(LeadStage::class, 'stage');
+        return $this->belongsTo(Stage::class, 'stage');
     }
 
     public function source() : BelongsTo
     {
-        return $this->belongsTo(LeadSource::class, 'source');
+        return $this->belongsTo(Source::class, 'source');
     }
 
     public function type() : BelongsTo

@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class LeadStage extends Model
+class Stage extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $table = 'lead_stages';
-
+    protected $table = 'stages';
+    
     protected $fillable = [
         'stage',
         'status',

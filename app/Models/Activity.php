@@ -25,6 +25,6 @@ class Activity extends Model
 
     public function medium() : BelongsTo
     {
-        return $this->belongsTo(ActivityMedium::class, 'medium');
+        return $this->belongsTo(ActivityMedium::class, 'medium', 'id');
     }
 }

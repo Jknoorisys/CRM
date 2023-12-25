@@ -37,7 +37,7 @@ class Contact extends Model
 
     public function source() : BelongsTo
     {
-        return $this->belongsTo(LeadSource::class, 'source');
+        return $this->belongsTo(Source::class, 'source');
     }
 
     public function designation() : BelongsTo
@@ -60,7 +60,7 @@ class Contact extends Model
         return $this->belongsTo(ReferredBy::class, 'referred_by');
     }
 
-    public function status() : BelongsTo
+    public function contactStatus() : BelongsTo
     {
         return $this->belongsTo(ContactStatus::class, 'status');
     }
