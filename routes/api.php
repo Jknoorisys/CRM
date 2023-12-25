@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\api\AuthController;
+use App\Http\Controllers\api\ManageActivityController;
+use App\Http\Controllers\api\ManageContactController;
+use App\Http\Controllers\api\ManageLeadController;
 use App\Http\Controllers\api\ManageTaskController;
 use App\Http\Controllers\api\ManageUserController;
 use App\Http\Controllers\api\master\ManageCityController;
@@ -148,5 +151,29 @@ Route::middleware('set.locale')->group(function () {
         Route::get('master/activity-medium' , [MastersController::class, 'activityMedium']);
         Route::get('master/task-status' , [MastersController::class, 'taskStatus']);
         Route::get('master/users' , [MastersController::class, 'users']);
+
+        // Manage Contacts
+        Route::post('contact/list' , [ManageContactController::class, 'list']);
+        Route::post('contact/add' , [ManageContactController::class, 'add']);
+        Route::post('contact/view' , [ManageContactController::class, 'view']);
+        Route::post('contact/update' , [ManageContactController::class, 'update']);
+        Route::post('contact/change-status' , [ManageContactController::class, 'changeStatus']);
+        Route::post('contact/delete' , [ManageContactController::class, 'delete']);
+
+        // Manage Leads
+        Route::post('lead/list' , [ManageLeadController::class, 'list']);
+        Route::post('lead/add' , [ManageLeadController::class, 'add']);
+        Route::post('lead/view' , [ManageLeadController::class, 'view']);
+        Route::post('lead/update' , [ManageLeadController::class, 'update']);
+        Route::post('lead/change-status' , [ManageLeadController::class, 'changeStatus']);
+        Route::post('lead/delete' , [ManageLeadController::class, 'delete']);
+
+        // Manage Activities
+        Route::post('activity/list' , [ManageActivityController::class, 'list']);
+        Route::post('activity/add' , [ManageActivityController::class, 'add']);
+        Route::post('activity/view' , [ManageActivityController::class, 'view']);
+        Route::post('activity/update' , [ManageActivityController::class, 'update']);
+        Route::post('activity/change-status' , [ManageActivityController::class, 'changeStatus']);
+        Route::post('activity/delete' , [ManageActivityController::class, 'delete']);
     });
 });
