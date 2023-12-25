@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('medium')->comment('Activity Medium')->constrained('activity_medium')->onDelete('cascade');
+            $table->text('summary');
+            $table->string('attachment');
+            $table->datetime('reminder_date');
+            $table->datetime('follow_up_date');
             $table->timestamps();
         });
     }
