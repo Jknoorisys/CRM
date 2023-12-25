@@ -76,8 +76,9 @@ class ManageActivityController extends Controller
     public function add(Request $request) {
         $validator = Validator::make($request->all(), [
             'medium'  => ['required','numeric'],
-            'summary'   => ['required','string'],
-            'date'   => ['required', 'string'],
+            'summary' => ['required','string'],
+            'stage'   => ['required','numeric'],
+            'date'    => ['required', 'string'],
             'follow_up_date'   => ['required', 'string'],
         ]);
 
@@ -105,6 +106,7 @@ class ManageActivityController extends Controller
                 'title' => $request->title,
                 'summary' => $request->summary,
                 'attachment' => $attachment,
+                'stage' => $request->stage,
                 'reminder_date' => $request->date,
                 'follow_up_date' => $request->follow_up_date,
             ]);
@@ -236,7 +238,7 @@ class ManageActivityController extends Controller
     public function changeStage(Request $request) {
         $validator = Validator::make($request->all(), [
             'activity_id' => ['required','numeric'],
-            'stage'   => ['required', 'numeric'],
+            'stage'       => ['required', 'numeric'],
         ]);
 
         if ($validator->fails()) {

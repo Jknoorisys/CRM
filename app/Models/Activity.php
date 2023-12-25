@@ -14,6 +14,7 @@ class Activity extends Model
     protected $fillable = [
         'medium',
         'summary',
+        'stage',
         'attachment',
         'reminder_date',
         'follow_up_date',

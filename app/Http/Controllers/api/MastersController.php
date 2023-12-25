@@ -13,6 +13,8 @@ use App\Models\LeadSource;
 use App\Models\LeadStage;
 use App\Models\LeadType;
 use App\Models\ReferredBy;
+use App\Models\Source;
+use App\Models\Stage;
 use App\Models\TaskStatus;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -160,9 +162,9 @@ class MastersController extends Controller
         }
     }
 
-    public function leadStage() {
+    public function stage() {
         try {
-            $data = LeadStage::where('status', 'active')->get();
+            $data = Stage::where('status', 'active')->get();
             if (!empty($data)) {
                 return response()->json([
                     'status'    => 'success',
@@ -208,9 +210,9 @@ class MastersController extends Controller
         }
     }
 
-    public function leadSource() {
+    public function source() {
         try {
-            $data = LeadSource::where('status', 'active')->get();
+            $data = Source::where('status', 'active')->get();
             if (!empty($data)) {
                 return response()->json([
                     'status'    => 'success',

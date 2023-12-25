@@ -145,9 +145,9 @@ Route::middleware('set.locale')->group(function () {
         Route::get('master/city' , [MastersController::class, 'city']);
         Route::get('master/designation' , [MastersController::class, 'designation']);
         Route::get('master/contact-status' , [MastersController::class, 'contactStatus']);
-        Route::get('master/lead-stage' , [MastersController::class, 'leadStage']);
+        Route::get('master/stage' , [MastersController::class, 'stage']);
         Route::get('master/lead-type' , [MastersController::class, 'leadType']);
-        Route::get('master/lead-source' , [MastersController::class, 'leadSource']);
+        Route::get('master/source' , [MastersController::class, 'source']);
         Route::get('master/activity-medium' , [MastersController::class, 'activityMedium']);
         Route::get('master/task-status' , [MastersController::class, 'taskStatus']);
         Route::get('master/users' , [MastersController::class, 'users']);
