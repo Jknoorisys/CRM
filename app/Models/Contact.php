@@ -37,31 +37,31 @@ class Contact extends Model
 
     public function source() : BelongsTo
     {
-        return $this->belongsTo(Source::class, 'source');
+        return $this->belongsTo(Source::class, 'source')->withTrashed();
     }
 
     public function designation() : BelongsTo
     {
-        return $this->belongsTo(Designation::class, 'designation');
+        return $this->belongsTo(Designation::class, 'designation')->withTrashed();
     }
 
     public function country() : BelongsTo
     {
-        return $this->belongsTo(Country::class, 'country');
+        return $this->belongsTo(Country::class, 'country')->withTrashed();
     }
 
     public function city() : BelongsTo
     {
-        return $this->belongsTo(City::class, 'city');
+        return $this->belongsTo(City::class, 'city')->withTrashed();
     }
 
     public function referred_by() : BelongsTo
     {
-        return $this->belongsTo(ReferredBy::class, 'referred_by');
+        return $this->belongsTo(ReferredBy::class, 'referred_by')->withTrashed();
     }
 
     public function contactStatus() : BelongsTo
     {
-        return $this->belongsTo(ContactStatus::class, 'status');
+        return $this->belongsTo(ContactStatus::class, 'status')->withTrashed();
     }
 }

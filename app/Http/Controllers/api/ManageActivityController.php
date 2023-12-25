@@ -145,7 +145,7 @@ class ManageActivityController extends Controller
         }
 
         try {
-            $activity = Activity::where('id', '=', $request->activity_id)->with('medium')->first();
+            $activity = Activity::where('id', '=', $request->activity_id)->with(['medium', 'stage'])->first();
             if (!empty($activity)) {
                 return response()->json([
                     'status'    => 'success',
@@ -258,7 +258,7 @@ class ManageActivityController extends Controller
                 ], 400);
             }
 
-            $update = Activity::where('id', '=', $request->activity_id)->update(['status' => $request->satge]);
+            $update = Activity::where('id', '=', $request->activity_id)->update(['stage' => $request->stage]);
 
             if ($update) {
                 return response()->json([

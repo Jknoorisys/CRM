@@ -23,11 +23,11 @@ class Country extends Model
 
     public function cities() : HasMany
     {
-        return $this->hasMany(City::class);
+        return $this->hasMany(City::class)->withTrashed();
     }
 
     public function contacts() : HasMany
     {
-        return $this->hasMany(Contact::class);
+        return $this->hasMany(Contact::class)->withTrashed();
     }
 }

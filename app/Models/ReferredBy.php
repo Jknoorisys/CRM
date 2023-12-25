@@ -23,6 +23,6 @@ class ReferredBy extends Model
 
     public function contacts() : HasMany
     {
-        return $this->hasMany(Contact::class);
+        return $this->hasMany(Contact::class)->withTrashed();
     }
 }

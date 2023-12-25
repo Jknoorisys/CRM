@@ -24,11 +24,11 @@ class Tasks extends Model
 
     public function user() : BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id')->withTrashed();
     }
 
     public function taskStatus() : BelongsTo
     {
-        return $this->belongsTo(TaskStatus::class, 'status');
+        return $this->belongsTo(TaskStatus::class, 'status')->withTrashed();
     }
 }

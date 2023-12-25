@@ -25,11 +25,11 @@ class City extends Model
 
     public function country() : BelongsTo
     {
-        return $this->belongsTo(Country::class, 'country_id');
+        return $this->belongsTo(Country::class, 'country_id')->withTrashed();
     }
 
     public function contacts() : HasMany
     {
-        return $this->hasMany(Contact::class);
+        return $this->hasMany(Contact::class)->withTrashed();
     }
 }

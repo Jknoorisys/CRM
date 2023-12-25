@@ -26,6 +26,11 @@ class Activity extends Model
 
     public function medium() : BelongsTo
     {
-        return $this->belongsTo(ActivityMedium::class, 'medium', 'id');
+        return $this->belongsTo(ActivityMedium::class, 'medium', 'id')->withTrashed();
+    }
+
+    public function stage() : BelongsTo
+    {
+        return $this->belongsTo(Stage::class, 'stage', 'id')->withTrashed();
     }
 }

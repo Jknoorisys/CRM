@@ -28,31 +28,31 @@ class Lead extends Model
 
     public function contact() : BelongsTo
     {
-        return $this->belongsTo(Contact::class, 'contact');
+        return $this->belongsTo(Contact::class, 'contact')->withTrashed();
     }
 
     public function stage() : BelongsTo
     {
-        return $this->belongsTo(Stage::class, 'stage');
+        return $this->belongsTo(Stage::class, 'stage')->withTrashed();
     }
 
     public function source() : BelongsTo
     {
-        return $this->belongsTo(Source::class, 'source');
+        return $this->belongsTo(Source::class, 'source')->withTrashed();
     }
 
     public function type() : BelongsTo
     {
-        return $this->belongsTo(LeadType::class, 'type');
+        return $this->belongsTo(LeadType::class, 'type')->withTrashed();
     }
 
     public function assignedTo() : BelongsTo
     {
-        return $this->belongsTo(User::class, 'assigned_to');
+        return $this->belongsTo(User::class, 'assigned_to')->withTrashed();
     }
 
     public function createdBy() : BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by')->withTrashed();
     }
 }
