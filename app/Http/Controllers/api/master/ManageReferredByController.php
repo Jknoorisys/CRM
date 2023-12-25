@@ -25,7 +25,7 @@ class ManageReferredByController extends Controller
 
         try {            
             $limit = 10; 
-            $pageNo = $request->query('page_no', 1); 
+            $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
             $query = ReferredBy::query();
@@ -34,8 +34,8 @@ class ManageReferredByController extends Controller
                 $query->where('referred_by', 'like', '%' . $request->search . '%');
             }
 
-            $referred_by = $query->limit($limit)->offset($offset)->get();
             $total = $query->count();
+            $referred_by = $query->limit($limit)->offset($offset)->get();
 
             if (!empty($referred_by)) {
                 return response()->json([

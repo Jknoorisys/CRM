@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->comment('Assigned To')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->string('description');
-            $table->string('status');
+            $table->foreignId('status')->comment('Task Status')->constrained('task_status')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });

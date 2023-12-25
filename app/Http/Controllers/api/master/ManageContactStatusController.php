@@ -25,7 +25,7 @@ class ManageContactStatusController extends Controller
 
         try {            
             $limit = 10; 
-            $pageNo = $request->query('page_no', 1); 
+            $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
             $query = ContactStatus::query();
@@ -34,8 +34,8 @@ class ManageContactStatusController extends Controller
                 $query->where('name', 'like', '%' . $request->search . '%');
             }
 
-            $contactStatus = $query->limit($limit)->offset($offset)->get();
             $total = $query->count();
+            $contactStatus = $query->limit($limit)->offset($offset)->get();
 
             if (!empty($contactStatus)) {
                 return response()->json([

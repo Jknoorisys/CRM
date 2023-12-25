@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\AuthController;
+use App\Http\Controllers\api\ManageTaskController;
 use App\Http\Controllers\api\ManageUserController;
 use App\Http\Controllers\api\master\ManageCityController;
 use App\Http\Controllers\api\master\ManageContactStatusController;
@@ -125,5 +126,13 @@ Route::middleware('set.locale')->group(function () {
             Route::post('referred-by/change-status' , [ManageReferredByController::class, 'changeStatus']);
             Route::post('referred-by/delete' , [ManageReferredByController::class, 'delete']);
         });
+
+        // Manage Tasks
+        Route::post('task/list' , [ManageTaskController::class, 'list']);
+        Route::post('task/add' , [ManageTaskController::class, 'add']);
+        Route::post('task/view' , [ManageTaskController::class, 'view']);
+        Route::post('task/update' , [ManageTaskController::class, 'update']);
+        Route::post('task/change-status' , [ManageTaskController::class, 'changeStatus']);
+        Route::post('task/delete' , [ManageTaskController::class, 'delete']);
     });
 });

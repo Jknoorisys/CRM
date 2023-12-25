@@ -25,7 +25,7 @@ class ManageStageController extends Controller
 
         try {            
             $limit = 10; 
-            $pageNo = $request->query('page_no', 1); 
+            $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
             $query = LeadStage::query();
@@ -34,8 +34,8 @@ class ManageStageController extends Controller
                 $query->where('stage', 'like', '%' . $request->search . '%');
             }
 
-            $stages = $query->limit($limit)->offset($offset)->get();
             $total = $query->count();
+            $stages = $query->limit($limit)->offset($offset)->get();
 
             if (!empty($stages)) {
                 return response()->json([

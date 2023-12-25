@@ -25,7 +25,7 @@ class ManageSourceController extends Controller
 
         try {            
             $limit = 10; 
-            $pageNo = $request->query('page_no', 1); 
+            $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
             $query = LeadSource::query();
@@ -34,8 +34,8 @@ class ManageSourceController extends Controller
                 $query->where('source', 'like', '%' . $request->search . '%');
             }
 
-            $sources = $query->limit($limit)->offset($offset)->get();
             $total = $query->count();
+            $sources = $query->limit($limit)->offset($offset)->get();
 
             if (!empty($sources)) {
                 return response()->json([

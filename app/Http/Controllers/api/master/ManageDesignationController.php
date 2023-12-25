@@ -25,7 +25,7 @@ class ManageDesignationController extends Controller
 
         try {            
             $limit = 10; 
-            $pageNo = $request->query('page_no', 1); 
+            $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
             $query = Designation::query();
@@ -34,8 +34,8 @@ class ManageDesignationController extends Controller
                 $query->where('designation', 'like', '%' . $request->search . '%');
             }
 
-            $designations = $query->limit($limit)->offset($offset)->get();
             $total = $query->count();
+            $designations = $query->limit($limit)->offset($offset)->get();
 
             if (!empty($designations)) {
                 return response()->json([

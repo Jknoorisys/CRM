@@ -25,7 +25,7 @@ class ManageLeadTypeController extends Controller
 
         try {            
             $limit = 10; 
-            $pageNo = $request->query('page_no', 1); 
+            $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
             $query = LeadType::query();
@@ -34,8 +34,8 @@ class ManageLeadTypeController extends Controller
                 $query->where('type', 'like', '%' . $request->search . '%');
             }
 
-            $types = $query->limit($limit)->offset($offset)->get();
             $total = $query->count();
+            $types = $query->limit($limit)->offset($offset)->get();
 
             if (!empty($types)) {
                 return response()->json([

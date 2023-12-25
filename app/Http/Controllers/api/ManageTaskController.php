@@ -1,18 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\api\master;
+namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
-use App\Models\City;
+use App\Models\Tasks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class ManageCityController extends Controller
+class ManageTaskController extends Controller
 {
     public function list(Request $request) {
         $validator = Validator::make($request->all(), [
             'page_no'   => ['required','numeric'],
+            'search'    => ['nullable','string'],
+            'status'    => ['nullable', 'numeric'],
+            'user_id'   => ['nullable','numeric'],
         ]);
 
         if ($validator->fails()) {
@@ -28,21 +31,33 @@ class ManageCityController extends Controller
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
-            $query = City::query()->with('country');
+            $query = Tasks::query()->with(['user', 'taskStatus']);
 
             if ($request->has('search')) {
-                $query->where('city', 'like', '%' . $request->search . '%');
+                $query->where('title', 'like', '%' . $request->search . '%');
+            }
+
+            if ($request->has('status')) {
+                $query->where('status', '=', $request->status);
+            }
+
+            if ($request->has('user_id')) {
+                $query->where('user_id', '=', $request->user_id);
+            }
+
+            if ($request->has('from_date') && $request->has('to_date')) {
+                $query->whereBetween('created_at', [$request->from_date . ' 00:00:00', $request->to_date . ' 23:59:59']);
             }
 
             $total = $query->count();
-            $cities = $query->limit($limit)->offset($offset)->get();
+            $tasks = $query->limit($limit)->offset($offset)->get();
 
-            if (!empty($cities)) {
+            if (!empty($tasks)) {
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.list.success'),
                     'total'     => $total,
-                    'data'      => $cities,
+                    'data'      => $tasks,
                 ], 200);
             } else {
                 return response()->json([
@@ -61,8 +76,10 @@ class ManageCityController extends Controller
 
     public function add(Request $request) {
         $validator = Validator::make($request->all(), [
-            'country_id' => ['required','numeric'],
-            'city'   => ['required','string','max:255', Rule::unique('cities')],
+            'title'  => ['required','string','max:255'],
+            'description'   => ['required','string'],
+            'user_id'   => ['required','numeric'],
+            'status'   => ['required', 'numeric'],
         ]);
 
         if ($validator->fails()) {
@@ -74,9 +91,11 @@ class ManageCityController extends Controller
         }
 
         try {
-            $insert = City::create([
-                'country_id' => $request->country_id,
-                'city' => $request->city,
+            $insert = Tasks::create([
+                'title' => $request->title,
+                'description' => $request->description,
+                'user_id' => $request->user_id,
+                'status' => $request->status,
             ]);
 
             if ($insert) {
@@ -101,7 +120,7 @@ class ManageCityController extends Controller
 
     public function view(Request $request) {
         $validator = Validator::make($request->all(), [
-            'city_id'   => ['required','numeric'],
+            'task_id'   => ['required','numeric'],
         ]);
 
         if ($validator->fails()) {
@@ -113,12 +132,12 @@ class ManageCityController extends Controller
         }
 
         try {
-            $city = City::where('id', '=', $request->city_id)->with('country')->first();
-            if (!empty($city)) {
+            $task = Tasks::where('id', '=', $request->task_id)->with(['user', 'taskStatus'])->first();
+            if (!empty($task)) {
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.detail.success'),
-                    'data'      => $city,
+                    'data'      => $task,
                 ], 200);
             } else {
                 return response()->json([
@@ -137,9 +156,11 @@ class ManageCityController extends Controller
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-            'city_id'   => ['required','numeric'],
-            'country_id' => ['required','numeric'],
-            'city'      => ['required','string','max:255', Rule::unique('cities')->ignore($request->city_id)],
+            'task_id'   => ['required','numeric'],
+            'title'  => ['required','string','max:255'],
+            'description'   => ['required','string'],
+            'user_id'   => ['required','numeric'],
+            // 'status'   => ['nullable', 'numeric'],
         ]);
 
         if ($validator->fails()) {
@@ -151,17 +172,19 @@ class ManageCityController extends Controller
         }
 
         try {
-            $city = City::where('id', '=', $request->city_id)->first();
-            if (empty($city)) {
+            $task = Tasks::where('id', '=', $request->task_id)->first();
+            if (empty($task)) {
                 return response()->json([
                     'status'    => 'failed',
-                    'message'   => trans('msg.update.not-found', ['entity' => 'city']),
+                    'message'   => trans('msg.update.not-found', ['entity' => 'task']),
                 ], 400);
             }
 
-            $update = City::where('id', '=', $request->city_id)->update([
-                'country_id' => $request->country_id ? $request->country_id : $city->country_id,
-                'city' => $request->city ? $request->city : $city->city,
+            $update = Tasks::where('id', '=', $request->task_id)->update([
+                'title' => $request->title ? $request->title : $task->title,
+                'description' => $request->description ? $request->description : $task->description,
+                'user_id' => $request->user_id ? $request->user_id : $task->user_id,
+                // 'status' => $request->status ? $request->status : $task->status,
             ]);
 
             if ($update) {
@@ -186,8 +209,8 @@ class ManageCityController extends Controller
 
     public function changeStatus(Request $request) {
         $validator = Validator::make($request->all(), [
-            'city_id' => ['required','numeric'],
-            'status'   => ['required', Rule::in(['active', 'inactive'])],
+            'task_id' => ['required','numeric'],
+            'status'   => ['required', 'numeric'],
         ]);
 
         if ($validator->fails()) {
@@ -199,15 +222,15 @@ class ManageCityController extends Controller
         }
 
         try {
-            $city = City::where('id', '=', $request->city_id)->first();
-            if (empty($city)) {
+            $task = Tasks::where('id', '=', $request->task_id)->first();
+            if (empty($task)) {
                 return response()->json([
                     'status'    => 'failed',
-                    'message'   => trans('msg.change-status.not-found', ['entity' => 'city']),
+                    'message'   => trans('msg.change-status.not-found', ['entity' => 'task']),
                 ], 400);
             }
 
-            $update = City::where('id', '=', $request->city_id)->update(['status' => $request->status]);
+            $update = Tasks::where('id', '=', $request->task_id)->update(['status' => $request->status]);
 
             if ($update) {
                 return response()->json([
@@ -231,7 +254,7 @@ class ManageCityController extends Controller
     
     public function delete(Request $request) {
         $validator = Validator::make($request->all(), [
-            'city_id' => ['required','numeric'],
+            'task_id' => ['required','numeric'],
         ]);
 
         if ($validator->fails()) {
@@ -243,15 +266,15 @@ class ManageCityController extends Controller
         }
 
         try {
-            $city = City::where('id', '=', $request->city_id)->first();
-            if (empty($city)) {
+            $task = Tasks::where('id', '=', $request->task_id)->first();
+            if (empty($task)) {
                 return response()->json([
                     'status'    => 'failed',
-                    'message'   => trans('msg.change-status.not-found', ['entity' => 'city']),
+                    'message'   => trans('msg.change-status.not-found', ['entity' => 'task']),
                 ], 400);
             }
 
-            $delete = City::where('id', '=', $request->city_id)->delete();
+            $delete = Tasks::where('id', '=', $request->task_id)->delete();
 
             if ($delete) {
                 return response()->json([

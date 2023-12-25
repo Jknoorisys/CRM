@@ -27,7 +27,7 @@ class ManageUserController extends Controller
 
         try {            
             $limit = 10; 
-            $pageNo = $request->query('page_no', 1); 
+            $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
             $query = User::query();
@@ -41,8 +41,8 @@ class ManageUserController extends Controller
                 });
             }
 
-            $users = $query->limit($limit)->offset($offset)->get();
             $total = $query->count();
+            $users = $query->limit($limit)->offset($offset)->get();
 
             if (!empty($users)) {
                 return response()->json([

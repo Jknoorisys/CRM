@@ -25,7 +25,7 @@ class ManageTaskStatusController extends Controller
 
         try {            
             $limit = 10; 
-            $pageNo = $request->query('page_no', 1); 
+            $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
             $query = TaskStatus::query();
@@ -34,8 +34,8 @@ class ManageTaskStatusController extends Controller
                 $query->where('name', 'like', '%' . $request->search . '%');
             }
 
-            $taskStatus = $query->limit($limit)->offset($offset)->get();
             $total = $query->count();
+            $taskStatus = $query->limit($limit)->offset($offset)->get();
 
             if (!empty($taskStatus)) {
                 return response()->json([

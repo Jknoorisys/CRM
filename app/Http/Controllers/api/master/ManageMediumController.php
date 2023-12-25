@@ -25,7 +25,7 @@ class ManageMediumController extends Controller
 
         try {            
             $limit = 10; 
-            $pageNo = $request->query('page_no', 1); 
+            $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
             $query = ActivityMedium::query();
@@ -34,8 +34,8 @@ class ManageMediumController extends Controller
                 $query->where('medium', 'like', '%' . $request->search . '%');
             }
 
-            $mediums = $query->limit($limit)->offset($offset)->get();
             $total = $query->count();
+            $mediums = $query->limit($limit)->offset($offset)->get();
 
             if (!empty($mediums)) {
                 return response()->json([

@@ -26,7 +26,7 @@ class ManageCountryController extends Controller
 
         try {            
             $limit = 10; 
-            $pageNo = $request->query('page_no', 1); 
+            $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
             $query = Country::query();
@@ -35,8 +35,8 @@ class ManageCountryController extends Controller
                 $query->where('country', 'like', '%' . $request->search . '%');
             }
 
-            $countries = $query->limit($limit)->offset($offset)->get();
             $total = $query->count();
+            $countries = $query->limit($limit)->offset($offset)->get();
 
             if (!empty($countries)) {
                 return response()->json([
