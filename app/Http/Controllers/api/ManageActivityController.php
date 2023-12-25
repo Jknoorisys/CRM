@@ -13,8 +13,8 @@ class ManageActivityController extends Controller
         $validator = Validator::make($request->all(), [
             'page_no'   => ['required','numeric'],
             'search'    => ['nullable','string'],
-            'status'    => ['nullable', 'numeric'],
-            'user_id'   => ['nullable','numeric'],
+            'stage'    => ['nullable', 'numeric'],
+            'medium'    => ['nullable', 'numeric'],
         ]);
 
         if ($validator->fails()) {
@@ -30,18 +30,18 @@ class ManageActivityController extends Controller
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
-            $query = Activity::query()->with(['user', 'activityStatus']);
+            $query = Activity::query()->with(['medium', 'stage']);
 
             if ($request->has('search')) {
-                $query->where('title', 'like', '%' . $request->search . '%');
+                $query->where('summary', 'like', '%' . $request->search . '%');
             }
 
-            if ($request->has('status')) {
-                $query->where('status', '=', $request->status);
+            if ($request->has('stage')) {
+                $query->where('stage', '=', $request->stage);
             }
 
-            if ($request->has('user_id')) {
-                $query->where('user_id', '=', $request->user_id);
+            if ($request->has('medium')) {
+                $query->where('medium', '=', $request->medium);
             }
 
             if ($request->has('from_date') && $request->has('to_date')) {
@@ -49,14 +49,14 @@ class ManageActivityController extends Controller
             }
 
             $total = $query->count();
-            $activitys = $query->limit($limit)->offset($offset)->get();
+            $activities = $query->limit($limit)->offset($offset)->get();
 
-            if (!empty($activitys)) {
+            if (!empty($activities)) {
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.list.success'),
                     'total'     => $total,
-                    'data'      => $activitys,
+                    'data'      => $activities,
                 ], 200);
             } else {
                 return response()->json([
