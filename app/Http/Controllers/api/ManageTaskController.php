@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Tasks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class ManageTaskController extends Controller
 {
