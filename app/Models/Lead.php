@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Lead extends Model
 {
     use HasFactory, SoftDeletes;
+    public $incrementing = false;
+    protected $keyType = 'string';
     protected $table = 'leads';
     protected $fillable = [
         'contact',
@@ -25,6 +27,18 @@ class Lead extends Model
     protected $hidden = [
         'deleted_at',
     ];
+
+    protected static function boot() {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->incrementing = false; 
+
+            $lastRecord = self::latest()->first();
+            $nextNumber = $lastRecord ? substr($lastRecord->id, 2) + 1 : 1;
+            $model->id = 'NS' . str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
+        });
+    }
 
     public function contact() : BelongsTo
     {
