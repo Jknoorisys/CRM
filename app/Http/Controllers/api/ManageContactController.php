@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use File;
+use Illuminate\Support\Facades\File;
 
 class ManageContactController extends Controller
 {     
@@ -318,7 +318,7 @@ class ManageContactController extends Controller
                 }
                 else
                 {
-                    $avatar_url = $get_medicines_info->picture;
+                    $avatar_url = $contact->picture;
                 }
 
                 $update = Contact::where('id', '=', $request->contact_id)->update([
