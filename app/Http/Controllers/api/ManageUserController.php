@@ -86,7 +86,7 @@ class ManageUserController extends Controller
             $insert = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make('password'),
+                'password' => $request->password,
                 'permissions' => $request->permissions,
             ]);
 
