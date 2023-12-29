@@ -9,8 +9,6 @@ use App\Models\City;
 use App\Models\ContactStatus;
 use App\Models\Country;
 use App\Models\Designation;
-use App\Models\LeadSource;
-use App\Models\LeadStage;
 use App\Models\LeadType;
 use App\Models\ReferredBy;
 use App\Models\Source;

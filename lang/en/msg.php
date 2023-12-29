@@ -91,4 +91,9 @@ return [
         'failed'  => 'Unable to change stage, please try again...',
         'not-found' => ':entity not found',
     ],
+
+    'download' => [
+        'success' => 'File Downloaded Successfully',
+        'failed'  => 'Unable to download file, please try again...',
+    ],
 ];

@@ -59,6 +59,31 @@ class Contact extends Model
         return $this->belongsTo(ReferredBy::class, 'referred_by')->withTrashed();
     }
 
+    public function getSource() : BelongsTo
+    {
+        return $this->belongsTo(Source::class, 'source')->withTrashed();
+    }
+
+    public function getDesignation() : BelongsTo
+    {
+        return $this->belongsTo(Designation::class, 'designation')->withTrashed();
+    }
+
+    public function getCountry() : BelongsTo
+    {
+        return $this->belongsTo(Country::class, 'country')->withTrashed();
+    }
+
+    public function getCity() : BelongsTo
+    {
+        return $this->belongsTo(City::class, 'city')->withTrashed();
+    }
+
+    public function referredBy() : BelongsTo
+    {
+        return $this->belongsTo(ReferredBy::class, 'referred_by')->withTrashed();
+    }
+
     public function contactStatus() : BelongsTo
     {
         return $this->belongsTo(ContactStatus::class, 'status')->withTrashed();

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\AuthController;
+use App\Http\Controllers\api\ImportExportController;
 use App\Http\Controllers\api\ManageActivityController;
 use App\Http\Controllers\api\ManageContactController;
 use App\Http\Controllers\api\ManageLeadController;
@@ -159,6 +160,7 @@ Route::middleware('set.locale')->group(function () {
         Route::post('contact/update' , [ManageContactController::class, 'update']);
         Route::post('contact/change-status' , [ManageContactController::class, 'changeStatus']);
         Route::post('contact/delete' , [ManageContactController::class, 'delete']);
+        Route::post('contact/export' , [ImportExportController::class, 'exportContacts']);
 
         // Manage Leads
         Route::post('lead/list' , [ManageLeadController::class, 'list']);
