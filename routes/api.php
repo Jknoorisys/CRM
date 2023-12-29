@@ -161,6 +161,7 @@ Route::middleware('set.locale')->group(function () {
         Route::post('contact/change-status' , [ManageContactController::class, 'changeStatus']);
         Route::post('contact/delete' , [ManageContactController::class, 'delete']);
         Route::post('contact/export' , [ImportExportController::class, 'exportContacts']);
+        Route::post('contact/import' , [ImportExportController::class, 'importContacts']);
 
         // Manage Leads
         Route::post('lead/list' , [ManageLeadController::class, 'list']);
