@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Models\User;
 
 class VerifyJwtToken
 {
@@ -24,6 +25,24 @@ class VerifyJwtToken
      */
     public function handle(Request $request, Closure $next)
     {
+        $headers = apache_request_headers();
+
+        if (isset($headers['Authorization'])) 
+        {
+            $authorizationHeader = $headers['Authorization'];
+
+            if (strpos($authorizationHeader, 'Bearer ') === 0) 
+            {
+                $jwt_token = substr($authorizationHeader, 7); // Remove "Bearer " from the token
+                $get_user = User::where('jwt_token', '=', $jwt_token)->first();
+
+                if (empty($get_user))
+                {
+                    abort(403, trans('msg.detail.inactive'));
+                }
+            }
+        }
+
         try {
             JWTAuth::parseToken($request);
             if (!empty($request->login_id) && $request->login_id != auth()->id()) {
