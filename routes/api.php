@@ -165,7 +165,7 @@ Route::middleware('set.locale')->group(function () {
         Route::post('lead/add' , [ManageLeadController::class, 'add']);
         Route::post('lead/view' , [ManageLeadController::class, 'view']);
         Route::post('lead/update' , [ManageLeadController::class, 'update']);
-        Route::post('lead/change-status' , [ManageLeadController::class, 'changeStatus']);
+        Route::post('lead/change-stage' , [ManageLeadController::class, 'changeStage']);
         Route::post('lead/delete' , [ManageLeadController::class, 'delete']);
 
         // Manage Activities

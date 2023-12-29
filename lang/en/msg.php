@@ -84,5 +84,11 @@ return [
         'success' => 'Password Reset Successfully',
         'failed'  => 'Unable to reset Password, please try again...',
         'not-found' => ':entity not found',
+    ], 
+
+    'change-stage' => [
+        'success' => 'Stage Changed Successfully',
+        'failed'  => 'Unable to change stage, please try again...',
+        'not-found' => ':entity not found',
     ],
 ];
