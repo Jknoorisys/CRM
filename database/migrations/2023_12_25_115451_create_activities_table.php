@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('medium')->comment('Activity Medium')->constrained('activity_medium')->onDelete('cascade');
             $table->text('summary');
             $table->string('attachment');
-            $table->datetime('follow_up_date');
+            $table->timestamp('follow_up_date');
             $table->softDeletes();
             $table->timestamps();
         });
