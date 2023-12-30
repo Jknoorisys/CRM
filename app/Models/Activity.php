@@ -15,7 +15,6 @@ class Activity extends Model
         'lead_id',
         'medium',
         'summary',
-        'stage',
         'attachment',
         'follow_up_date',
     ];
@@ -32,10 +31,5 @@ class Activity extends Model
     public function medium() : BelongsTo
     {
         return $this->belongsTo(ActivityMedium::class, 'medium', 'id')->withTrashed();
-    }
-
-    public function stage() : BelongsTo
-    {
-        return $this->belongsTo(Stage::class, 'stage', 'id')->withTrashed();
     }
 }

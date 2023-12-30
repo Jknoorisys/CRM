@@ -19,7 +19,6 @@ return new class extends Migration
             $table->text('summary');
             $table->string('attachment');
             $table->datetime('follow_up_date');
-            $table->foreignId('stage')->comment('Stage')->constrained('stages')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });

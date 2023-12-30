@@ -22,6 +22,7 @@ class Lead extends Model
         'type',
         'assigned_to',
         'created_by',
+        'last_contacted_date'
     ];
 
     protected $hidden = [
