@@ -96,4 +96,9 @@ return [
         'success' => 'File Downloaded Successfully',
         'failed'  => 'Unable to download file, please try again...',
     ],
+
+    'import' => [
+        'success' => 'File Imported Successfully',
+        'failed'  => 'Unable to import file, please try again...',
+    ],
 ];
