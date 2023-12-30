@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignId('type')->comment('Lead Type')->constrained('lead_types')->onDelete('cascade');
             $table->foreignId('assigned_to')->comment('Assigned To')->constrained('users')->onDelete('cascade');
             $table->foreignId('created_by')->comment('Created By')->constrained('users')->onDelete('cascade');
-            $table->datettime('last_contacted_date')->nullable();
+            $table->datetime('last_contacted_date')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
