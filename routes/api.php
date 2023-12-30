@@ -20,6 +20,7 @@ use App\Http\Controllers\api\master\ManageTaskStatusController;
 use App\Http\Controllers\api\MastersController;
 use App\Http\Controllers\api\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\api\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -178,5 +179,8 @@ Route::middleware('set.locale')->group(function () {
         Route::post('activity/update' , [ManageActivityController::class, 'update']);
         Route::post('activity/change-stage' , [ManageActivityController::class, 'changeStage']);
         Route::post('activity/delete' , [ManageActivityController::class, 'delete']);
+
+        // Dashboard APIs
+        Route::post('dashboard/leads' , [DashboardController::class, 'active_leads']);
     });
 });
