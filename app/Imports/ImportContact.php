@@ -9,6 +9,7 @@ use App\Models\Country;
 use App\Models\Designation;
 use App\Models\ReferredBy;
 use App\Models\Source;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
@@ -44,6 +45,8 @@ class ImportContact implements ToModel, WithHeadingRow
             'linkedin' => $row['linkedin'],
             'photo' => $row['photo'] ? $row['photo'] : '',
             'status' => $status->id,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ]);
     }
 }
