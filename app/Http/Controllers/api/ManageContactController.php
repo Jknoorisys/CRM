@@ -318,7 +318,7 @@ class ManageContactController extends Controller
                 }
                 else
                 {
-                    $avatar_url = $get_medicines_info->picture;
+                    $avatar_url = $contact->photo;
                 }
 
                 $update = Contact::where('id', '=', $request->contact_id)->update([
