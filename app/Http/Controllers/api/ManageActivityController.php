@@ -37,11 +37,11 @@ class ManageActivityController extends Controller
                 $query->where('summary', 'like', '%' . $request->search . '%');
             }
 
-            if ($request->has('medium')) {
+            if ($request->has('medium') && !empty($request->medium)) {
                 $query->where('medium', '=', $request->medium);
             }
 
-            if ($request->has('from_date') && $request->has('to_date')) {
+            if ($request->has('from_date') && $request->has('to_date') && !empty($request->from_date) && !empty($request->to_date)) {
                 $query->whereBetween('created_at', [$request->from_date . ' 00:00:00', $request->to_date . ' 23:59:59']);
             }
 

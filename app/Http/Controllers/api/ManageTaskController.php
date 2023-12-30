@@ -36,15 +36,15 @@ class ManageTaskController extends Controller
                 $query->where('title', 'like', '%' . $request->search . '%');
             }
 
-            if ($request->has('status')) {
+            if ($request->has('status') && !empty($request->status)) {
                 $query->where('status', '=', $request->status);
             }
 
-            if ($request->has('user_id')) {
+            if ($request->has('user_id') && !empty($request->user_id)) {
                 $query->where('user_id', '=', $request->user_id);
             }
 
-            if ($request->has('from_date') && $request->has('to_date')) {
+            if ($request->has('from_date') && $request->has('to_date') && !empty($request->from_date) && !empty($request->to_date)) {
                 $query->whereBetween('created_at', [$request->from_date . ' 00:00:00', $request->to_date . ' 23:59:59']);
             }
 
