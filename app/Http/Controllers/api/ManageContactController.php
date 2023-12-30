@@ -142,37 +142,37 @@ class ManageContactController extends Controller
                 });
             }
 
-            if ($request->has('source')) 
+            if(isset($request->source) && !empty($request->source))
             {
                 $query->where('source', '=', $request->source);
             }
 
-            if ($request->has('designation')) 
+            if (isset($request->designation) && !empty($request->designation)) 
             {
                 $query->where('designation', '=', $request->designation);
             }
 
-            if ($request->has('country')) 
+            if (isset($request->country) && !empty($request->country)) 
             {
                 $query->where('country', '=', $request->country);
             }
 
-            if ($request->has('city')) 
+            if (isset($request->city) && !empty($request->city)) 
             {
                 $query->where('city', '=', $request->city);
             }
 
-            if ($request->has('referred_by')) 
+            if (isset($request->referred_by) && !empty($request->referred_by))
             {
                 $query->where('referred_by', '=', $request->referred_by);
             }
 
-            if ($request->has('status')) 
+            if (isset($request->status) && !empty($request->status))
             {
                 $query->where('status', '=', $request->status);
             }
 
-            if ($request->has('from_date') && $request->has('to_date')) 
+            if ((isset($request->from_date) && !empty($request->from_date)) && (isset($request->to_date) && !empty($request->to_date))) 
             {
                 $query->whereBetween('created_at', [$request->from_date . ' 00:00:00', $request->to_date . ' 23:59:59']);
             }
