@@ -75,4 +75,9 @@ class Lead extends Model
     {
         return $this->hasMany(Activity::class, 'lead_id', 'id')->withTrashed();
     }
+
+    public function latestActivity()
+    {
+        return $this->hasOne(Activity::class)->latest();
+    }
 }

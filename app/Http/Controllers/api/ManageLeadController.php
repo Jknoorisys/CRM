@@ -100,37 +100,37 @@ class ManageLeadController extends Controller
                 });
             }
 
-            if ($request->has('contact')) 
+            if (isset($request->contact) && !empty($request->contact)) 
             {
                 $query->where('contact', '=', $request->contact);
             }
 
-            if ($request->has('stage')) 
+            if (isset($request->stage) && !empty($request->stage)) 
             {
                 $query->where('stage', '=', $request->stage);
             }
 
-            if ($request->has('source')) 
+            if (isset($request->source) && !empty($request->source)) 
             {
                 $query->where('source', '=', $request->source);
             }
 
-            if ($request->has('type')) 
+            if (isset($request->type) && !empty($request->type)) 
             {
                 $query->where('type', '=', $request->type);
             }
 
-            if ($request->has('assigned_to')) 
+            if (isset($request->assigned_to) && !empty($request->assigned_to)) 
             {
                 $query->where('assigned_to', '=', $request->assigned_to);
             }
 
-            if ($request->has('created_by')) 
+            if (isset($request->created_by) && !empty($request->created_by)) 
             {
                 $query->where('created_by', '=', $request->created_by);
             }
 
-            if ($request->has('from_date') && $request->has('to_date')) 
+            if ((isset($request->from_date) && !empty($request->from_date)) && (isset($request->to_date) && !empty($request->to_date))) 
             {
                 $query->whereBetween('created_at', [$request->from_date . ' 00:00:00', $request->to_date . ' 23:59:59']);
             }
