@@ -30,7 +30,7 @@ class ManageActivityController extends Controller
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
-            $query = Activity::query()->with(['medium', 'stage']);
+            $query = Activity::query()->with(['lead' ,'medium', 'stage']);
 
             if ($request->has('search')) {
                 $query->where('summary', 'like', '%' . $request->search . '%');
@@ -75,10 +75,10 @@ class ManageActivityController extends Controller
 
     public function add(Request $request) {
         $validator = Validator::make($request->all(), [
+            'lead_id' => ['required','string'],
             'medium'  => ['required','numeric'],
             'summary' => ['required','string'],
             'stage'   => ['required','numeric'],
-            'date'    => ['required', 'string'],
             'follow_up_date'   => ['required', 'string'],
         ]);
 
@@ -102,12 +102,12 @@ class ManageActivityController extends Controller
             }
 
             $insert = Activity::create([
+                'lead_id' => $request->lead_id,
                 'medium' => $request->medium,
                 'title' => $request->title,
                 'summary' => $request->summary,
                 'attachment' => $attachment,
                 'stage' => $request->stage,
-                'reminder_date' => $request->date,
                 'follow_up_date' => $request->follow_up_date,
             ]);
 
@@ -145,7 +145,7 @@ class ManageActivityController extends Controller
         }
 
         try {
-            $activity = Activity::where('id', '=', $request->activity_id)->with(['medium', 'stage'])->first();
+            $activity = Activity::where('id', '=', $request->activity_id)->with(['lead' ,'medium', 'stage'])->first();
             if (!empty($activity)) {
                 return response()->json([
                     'status'    => 'success',
@@ -170,9 +170,9 @@ class ManageActivityController extends Controller
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
             'activity_id'   => ['required','numeric'],
+            'lead_id' => ['required','string'],
             'medium'  => ['required','numeric'],
-            'summary'   => ['required','string'],
-            'date'   => ['required', 'string'],
+            'summary' => ['required','string'],
             'follow_up_date'   => ['required', 'string'],
         ]);
 
@@ -208,10 +208,10 @@ class ManageActivityController extends Controller
             }
 
             $update = Activity::where('id', '=', $request->activity_id)->update([
+                'lead_id' => $request->lead_id,
                 'medium' => $request->medium,
                 'summary' => $request->summary,
                 'attachment' => $attachment,
-                'reminder_date' => $request->date,
                 'follow_up_date' => $request->follow_up_date,
             ]);
 

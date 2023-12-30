@@ -12,17 +12,22 @@ class Activity extends Model
     use HasFactory, SoftDeletes;
     protected $table = 'activities';
     protected $fillable = [
+        'lead_id',
         'medium',
         'summary',
         'stage',
         'attachment',
-        'reminder_date',
         'follow_up_date',
     ];
 
     protected $hidden = [
         'deleted_at',
     ];
+
+    public function lead() : BelongsTo
+    {
+        return $this->belongsTo(Lead::class, 'lead_id', 'id')->withTrashed();
+    }
 
     public function medium() : BelongsTo
     {

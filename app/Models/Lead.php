@@ -69,4 +69,9 @@ class Lead extends Model
     {
         return $this->belongsTo(User::class, 'created_by')->withTrashed();
     }
+
+    public function activities()
+    {
+        return $this->hasMany(Activity::class, 'lead_id', 'id')->withTrashed();
+    }
 }
