@@ -119,4 +119,47 @@ class ProfileController extends Controller
             ], 500);
         }
     }
+
+    public function assignedTasks(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'login_id'   => ['required','numeric'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'    => 'failed',
+                'message'   => trans('msg.validation'),
+                'errors'    => $validator->errors(),
+            ], 400);
+        }
+
+        try {
+            $user = User::where('id', '=', $request->login_id)->with('tasks')->first();
+            if (!empty($user) && $user->status == 'inactive') {
+                return response()->json([
+                    'status'    => 'failed',
+                    'message'   => trans('msg.detail.inactive'),
+                ], 400);
+            }
+
+            if (!empty($user)) {
+                return response()->json([
+                    'status'    => 'success',
+                    'message'   => trans('msg.list.success'),
+                    'data'      => $user,
+                ], 200);
+            } else {
+                return response()->json([
+                    'status'    => 'failed',
+                    'message'   => trans('msg.list.failed'),
+                ], 400);
+            }
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status'  => 'failed',
+                'message' => trans('msg.error'),
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
 }

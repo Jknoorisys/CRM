@@ -39,6 +39,7 @@ Route::middleware('set.locale')->group(function () {
     Route::middleware('jwt.verify')->group(function () {
         Route::post('profile' , [ProfileController::class, 'getProfile']);
         Route::post('change-password' , [ProfileController::class, 'changePassword']);
+        Route::post('tasks-assigned' , [ProfileController::class, 'assignedTasks']);
 
         // Manage Users
         Route::post('user/list' , [ManageUserController::class, 'list']);

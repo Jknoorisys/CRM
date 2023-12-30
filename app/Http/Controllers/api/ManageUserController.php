@@ -124,7 +124,7 @@ class ManageUserController extends Controller
         }
 
         try {
-            $user = User::where('id', '=', $request->user_id)->first();
+            $user = User::where('id', '=', $request->user_id)->with('tasks')->first();
             if (!empty($user)) {
                 $user->permissions = explode(',', $user->permissions);
                 return response()->json([
@@ -271,9 +271,9 @@ class ManageUserController extends Controller
                 ], 400);
             }
 
-            $update = User::where('id', '=', $request->user_id)->delete();
+            $delete = User::where('id', '=', $request->user_id)->delete();
 
-            if ($update) {
+            if ($delete) {
 
                 JWTAuth::setToken($user->jwt_token)->invalidate();
                 $user->jwt_token = '';
