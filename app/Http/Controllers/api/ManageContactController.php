@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use File;
+use Illuminate\Support\Facades\File;
 
 class ManageContactController extends Controller
 {     
@@ -45,7 +45,7 @@ class ManageContactController extends Controller
             if ($file)
             {
                 $extension = $file->getClientOriginalExtension();
-                $file_path = 'uploads/contacts/';
+                $file_path = 'assets/uploads/contacts/';
                 $filename = time() . '1.' . $extension;
 
                 $upload = $file->move($file_path, $filename);
@@ -298,7 +298,7 @@ class ManageContactController extends Controller
                 if ($file)
                 {
                     $extension = $file->getClientOriginalExtension();
-                    $file_path = 'uploads/contacts/';
+                    $file_path = 'assets/uploads/contacts/';
                     $filename = time().'1.'.$extension;
 
                     $upload = $file->move($file_path, $filename);
