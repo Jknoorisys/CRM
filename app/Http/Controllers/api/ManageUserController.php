@@ -225,7 +225,10 @@ class ManageUserController extends Controller
 
             if ($update) {
                 if ($request->status == 'inactive' && !empty($user->jwt_token)) {
-                    JWTAuth::setToken($user->jwt_token)->invalidate();
+                    if (!empty($user->jwt_token)) {
+                        JWTAuth::setToken($user->jwt_token)->invalidate();
+                    }
+                    
                     $user->jwt_token = '';
                     $user->save();
                 }
