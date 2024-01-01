@@ -224,11 +224,11 @@ class ManageUserController extends Controller
             $update = User::where('id', '=', $request->user_id)->update(['status' => $request->status]);
 
             if ($update) {
-                if ($request->status == 'inactive' && !empty($user->jwt_token)) {
-                    JWTAuth::setToken($user->jwt_token)->invalidate();
-                    $user->jwt_token = '';
-                    $user->save();
-                }
+                // if ($request->status == 'inactive' && !empty($user->jwt_token)) {
+                //     JWTAuth::setToken($user->jwt_token)->invalidate();
+                //     $user->jwt_token = '';
+                //     $user->save();
+                // }
 
                 return response()->json([
                     'status'    => 'success',
@@ -274,11 +274,6 @@ class ManageUserController extends Controller
             $delete = User::where('id', '=', $request->user_id)->delete();
 
             if ($delete) {
-
-                JWTAuth::setToken($user->jwt_token)->invalidate();
-                $user->jwt_token = '';
-                $user->save();
-
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.delete.success'),
