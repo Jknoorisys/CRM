@@ -151,6 +151,7 @@ class ProfileController extends Controller
             $total = $user->tasks()->count();
 
             if (!empty($tasks)) {
+                $tasks->user = $user;
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.list.success'),
