@@ -123,6 +123,7 @@ class ProfileController extends Controller
     public function assignedTasks(Request $request) {
         $validator = Validator::make($request->all(), [
             'login_id'   => ['required','numeric'],
+            'page_no'   => ['required','numeric'],
         ]);
 
         if ($validator->fails()) {
@@ -134,7 +135,11 @@ class ProfileController extends Controller
         }
 
         try {
-            $user = User::where('id', '=', $request->login_id)->with('tasks')->first();
+            $limit = 10; 
+            $pageNo = $request->input(key: 'page_no', default: 1); 
+            $offset = ($pageNo - 1) * $limit;
+
+            $user = User::where('id', '=', $request->login_id)->first();
             if (!empty($user) && $user->status == 'inactive') {
                 return response()->json([
                     'status'    => 'failed',
@@ -142,11 +147,13 @@ class ProfileController extends Controller
                 ], 400);
             }
 
-            if (!empty($user)) {
+            $tasks = $user->tasks()->offset($offset)->limit($limit)->get();
+
+            if (!empty($tasks)) {
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.list.success'),
-                    'data'      => $user,
+                    'data'      => $tasks,
                 ], 200);
             } else {
                 return response()->json([
