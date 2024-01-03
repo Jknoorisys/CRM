@@ -148,11 +148,13 @@ class ProfileController extends Controller
             }
 
             $tasks = $user->tasks()->offset($offset)->limit($limit)->get();
+            $total = $user->tasks()->count();
 
             if (!empty($tasks)) {
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.list.success'),
+                    'total'     => $total,
                     'data'      => $tasks,
                 ], 200);
             } else {
