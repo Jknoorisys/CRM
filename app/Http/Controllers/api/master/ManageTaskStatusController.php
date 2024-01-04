@@ -16,10 +16,11 @@ class ManageTaskStatusController extends Controller
         ]);
 
         if ($validator->fails()) {
+            $firstError = current(array_values($validator->errors()->messages()));
+
             return response()->json([
-                'status'    => 'failed',
-                'message'   => trans('msg.validation'),
-                'errors'    => $validator->errors(),
+                'status'  => 'failed',
+                'message' => $firstError[0],
             ], 400);
         }
 
@@ -66,10 +67,11 @@ class ManageTaskStatusController extends Controller
         ]);
 
         if ($validator->fails()) {
+            $firstError = current(array_values($validator->errors()->messages()));
+
             return response()->json([
-                'status'    => 'failed',
-                'message'   => trans('msg.validation'),
-                'errors'    => $validator->errors(),
+                'status'  => 'failed',
+                'message' => $firstError[0],
             ], 400);
         }
 
@@ -105,10 +107,11 @@ class ManageTaskStatusController extends Controller
         ]);
 
         if ($validator->fails()) {
+            $firstError = current(array_values($validator->errors()->messages()));
+
             return response()->json([
-                'status'    => 'failed',
-                'message'   => trans('msg.validation'),
-                'errors'    => $validator->errors(),
+                'status'  => 'failed',
+                'message' => $firstError[0],
             ], 400);
         }
 
@@ -143,11 +146,12 @@ class ManageTaskStatusController extends Controller
         ]);
 
         if ($validator->fails()) {
+            $firstError = current(array_values($validator->errors()->messages()));
+
             return response()->json([
-                'status'    => 'failed',
-                'message'   => trans('msg.validation'),
-                'errors'    => $validator->errors(),
-            ], 400);
+                'status'  => 'failed',
+                'message' => $firstError[0],
+            ], 400);   
         }
 
         try {
@@ -191,11 +195,12 @@ class ManageTaskStatusController extends Controller
         ]);
 
         if ($validator->fails()) {
+            $firstError = current(array_values($validator->errors()->messages()));
+
             return response()->json([
-                'status'    => 'failed',
-                'message'   => trans('msg.validation'),
-                'errors'    => $validator->errors(),
-            ], 400);
+                'status'  => 'failed',
+                'message' => $firstError[0],
+            ], 400); 
         }
 
         try {
@@ -235,11 +240,12 @@ class ManageTaskStatusController extends Controller
         ]);
 
         if ($validator->fails()) {
+            $firstError = current(array_values($validator->errors()->messages()));
+
             return response()->json([
-                'status'    => 'failed',
-                'message'   => trans('msg.validation'),
-                'errors'    => $validator->errors(),
-            ], 400);
+                'status'  => 'failed',
+                'message' => $firstError[0],
+            ], 400);   
         }
 
         try {

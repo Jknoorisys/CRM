@@ -18,10 +18,11 @@ class ManageUserController extends Controller
         ]);
 
         if ($validator->fails()) {
+            $firstError = current(array_values($validator->errors()->messages()));
+
             return response()->json([
-                'status'    => 'failed',
-                'message'   => trans('msg.validation'),
-                'errors'    => $validator->errors(),
+                'status'  => 'failed',
+                'message' => $firstError[0],
             ], 400);
         }
 
@@ -75,10 +76,11 @@ class ManageUserController extends Controller
         ]);
 
         if ($validator->fails()) {
+            $firstError = current(array_values($validator->errors()->messages()));
+
             return response()->json([
-                'status'    => 'failed',
-                'message'   => trans('msg.validation'),
-                'errors'    => $validator->errors(),
+                'status'  => 'failed',
+                'message' => $firstError[0],
             ], 400);
         }
 
@@ -116,10 +118,11 @@ class ManageUserController extends Controller
         ]);
 
         if ($validator->fails()) {
+            $firstError = current(array_values($validator->errors()->messages()));
+
             return response()->json([
-                'status'    => 'failed',
-                'message'   => trans('msg.validation'),
-                'errors'    => $validator->errors(),
+                'status'  => 'failed',
+                'message' => $firstError[0],
             ], 400);
         }
 
@@ -156,10 +159,11 @@ class ManageUserController extends Controller
         ]);
 
         if ($validator->fails()) {
+            $firstError = current(array_values($validator->errors()->messages()));
+
             return response()->json([
-                'status'    => 'failed',
-                'message'   => trans('msg.validation'),
-                'errors'    => $validator->errors(),
+                'status'  => 'failed',
+                'message' => $firstError[0],
             ], 400);
         }
 
@@ -205,10 +209,11 @@ class ManageUserController extends Controller
         ]);
 
         if ($validator->fails()) {
+            $firstError = current(array_values($validator->errors()->messages()));
+
             return response()->json([
-                'status'    => 'failed',
-                'message'   => trans('msg.validation'),
-                'errors'    => $validator->errors(),
+                'status'  => 'failed',
+                'message' => $firstError[0],
             ], 400);
         }
 
@@ -258,10 +263,11 @@ class ManageUserController extends Controller
         ]);
 
         if ($validator->fails()) {
+            $firstError = current(array_values($validator->errors()->messages()));
+
             return response()->json([
-                'status'    => 'failed',
-                'message'   => trans('msg.validation'),
-                'errors'    => $validator->errors(),
+                'status'  => 'failed',
+                'message' => $firstError[0],
             ], 400);
         }
 
@@ -303,10 +309,11 @@ class ManageUserController extends Controller
         ]);
 
         if ($validator->fails()) {
+            $firstError = current(array_values($validator->errors()->messages()));
+
             return response()->json([
-                'status'    => 'failed',
-                'message'   => trans('msg.validation'),
-                'errors'    => $validator->errors(),
+                'status'  => 'failed',
+                'message' => $firstError[0],
             ], 400);
         }
 
