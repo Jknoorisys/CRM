@@ -141,7 +141,7 @@ class ManageActivityController extends Controller
         }
 
         try {
-            $activity = Activity::where('id', '=', $request->activity_id)->with(['lead' ,'medium', 'stage'])->first();
+            $activity = Activity::where('id', '=', $request->activity_id)->with(['lead' ,'medium', 'lead.stage'])->first();
             if (!empty($activity)) {
                 return response()->json([
                     'status'    => 'success',
