@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Lead;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -399,4 +400,51 @@ class ManageLeadController extends Controller
         }
     } 
 
+    public function activitiesLeadsAccordingly(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'lead_id' => ['required','alpha_num'],
+        ]);
+
+        if ($validator->fails()) 
+        {
+            $firstError = current(array_values($validator->errors()->messages()));
+
+            return response()->json([
+                'status'  => 'failed',
+                'message' => $firstError[0],
+            ], 400);
+        }
+
+        try
+        {
+            $leads_activities = Activity::where('lead_id', '=', $request->lead_id)->with(['medium'])->get();
+            $total = $leads_activities->count();
+
+            if (!empty($leads_activities)) 
+            {
+                return response()->json([
+                    'status'    => 'success',
+                    'message'   => trans('msg.detail.success'),
+                    'total'     => $total,
+                    'data'      => $leads_activities,
+                ], 200);
+            } 
+            else 
+            {
+                return response()->json([
+                    'status'    => 'failed',
+                    'message'   => trans('msg.detail.failed'),
+                ], 400);
+            }
+        }
+        catch (\Throwable $e) 
+        {
+            return response()->json([
+                'status'  => 'failed',
+                'message' => trans('msg.error'),
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
 }
