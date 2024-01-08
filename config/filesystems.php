@@ -58,11 +58,9 @@ return [
 
         'assets_uploads_contacts' => [
             'driver' => 'local',
-            'root' => public_path('assets/uploads/contacts'),
-            'url' => env('APP_URL').'/assets/uploads/contacts',
-            'visibility' => 'public',
-            'throw' => false,
+            'root' => public_path('assets/uploads/contacts'), 
         ],
+
     ],
 
     /*
