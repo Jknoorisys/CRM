@@ -86,7 +86,6 @@ class ManageActivityController extends Controller
             'summary' => ['required','string'],
             'follow_up_date'   => ['required', 'string'],
             'user_id' => ['required', 'numeric'],
-            'attachment' => ['nullable', 'mimes:jpeg,jpg,png,gif,doc,docx,pdf,txt,xlsx,xls,zip,rar', 'max:2048'],
         ]);
 
         if ($validator->fails()) {
