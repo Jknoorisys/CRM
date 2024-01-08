@@ -112,7 +112,6 @@ class ManageActivityController extends Controller
             $insert = Activity::create([
                 'lead_id' => $request->lead_id,
                 'user_id' => $request->user_id,
-                'stage' => $request->stage,
                 'medium' => $request->medium,
                 'title' => $request->title,
                 'summary' => $request->summary,
@@ -121,7 +120,7 @@ class ManageActivityController extends Controller
             ]);
 
             if ($insert) {
-                Lead::where('id', '=', $request->lead_id)->update(['last_contacted_date' => Carbon::now()]);
+                Lead::where('id', '=', $request->lead_id)->update(['last_contacted_date' => Carbon::now(), 'stage' => $request->stage]);
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.add.success'),
@@ -182,6 +181,7 @@ class ManageActivityController extends Controller
         $validator = Validator::make($request->all(), [
             'activity_id'   => ['required','numeric'],
             'lead_id' => ['required','string', Rule::notIn(['undefined'])],
+            'stage'   => ['required','numeric'],
             'user_id' => ['required', 'numeric'],
             'medium'  => ['required','numeric'],
             'summary' => ['required','string'],
@@ -230,7 +230,7 @@ class ManageActivityController extends Controller
             ]);
 
             if ($update) {
-                Lead::where('id', '=', $request->lead_id)->update(['last_contacted_date' => Carbon::now()]);
+                Lead::where('id', '=', $request->lead_id)->update(['last_contacted_date' => Carbon::now(), 'stage' => $request->stage]);
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.update.success'),
