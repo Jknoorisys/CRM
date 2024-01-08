@@ -150,7 +150,7 @@ class ProfileController extends Controller
                 ], 400);
             }
 
-            $tasks = $user->tasks()->offset($offset)->limit($limit)->get();
+            $tasks = $user->tasks()->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
             $total = $user->tasks()->count();
 
             if (!empty($tasks)) {
