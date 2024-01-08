@@ -8,12 +8,14 @@ use App\Models\Lead;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ManageActivityController extends Controller
 {
     public function list(Request $request) {
         $validator = Validator::make($request->all(), [
             'page_no'   => ['required','numeric'],
+            'lead_id'   => ['required','string', Rule::notIn(['undefined'])],
             'search'    => ['nullable','string'],
             'medium'    => ['nullable', 'numeric'],
         ]);
@@ -32,7 +34,7 @@ class ManageActivityController extends Controller
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
-            $query = Activity::query()->with(['lead' ,'medium']);
+            $query = Activity::query()->with(['lead' ,'medium'])->where('lead_id', '=', $request->lead_id);
 
             if ($request->has('search')) {
                 $query->where('summary', 'like', '%' . $request->search . '%');
@@ -47,7 +49,7 @@ class ManageActivityController extends Controller
             }
 
             $total = $query->count();
-            $activities = $query->limit($limit)->offset($offset)->get();
+            $activities = $query->limit($limit)->offset($offset)->orderBy('created_at', 'desc')->get();
 
             if (!empty($activities)) {
                 return response()->json([
@@ -73,7 +75,7 @@ class ManageActivityController extends Controller
 
     public function add(Request $request) {
         $validator = Validator::make($request->all(), [
-            'lead_id' => ['required','string'],
+            'lead_id' => ['required','string', Rule::notIn(['undefined'])],
             'medium'  => ['required','numeric'],
             'summary' => ['required','string'],
             'follow_up_date'   => ['required', 'string'],
@@ -169,7 +171,7 @@ class ManageActivityController extends Controller
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
             'activity_id'   => ['required','numeric'],
-            'lead_id' => ['required','string'],
+            'lead_id' => ['required','string', Rule::notIn(['undefined'])],
             'medium'  => ['required','numeric'],
             'summary' => ['required','string'],
             'follow_up_date'   => ['required', 'string'],

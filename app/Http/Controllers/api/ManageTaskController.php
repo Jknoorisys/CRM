@@ -50,7 +50,7 @@ class ManageTaskController extends Controller
             }
 
             $total = $query->count();
-            $tasks = $query->limit($limit)->offset($offset)->get();
+            $tasks = $query->limit($limit)->offset($offset)->orderBy('created_at', 'desc')->get();
 
             if (!empty($tasks)) {
                 return response()->json([

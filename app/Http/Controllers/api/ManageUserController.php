@@ -43,7 +43,7 @@ class ManageUserController extends Controller
             }
 
             $total = $query->count();
-            $users = $query->limit($limit)->offset($offset)->get();
+            $users = $query->limit($limit)->offset($offset)->orderBy('created_at', 'desc')->get();
 
             if (!empty($users)) {
                 return response()->json([
