@@ -58,7 +58,8 @@ return [
 
         'assets_uploads_contacts' => [
             'driver' => 'local',
-            'root' => public_path('assets/uploads/contacts'), 
+            'throw' => false,
+            'root' => storage_path('assets/uploads/contacts'), 
         ],
 
     ],
