@@ -18,7 +18,7 @@ class ImportExportController extends Controller
             $name = time();
             $file = Excel::store(new ExportContact, $name.'.xlsx', 'assets_uploads_contacts');
             if (!empty($file)) {
-                $uploadUrl = public_path('assets/uploads/contacts/').$name.'.xlsx';
+                $uploadUrl = asset('assets/uploads/contacts/').$name.'.xlsx';
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.download.success'),
