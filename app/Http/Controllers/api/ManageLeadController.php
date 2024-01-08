@@ -419,6 +419,10 @@ class ManageLeadController extends Controller
 
         try
         {
+            $limit = 10; 
+            $pageNo = $request->input(key: 'page_no', default: 1); 
+            $offset = ($pageNo - 1) * $limit;
+            
             $query = Activity::where('lead_id', '=', $request->lead_id)->with(['medium'])->get();
             $total = $query->count();
             $leads_activities = $query->limit($limit)->offset($offset)->orderBy('id','DESC')->get();
