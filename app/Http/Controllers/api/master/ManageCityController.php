@@ -12,6 +12,7 @@ class ManageCityController extends Controller
 {
     public function list(Request $request) {
         $validator = Validator::make($request->all(), [
+            'country_id' => ['required','numeric'],
             'page_no'   => ['required','numeric'],
         ]);
 
@@ -29,14 +30,14 @@ class ManageCityController extends Controller
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
-            $query = City::query()->with('country');
+            $query = City::query()->with('country')->where('country_id', '=', $request->country_id);
 
             if ($request->has('search')) {
                 $query->where('city', 'like', '%' . $request->search . '%');
             }
 
             $total = $query->count();
-            $cities = $query->limit($limit)->offset($offset)->get();
+            $cities = $query->limit($limit)->offset($offset)->orderBy('created_at', 'desc')->get();
 
             if (!empty($cities)) {
                 return response()->json([

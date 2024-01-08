@@ -36,7 +36,7 @@ class ManageReferredByController extends Controller
             }
 
             $total = $query->count();
-            $referred_by = $query->limit($limit)->offset($offset)->get();
+            $referred_by = $query->limit($limit)->offset($offset)->orderBy('created_at', 'desc')->get();
 
             if (!empty($referred_by)) {
                 return response()->json([

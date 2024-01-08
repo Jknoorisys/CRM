@@ -36,7 +36,7 @@ class ManageLeadTypeController extends Controller
             }
 
             $total = $query->count();
-            $types = $query->limit($limit)->offset($offset)->get();
+            $types = $query->limit($limit)->offset($offset)->orderBy('created_at', 'desc')->get();
 
             if (!empty($types)) {
                 return response()->json([

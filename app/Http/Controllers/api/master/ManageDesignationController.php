@@ -36,7 +36,7 @@ class ManageDesignationController extends Controller
             }
 
             $total = $query->count();
-            $designations = $query->limit($limit)->offset($offset)->get();
+            $designations = $query->limit($limit)->offset($offset)->orderBy('created_at', 'desc')->get();
 
             if (!empty($designations)) {
                 return response()->json([

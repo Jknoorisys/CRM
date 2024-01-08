@@ -37,7 +37,7 @@ class ManageCountryController extends Controller
             }
 
             $total = $query->count();
-            $countries = $query->limit($limit)->offset($offset)->get();
+            $countries = $query->limit($limit)->offset($offset)->orderBy('created_at', 'desc')->get();
 
             if (!empty($countries)) {
                 return response()->json([

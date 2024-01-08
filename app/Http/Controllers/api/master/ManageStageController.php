@@ -36,7 +36,7 @@ class ManageStageController extends Controller
             }
 
             $total = $query->count();
-            $stages = $query->limit($limit)->offset($offset)->get();
+            $stages = $query->limit($limit)->offset($offset)->orderBy('created_at', 'desc')->get();
 
             if (!empty($stages)) {
                 return response()->json([

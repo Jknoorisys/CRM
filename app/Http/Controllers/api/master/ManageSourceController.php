@@ -36,7 +36,7 @@ class ManageSourceController extends Controller
             }
 
             $total = $query->count();
-            $sources = $query->limit($limit)->offset($offset)->get();
+            $sources = $query->limit($limit)->offset($offset)->orderBy('created_at', 'desc')->get();
 
             if (!empty($sources)) {
                 return response()->json([

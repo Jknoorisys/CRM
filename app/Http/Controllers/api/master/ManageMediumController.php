@@ -36,7 +36,7 @@ class ManageMediumController extends Controller
             }
 
             $total = $query->count();
-            $mediums = $query->limit($limit)->offset($offset)->get();
+            $mediums = $query->limit($limit)->offset($offset)->orderBy('created_at', 'desc')->get();
 
             if (!empty($mediums)) {
                 return response()->json([

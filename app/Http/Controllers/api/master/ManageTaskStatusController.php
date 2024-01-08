@@ -36,7 +36,7 @@ class ManageTaskStatusController extends Controller
             }
 
             $total = $query->count();
-            $taskStatus = $query->limit($limit)->offset($offset)->get();
+            $taskStatus = $query->limit($limit)->offset($offset)->orderBy('created_at', 'desc')->get();
 
             if (!empty($taskStatus)) {
                 return response()->json([

@@ -36,7 +36,7 @@ class ManageContactStatusController extends Controller
             }
 
             $total = $query->count();
-            $contactStatus = $query->limit($limit)->offset($offset)->get();
+            $contactStatus = $query->limit($limit)->offset($offset)->orderBy('created_at', 'desc')->get();
 
             if (!empty($contactStatus)) {
                 return response()->json([
