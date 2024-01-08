@@ -58,7 +58,7 @@ return [
 
         'assets_uploads_contacts' => [
             'driver' => 'local',
-            'root' => ('assets/uploads/contacts/'), 
+            'root' => ('assets/uploads/contacts'), 
         ],
 
     ],
