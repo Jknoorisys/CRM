@@ -404,6 +404,7 @@ class ManageLeadController extends Controller
     public function activitiesLeadsAccordingly(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'page_no' => ['required','numeric'],
             'lead_id' => ['required','alpha_num'],
         ]);
 
@@ -419,8 +420,13 @@ class ManageLeadController extends Controller
 
         try
         {
-            $leads_activities = Activity::where('lead_id', '=', $request->lead_id)->with(['medium'])->get();
-            $total = $leads_activities->count();
+            $limit = 10; 
+            $pageNo = $request->input(key: 'page_no', default: 1); 
+            $offset = ($pageNo - 1) * $limit;
+
+            $query = Activity::where('lead_id', '=', $request->lead_id)->with(['medium']);
+            $total = $query->count();
+            $leads_activities = $query->limit($limit)->offset($offset)->orderBy('id','DESC')->get();
 
             if (!empty($leads_activities)) 
             {

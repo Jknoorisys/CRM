@@ -10,6 +10,7 @@ use App\Models\Contact;
 use App\Models\Activity;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -55,9 +56,9 @@ class DashboardController extends Controller
                 $query->where('source', '=', $request->source);
             }
 
-            if (isset($request->date) && !empty($request->date)) 
+            if ((isset($request->from_date) && !empty($request->from_date)) && (isset($request->to_date) && !empty($request->to_date))) 
             {
-                $query->whereDate('last_contacted_date', '=', $request->date);
+                $query->whereBetween('last_contacted_date', [$request->from_date . ' 00:00:00', $request->to_date . ' 23:59:59']);
             }
 
             if (isset($request->assigned_to) && !empty($request->assigned_to)) 
@@ -207,4 +208,31 @@ class DashboardController extends Controller
             ], 500);
         }
     }
+
+    public function monthlyCount(Request $request)
+    {
+        try
+        {
+            $total_contacts   = Contact::whereMonth('created_at',Carbon::now()->month)->count();
+            $total_users      = User::whereMonth('created_at',Carbon::now()->month)->count();
+            $total_leads      = Lead::whereMonth('created_at',Carbon::now()->month)->count();
+            $total_activities = Activity::whereMonth('created_at',Carbon::now()->month)->count();
+            
+            return response()->json([
+                'status'            => 'success',
+                'total_contacts'    => $total_contacts,
+                'total_users'       => $total_users,
+                'total_leads'       => $total_leads,
+                'total_activities'  => $total_activities,
+            ], 200);
+        }
+        catch (\Throwable $e) 
+        {
+            return response()->json([
+                'status'  => 'failed',
+                'message' => trans('msg.error'),
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }   
 }
