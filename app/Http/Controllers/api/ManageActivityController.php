@@ -18,6 +18,7 @@ class ManageActivityController extends Controller
             'lead_id'   => ['required','string', Rule::notIn(['undefined'])],
             'search'    => ['nullable','string'],
             'medium'    => ['nullable', 'numeric'],
+            'user_id'   => ['nullable', 'numeric'],
         ]);
 
         if ($validator->fails()) {
@@ -34,7 +35,7 @@ class ManageActivityController extends Controller
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
-            $query = Activity::query()->with(['lead' ,'medium'])->where('lead_id', '=', $request->lead_id);
+            $query = Activity::query()->with(['lead' ,'medium', 'user'])->where('lead_id', '=', $request->lead_id);
 
             if ($request->has('search')) {
                 $query->where('summary', 'like', '%' . $request->search . '%');
@@ -42,6 +43,10 @@ class ManageActivityController extends Controller
 
             if ($request->has('medium') && !empty($request->medium)) {
                 $query->where('medium', '=', $request->medium);
+            }
+
+            if ($request->has('user_id') && !empty($request->user_id)) {
+                $query->where('user_id', '=', $request->user_id);
             }
 
             if ($request->has('from_date') && $request->has('to_date') && !empty($request->from_date) && !empty($request->to_date)) {
@@ -77,8 +82,11 @@ class ManageActivityController extends Controller
         $validator = Validator::make($request->all(), [
             'lead_id' => ['required','string', Rule::notIn(['undefined'])],
             'medium'  => ['required','numeric'],
+            'stage'   => ['required','numeric'],
             'summary' => ['required','string'],
             'follow_up_date'   => ['required', 'string'],
+            'user_id' => ['required', 'numeric'],
+            'attachment' => ['nullable', 'mimes:jpeg,jpg,png,gif,doc,docx,pdf,txt,xlsx,xls,zip,rar', 'max:2048'],
         ]);
 
         if ($validator->fails()) {
@@ -103,6 +111,8 @@ class ManageActivityController extends Controller
 
             $insert = Activity::create([
                 'lead_id' => $request->lead_id,
+                'user_id' => $request->user_id,
+                'stage' => $request->stage,
                 'medium' => $request->medium,
                 'title' => $request->title,
                 'summary' => $request->summary,
@@ -146,7 +156,7 @@ class ManageActivityController extends Controller
         }
 
         try {
-            $activity = Activity::where('id', '=', $request->activity_id)->with(['lead' ,'medium', 'lead.stage'])->first();
+            $activity = Activity::where('id', '=', $request->activity_id)->with(['lead' ,'medium', 'lead.stage', 'user'])->first();
             if (!empty($activity)) {
                 return response()->json([
                     'status'    => 'success',
@@ -172,6 +182,7 @@ class ManageActivityController extends Controller
         $validator = Validator::make($request->all(), [
             'activity_id'   => ['required','numeric'],
             'lead_id' => ['required','string', Rule::notIn(['undefined'])],
+            'user_id' => ['required', 'numeric'],
             'medium'  => ['required','numeric'],
             'summary' => ['required','string'],
             'follow_up_date'   => ['required', 'string'],
@@ -211,6 +222,7 @@ class ManageActivityController extends Controller
 
             $update = Activity::where('id', '=', $request->activity_id)->update([
                 'lead_id' => $request->lead_id,
+                'user_id' => $request->user_id,
                 'medium' => $request->medium,
                 'summary' => $request->summary,
                 'attachment' => $attachment,

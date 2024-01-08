@@ -13,6 +13,7 @@ class Activity extends Model
     protected $table = 'activities';
     protected $fillable = [
         'lead_id',
+        'user_id',
         'medium',
         'summary',
         'attachment',
@@ -31,5 +32,10 @@ class Activity extends Model
     public function medium() : BelongsTo
     {
         return $this->belongsTo(ActivityMedium::class, 'medium', 'id')->withTrashed();
+    }
+
+    public function user() : BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id')->withTrashed();
     }
 }

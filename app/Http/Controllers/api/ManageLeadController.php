@@ -376,6 +376,7 @@ class ManageLeadController extends Controller
 
                 if ($delete) 
                 {
+                    Activity::where('lead_id', '=', $request->lead_id)->delete();
                     return response()->json([
                         'status'    => 'success',
                         'message'   => trans('msg.delete.success'),
