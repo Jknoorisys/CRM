@@ -260,7 +260,7 @@ class ManageContactController extends Controller
         $validator = Validator::make($request->all(), [
             'contact_id'    => ['required','numeric', Rule::exists('contacts', 'id')],
             'source'        => ['nullable','numeric', Rule::exists('sources', 'id')],
-            'email'         => ['nullable','string','email','max:255','unique:contacts'],
+            'email'         => ['nullable','string','email','max:255',Rule::unique('contacts')->ignore($request->contact_id)],
             'fname'         => ['nullable','string','max:255'],
             'lname'         => ['nullable','string','max:255'],
             'mobile_number' => ['nullable','string'],
