@@ -10,10 +10,14 @@ use App\Models\Designation;
 use App\Models\ReferredBy;
 use App\Models\Source;
 use Carbon\Carbon;
+use Illuminate\Support\MessageBag;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Validators\Failure;
 
-class ImportContact implements ToModel, WithHeadingRow
+class ImportContact implements ToModel, WithHeadingRow, WithValidation
 {
     /**
     * @param array $row
@@ -29,7 +33,9 @@ class ImportContact implements ToModel, WithHeadingRow
         $referredBy = ReferredBy::firstOrCreate(['referred_by' => $row['referred_by']]);
         $status = ContactStatus::firstOrCreate(['name' => $row['status']]);
 
-        return new Contact([
+        return Contact::updateOrCreate(
+            ['email' => $row['email']],
+            [
             'source' => $source->id ? $source->id : 1,
             'designation' => $designation->id ? $designation->id : 1,
             'country' => $country->id ? $country->id : 1,
@@ -48,5 +54,37 @@ class ImportContact implements ToModel, WithHeadingRow
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
+    }
+
+    public function rules(): array
+    {
+        return [
+            'source' => ['required'],
+            'designation' => ['required'],
+            'country' => ['required'],
+            'city' => ['required'],
+            'referred_by' => ['required'],
+            'email' => ['required'],
+            'first_name' => ['required'],
+            'last_name' => ['required'],
+            'mobile_number' => ['required'],
+            'phone_number' => ['nullable'],
+            'company' => ['required'],
+            'website' => 'nullable',
+            'linkedin' => 'nullable',
+            'photo' => 'nullable',
+            'status' => 'nullable',
+        ];
+    }
+
+    public function onFailure(Failure ...$failures)
+    {
+        $errors = new MessageBag();
+
+        foreach ($failures as $failure) {
+            $errors->merge($failure->errors());
+        }
+
+        logger()->error('Validation failed during import:', ['errors' => $errors->all()]);
     }
 }

@@ -41,7 +41,7 @@ class ImportExportController extends Controller
 
     public function importContacts(Request $request) {
         $validator = Validator::make($request->all(), [
-            'excel_file' => 'required|file|mimes:xlsx,xls',
+            'excel_file' => 'required|file|mimes:xlsx,xls,csv',
         ]);
 
         if ($validator->fails()) {
