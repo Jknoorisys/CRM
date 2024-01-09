@@ -68,7 +68,7 @@ class ManageLeadController extends Controller
     public function list(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'page_no'      => ['required','numeric', Rule::exists('leads', 'id')],
+            'page_no'      => ['required','numeric'],
             'search'       => ['nullable','string'],
             'contact'      => ['nullable', 'numeric', Rule::exists('contacts', 'id')],
             'stage'        => ['nullable', 'numeric', Rule::exists('stages', 'id')],
