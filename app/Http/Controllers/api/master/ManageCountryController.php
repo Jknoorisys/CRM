@@ -102,7 +102,7 @@ class ManageCountryController extends Controller
 
     public function view(Request $request) {
         $validator = Validator::make($request->all(), [
-            'country_id'   => ['required','numeric'],
+            'country_id'   => ['required','numeric', Rule::exists('countries', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -139,7 +139,7 @@ class ManageCountryController extends Controller
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-            'country_id'   => ['required','numeric'],
+            'country_id'   => ['required','numeric', Rule::exists('countries', 'id')],
             'country'      => ['required','string','max:255', Rule::unique('countries')->ignore($request->country_id)],
         ]);
 
@@ -187,7 +187,7 @@ class ManageCountryController extends Controller
 
     public function changeStatus(Request $request) {
         $validator = Validator::make($request->all(), [
-            'country_id' => ['required','numeric'],
+            'country_id' => ['required','numeric', Rule::exists('countries', 'id')],
             'status'   => ['required', Rule::in(['active', 'inactive'])],
         ]);
 
@@ -237,7 +237,7 @@ class ManageCountryController extends Controller
     
     public function delete(Request $request) {
         $validator = Validator::make($request->all(), [
-            'country_id' => ['required','numeric'],
+            'country_id' => ['required','numeric', Rule::exists('countries', 'id')],
         ]);
 
         if ($validator->fails()) {

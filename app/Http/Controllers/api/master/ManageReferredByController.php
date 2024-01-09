@@ -101,7 +101,7 @@ class ManageReferredByController extends Controller
 
     public function view(Request $request) {
         $validator = Validator::make($request->all(), [
-            'referred_by_id'   => ['required','numeric'],
+            'referred_by_id'   => ['required','numeric', Rule::exists('referred_by', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -138,7 +138,7 @@ class ManageReferredByController extends Controller
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-            'referred_by_id'   => ['required','numeric'],
+            'referred_by_id'   => ['required','numeric', Rule::exists('referred_by', 'id')],
             'referred_by'      => ['required','string','max:255', Rule::unique('referred_by')->ignore($request->referred_by_id)],
         ]);
 
@@ -186,7 +186,7 @@ class ManageReferredByController extends Controller
 
     public function changeStatus(Request $request) {
         $validator = Validator::make($request->all(), [
-            'referred_by_id' => ['required','numeric'],
+            'referred_by_id' => ['required','numeric', Rule::exists('referred_by', 'id')],
             'status'   => ['required', Rule::in(['active', 'inactive'])],
         ]);
 
@@ -232,7 +232,7 @@ class ManageReferredByController extends Controller
     
     public function delete(Request $request) {
         $validator = Validator::make($request->all(), [
-            'referred_by_id' => ['required','numeric'],
+            'referred_by_id' => ['required','numeric', Rule::exists('referred_by', 'id')],
         ]);
 
         if ($validator->fails()) {

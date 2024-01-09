@@ -7,12 +7,15 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
     public function getProfile(Request $request) {
         $validator = Validator::make($request->all(), [
-            'login_id'   => ['required','numeric'],
+            'login_id'   => ['required','numeric', Rule::exists('users', 'id')->where(function ($query) {
+                $query->where('status', 'active');
+            })],
         ]);
 
         if ($validator->fails()) {
@@ -56,7 +59,9 @@ class ProfileController extends Controller
 
     public function changePassword(Request $request) {
         $validator = Validator::make($request->all(), [
-            'login_id'   => ['required','numeric'],            
+            'login_id'   => ['required','numeric', Rule::exists('users', 'id')->where(function ($query) {
+                $query->where('status', 'active');
+            })],            
             'old_password' => 'required',
             'new_password'   => ['required', 'min:6', 'max:20'],
         ]);
@@ -124,7 +129,9 @@ class ProfileController extends Controller
 
     public function assignedTasks(Request $request) {
         $validator = Validator::make($request->all(), [
-            'login_id'   => ['required','numeric'],
+            'login_id'   => ['required','numeric', Rule::exists('users', 'id')->where(function ($query) {
+                $query->where('status', 'active');
+            })],
             'page_no'   => ['required','numeric'],
         ]);
 

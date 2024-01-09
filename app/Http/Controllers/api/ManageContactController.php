@@ -7,27 +7,28 @@ use App\Models\Contact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
+use Illuminate\Validation\Rule;
 
 class ManageContactController extends Controller
 {     
     public function add(Request $request)
     {
         $validator = Validator::make($request->all() , [
-            'source'        => ['required','string','max:255'],
+            'source'        => ['required','numeric', Rule::exists('sources', 'id')],
             'email'         => ['required','string','email','max:255','unique:contacts'],
             'fname'         => ['required','string','max:255'],
             'lname'         => ['required','string','max:255'],
             'mobile_number' => ['required','string'],
             'phone_number'  => ['required','string'],
-            'designation'   => ['required','string'],
+            'designation'   => ['required','numeric', Rule::exists('designations', 'id')],
             'company'       => ['required','string'],
             'website'       => ['required','string'],
             'linkedin'      => ['required','string'],
-            'country'       => ['required','numeric'],
-            'city'          => ['required','numeric'],
-            'referred_by'   => ['required','numeric'],
+            'country'       => ['required','numeric', Rule::exists('countries', 'id')],
+            'city'          => ['required','numeric', Rule::exists('cities', 'id')],
+            'referred_by'   => ['required','numeric', Rule::exists('contacts', 'id')],
             'photo'         => ['nullable','image','mimes:jpeg,png,jpg,gif,svg'],
-            'status'        => ['required','numeric'],
+            'status'        => ['required','numeric', Rule::exists('contact_statuses', 'id')],
         ]);
 
         if ($validator->fails()) 
@@ -110,12 +111,12 @@ class ManageContactController extends Controller
         $validator = Validator::make($request->all(), [
             'page_no'       => ['required','numeric'],
             'search'        => ['nullable','string'],
-            'source'        => ['nullable', 'numeric'],
-            'designation'   => ['nullable', 'numeric'],
-            'country'       => ['nullable','numeric'],
-            'city'          => ['nullable','numeric'],
-            'referred_by'   => ['nullable','numeric'],
-            'status'        => ['nullable','numeric'],
+            'source'        => ['nullable', 'numeric', Rule::exists('sources', 'id')],
+            'designation'   => ['nullable', 'numeric', Rule::exists('designations', 'id')],
+            'country'       => ['nullable','numeric', Rule::exists('countries', 'id')],
+            'city'          => ['nullable','numeric', Rule::exists('cities', 'id')],
+            'referred_by'   => ['nullable','numeric', Rule::exists('contacts', 'id')],
+            'status'        => ['nullable','numeric', Rule::exists('contact_statuses', 'id')],
         ]);
 
         if ($validator->fails()) 
@@ -212,7 +213,7 @@ class ManageContactController extends Controller
     public function view(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'contact_id' => ['required','numeric'],
+            'contact_id' => ['required','numeric', Rule::exists('contacts', 'id')],
         ]);
 
         if ($validator->fails()) 
@@ -257,22 +258,22 @@ class ManageContactController extends Controller
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'contact_id'    => ['required','numeric'],
-            'source'        => ['nullable','string','max:255'],
+            'contact_id'    => ['required','numeric', Rule::exists('contacts', 'id')],
+            'source'        => ['nullable','numeric', Rule::exists('sources', 'id')],
             'email'         => ['nullable','string','email','max:255','unique:contacts'],
             'fname'         => ['nullable','string','max:255'],
             'lname'         => ['nullable','string','max:255'],
             'mobile_number' => ['nullable','string'],
             'phone_number'  => ['nullable','string'],
-            'designation'   => ['nullable','string'],
+            'designation'   => ['nullable','numeric', Rule::exists('designations', 'id')],
             'company'       => ['nullable','string'],
             'website'       => ['nullable','string'],
             'linkedin'      => ['nullable','string'],
-            'country'       => ['nullable','numeric'],
-            'city'          => ['nullable','numeric'],
-            'referred_by'   => ['nullable','numeric'],
+            'country'       => ['nullable','numeric', Rule::exists('countries', 'id')],
+            'city'          => ['nullable','numeric', Rule::exists('cities', 'id')],
+            'referred_by'   => ['nullable','numeric', Rule::exists('contacts', 'id')],
             'photo'         => ['nullable','image','mimes:jpeg,png,jpg,gif,svg'],
-            'status'        => ['nullable','numeric'],
+            'status'        => ['nullable','numeric', Rule::exists('contact_statuses', 'id')],
         ]);
 
         if ($validator->fails()) 
@@ -372,8 +373,8 @@ class ManageContactController extends Controller
     public function changeStatus(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'contact_id' => ['required','numeric'],
-            'status'     => ['required', 'numeric'],
+            'contact_id' => ['required','numeric', Rule::exists('contacts', 'id')],
+            'status'     => ['required', 'numeric', Rule::exists('contact_statuses', 'id')],
         ]);
 
         if ($validator->fails()) 
@@ -429,7 +430,7 @@ class ManageContactController extends Controller
     public function delete(Request $request) 
     {
         $validator = Validator::make($request->all(), [
-            'contact_id' => ['required','numeric'],
+            'contact_id' => ['required','numeric', Rule::exists('contacts', 'id')],
         ]);
 
         if ($validator->fails()) 

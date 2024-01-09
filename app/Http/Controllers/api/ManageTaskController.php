@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Tasks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ManageTaskController extends Controller
 {
@@ -13,8 +14,8 @@ class ManageTaskController extends Controller
         $validator = Validator::make($request->all(), [
             'page_no'   => ['required','numeric'],
             'search'    => ['nullable','string'],
-            'status'    => ['nullable', 'numeric'],
-            'user_id'   => ['nullable','numeric'],
+            'status'    => ['nullable', 'numeric', Rule::exists('task_status', 'id')],
+            'user_id'   => ['nullable','numeric', Rule::exists('users', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -78,8 +79,8 @@ class ManageTaskController extends Controller
         $validator = Validator::make($request->all(), [
             'title'  => ['required','string','max:255'],
             'description'   => ['required','string'],
-            'user_id'   => ['required','numeric'],
-            'status'   => ['required', 'numeric'],
+            'user_id'   => ['required','numeric', Rule::exists('users', 'id')],
+            'status'   => ['required', 'numeric', Rule::exists('task_status', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -121,7 +122,7 @@ class ManageTaskController extends Controller
 
     public function view(Request $request) {
         $validator = Validator::make($request->all(), [
-            'task_id'   => ['required','numeric'],
+            'task_id'   => ['required','numeric', Rule::exists('tasks', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -158,11 +159,11 @@ class ManageTaskController extends Controller
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-            'task_id'   => ['required','numeric'],
+            'task_id'   => ['required','numeric', Rule::exists('tasks', 'id')],
             'title'  => ['required','string','max:255'],
             'description'   => ['required','string'],
-            'user_id'   => ['required','numeric'],
-            // 'status'   => ['nullable', 'numeric'],
+            'user_id'   => ['required','numeric', Rule::exists('users', 'id')],
+            // 'status'   => ['nullable', 'numeric', Rule::exists('task_status', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -212,8 +213,8 @@ class ManageTaskController extends Controller
 
     public function changeStatus(Request $request) {
         $validator = Validator::make($request->all(), [
-            'task_id' => ['required','numeric'],
-            'status'   => ['required', 'numeric'],
+            'task_id' => ['required','numeric', Rule::exists('tasks', 'id')],
+            'status'   => ['required', 'numeric', Rule::exists('task_status', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -258,7 +259,7 @@ class ManageTaskController extends Controller
     
     public function delete(Request $request) {
         $validator = Validator::make($request->all(), [
-            'task_id' => ['required','numeric'],
+            'task_id' => ['required','numeric', Rule::exists('tasks', 'id')],
         ]);
 
         if ($validator->fails()) {

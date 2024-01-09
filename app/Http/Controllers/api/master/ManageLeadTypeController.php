@@ -101,7 +101,7 @@ class ManageLeadTypeController extends Controller
 
     public function view(Request $request) {
         $validator = Validator::make($request->all(), [
-            'type_id'   => ['required','numeric'],
+            'type_id'   => ['required','numeric', Rule::exists('lead_types', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -138,7 +138,7 @@ class ManageLeadTypeController extends Controller
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-            'type_id'   => ['required','numeric'],
+            'type_id'   => ['required','numeric', Rule::exists('lead_types', 'id')],
             'type'      => ['required','string','max:255', Rule::unique('lead_types')->ignore($request->type_id)],
         ]);
 
@@ -186,7 +186,7 @@ class ManageLeadTypeController extends Controller
 
     public function changeStatus(Request $request) {
         $validator = Validator::make($request->all(), [
-            'type_id' => ['required','numeric'],
+            'type_id' => ['required','numeric', Rule::exists('lead_types', 'id')],
             'status'   => ['required', Rule::in(['active', 'inactive'])],
         ]);
 
@@ -232,7 +232,7 @@ class ManageLeadTypeController extends Controller
     
     public function delete(Request $request) {
         $validator = Validator::make($request->all(), [
-            'type_id' => ['required','numeric'],
+            'type_id' => ['required','numeric', Rule::exists('lead_types', 'id')],
         ]);
 
         if ($validator->fails()) {

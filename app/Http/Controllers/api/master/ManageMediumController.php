@@ -101,7 +101,7 @@ class ManageMediumController extends Controller
 
     public function view(Request $request) {
         $validator = Validator::make($request->all(), [
-            'medium_id'   => ['required','numeric'],
+            'medium_id'   => ['required','numeric', Rule::exists('activity_medium', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -138,7 +138,7 @@ class ManageMediumController extends Controller
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-            'medium_id'   => ['required','numeric'],
+            'medium_id'   => ['required','numeric', Rule::exists('activity_medium', 'id')],
             'medium'      => ['required','string','max:255', Rule::unique('activity_medium')->ignore($request->medium_id)],
         ]);
 
@@ -186,7 +186,7 @@ class ManageMediumController extends Controller
 
     public function changeStatus(Request $request) {
         $validator = Validator::make($request->all(), [
-            'medium_id' => ['required','numeric'],
+            'medium_id' => ['required','numeric', Rule::exists('activity_medium', 'id')],
             'status'   => ['required', Rule::in(['active', 'inactive'])],
         ]);
 
@@ -232,7 +232,7 @@ class ManageMediumController extends Controller
     
     public function delete(Request $request) {
         $validator = Validator::make($request->all(), [
-            'medium_id' => ['required','numeric'],
+            'medium_id' => ['required','numeric', Rule::exists('activity_medium', 'id')],
         ]);
 
         if ($validator->fails()) {

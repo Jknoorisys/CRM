@@ -18,10 +18,11 @@ class DashboardController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'page_no'      => ['required','numeric'],
-            'stage'        => ['nullable','string'],
-            'source'       => ['nullable', 'numeric'],
-            'date'         => ['nullable', 'string'],
-            'assigned_to'  => ['nullable','numeric'],
+            'stage'        => ['nullable','numeric', Rule::exists('stages', 'id')],
+            'source'       => ['nullable', 'numeric', Rule::exists('sources', 'id')],
+            'to_date'      => ['nullable', 'date_format:Y-m-d'],
+            'from_date'    => ['nullable', 'date_format:Y-m-d'],
+            'assigned_to'  => ['nullable','numeric', Rule::exists('users', 'id')],
         ]);
 
         if ($validator->fails()) 

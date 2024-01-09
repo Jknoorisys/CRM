@@ -101,7 +101,7 @@ class ManageDesignationController extends Controller
 
     public function view(Request $request) {
         $validator = Validator::make($request->all(), [
-            'designation_id'   => ['required','numeric'],
+            'designation_id'   => ['required','numeric', Rule::exists('designations', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -138,7 +138,7 @@ class ManageDesignationController extends Controller
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-            'designation_id'   => ['required','numeric'],
+            'designation_id'   => ['required','numeric', Rule::exists('designations', 'id')],
             'designation'      => ['required','string','max:255', Rule::unique('designations')->ignore($request->designation_id)],
         ]);
 
@@ -186,7 +186,7 @@ class ManageDesignationController extends Controller
 
     public function changeStatus(Request $request) {
         $validator = Validator::make($request->all(), [
-            'designation_id' => ['required','numeric'],
+            'designation_id' => ['required','numeric', Rule::exists('designations', 'id')],
             'status'   => ['required', Rule::in(['active', 'inactive'])],
         ]);
 
@@ -232,7 +232,7 @@ class ManageDesignationController extends Controller
     
     public function delete(Request $request) {
         $validator = Validator::make($request->all(), [
-            'designation_id' => ['required','numeric'],
+            'designation_id' => ['required','numeric', Rule::exists('designations', 'id')],
         ]);
 
         if ($validator->fails()) {

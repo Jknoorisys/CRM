@@ -16,6 +16,7 @@ use App\Models\Stage;
 use App\Models\TaskStatus;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class MastersController extends Controller
 {
@@ -69,7 +70,9 @@ class MastersController extends Controller
 
     public function city(Request $request) {
         $validator = Validator::make($request->all(), [
-            'country_id'   => ['nullable','numeric'],
+            'country_id'   => ['nullable','numeric', Rule::exists('countries', 'id')->where(function ($query) {
+                $query->where('status', 'active');
+            })],
         ]);
 
         if ($validator->fails()) {

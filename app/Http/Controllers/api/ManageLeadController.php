@@ -7,19 +7,20 @@ use App\Models\Lead;
 use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ManageLeadController extends Controller
 {
     public function add(Request $request) {
         $validator = Validator::make($request->all(), [
-            'contact'       => ['required','numeric'],
+            'contact'       => ['required','numeric', Rule::exists('contacts', 'id')],
             'title'         => ['required','string'],
             'description'   => ['required','string'],
-            'stage'         => ['required','numeric'],
-            'source'        => ['required', 'numeric'],
-            'type'          => ['required', 'numeric'],
-            'assigned_to'   => ['required', 'numeric'],
-            'created_by'    => ['required', 'numeric'],
+            'stage'         => ['required','numeric', Rule::exists('stages', 'id')],
+            'source'        => ['required', 'numeric', Rule::exists('sources', 'id')],
+            'type'          => ['required', 'numeric', Rule::exists('lead_types', 'id')],
+            'assigned_to'   => ['required', 'numeric', Rule::exists('users', 'id')],
+            'created_by'    => ['required', 'numeric', Rule::exists('users', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -67,14 +68,14 @@ class ManageLeadController extends Controller
     public function list(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'page_no'      => ['required','numeric'],
+            'page_no'      => ['required','numeric', Rule::exists('leads', 'id')],
             'search'       => ['nullable','string'],
-            'contact'      => ['nullable', 'numeric'],
-            'stage'        => ['nullable', 'numeric'],
-            'type'         => ['nullable', 'numeric'],
-            'source'       => ['nullable','numeric'],
-            'assigned_to'  => ['nullable','numeric'],
-            'created_by'   => ['nullable','numeric'],
+            'contact'      => ['nullable', 'numeric', Rule::exists('contacts', 'id')],
+            'stage'        => ['nullable', 'numeric', Rule::exists('stages', 'id')],
+            'type'         => ['nullable', 'numeric', Rule::exists('lead_types', 'id')],
+            'source'       => ['nullable','numeric', Rule::exists('sources', 'id')],
+            'assigned_to'  => ['nullable','numeric', Rule::exists('users', 'id')],
+            'created_by'   => ['nullable','numeric', Rule::exists('users', 'id')],
         ]);
 
         if ($validator->fails()) 
@@ -171,7 +172,7 @@ class ManageLeadController extends Controller
     public function view(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'lead_id' => ['required','alpha_num'],
+            'lead_id' => ['required','alpha_num', Rule::exists('leads', 'id')],
         ]);
 
         if ($validator->fails()) 
@@ -216,15 +217,15 @@ class ManageLeadController extends Controller
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'lead_id'       => ['required','alpha_num'],
-            'contact'       => ['nullable','numeric'],
+            'lead_id'       => ['required','alpha_num', Rule::exists('leads', 'id')],
+            'contact'       => ['nullable','numeric', Rule::exists('contacts', 'id')],
             'title'         => ['nullable','string'],
             'description'   => ['nullable','string'],
-            'stage'         => ['nullable','numeric'],
-            'source'        => ['nullable', 'numeric'],
-            'type'          => ['nullable', 'numeric'],
-            'assigned_to'   => ['nullable', 'numeric'],
-            'created_by'    => ['nullable', 'numeric'],
+            'stage'         => ['nullable','numeric', Rule::exists('stages', 'id')],
+            'source'        => ['nullable', 'numeric', Rule::exists('sources', 'id')],
+            'type'          => ['nullable', 'numeric', Rule::exists('lead_types', 'id')],
+            'assigned_to'   => ['nullable', 'numeric', Rule::exists('users', 'id')],
+            'created_by'    => ['nullable', 'numeric', Rule::exists('users', 'id')],
         ]);
 
         if ($validator->fails()) 
@@ -290,8 +291,8 @@ class ManageLeadController extends Controller
     public function changeStage(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'lead_id' => ['required','alpha_num'],
-            'stage'   => ['required', 'numeric'],
+            'lead_id' => ['required','alpha_num', Rule::exists('leads', 'id')],
+            'stage'   => ['required', 'numeric', Rule::exists('stages', 'id')],
         ]);
 
         if ($validator->fails()) 
@@ -347,7 +348,7 @@ class ManageLeadController extends Controller
     public function delete(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'lead_id' => ['required','alpha_num'],
+            'lead_id' => ['required','alpha_num', Rule::exists('leads', 'id')],
         ]);
 
         if ($validator->fails()) 
@@ -405,7 +406,7 @@ class ManageLeadController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'page_no' => ['required','numeric'],
-            'lead_id' => ['required','alpha_num'],
+            'lead_id' => ['required','alpha_num', Rule::exists('leads', 'id')],
         ]);
 
         if ($validator->fails()) 

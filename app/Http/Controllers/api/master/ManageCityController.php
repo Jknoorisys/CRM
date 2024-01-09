@@ -62,7 +62,7 @@ class ManageCityController extends Controller
 
     public function add(Request $request) {
         $validator = Validator::make($request->all(), [
-            'country_id' => ['required','numeric'],
+            'country_id' => ['required','numeric', Rule::exists('countries', 'id')],
             'city'   => ['required','string','max:255', Rule::unique('cities')],
         ]);
 
@@ -104,7 +104,7 @@ class ManageCityController extends Controller
 
     public function view(Request $request) {
         $validator = Validator::make($request->all(), [
-            'city_id'   => ['required','numeric'],
+            'city_id'   => ['required','numeric', Rule::exists('cities', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -141,8 +141,8 @@ class ManageCityController extends Controller
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-            'city_id'   => ['required','numeric'],
-            'country_id' => ['required','numeric'],
+            'city_id'   => ['required','numeric', Rule::exists('cities', 'id')],
+            'country_id' => ['required','numeric', Rule::exists('countries', 'id')],
             'city'      => ['required','string','max:255', Rule::unique('cities')->ignore($request->city_id)],
         ]);
 
@@ -191,7 +191,7 @@ class ManageCityController extends Controller
 
     public function changeStatus(Request $request) {
         $validator = Validator::make($request->all(), [
-            'city_id' => ['required','numeric'],
+            'city_id' => ['required','numeric', Rule::exists('cities', 'id')],
             'status'   => ['required', Rule::in(['active', 'inactive'])],
         ]);
 
@@ -237,7 +237,7 @@ class ManageCityController extends Controller
     
     public function delete(Request $request) {
         $validator = Validator::make($request->all(), [
-            'city_id' => ['required','numeric'],
+            'city_id' => ['required','numeric', Rule::exists('cities', 'id')],
         ]);
 
         if ($validator->fails()) {

@@ -114,7 +114,7 @@ class ManageUserController extends Controller
 
     public function view(Request $request) {
         $validator = Validator::make($request->all(), [
-            'user_id'   => ['required','numeric'],
+            'user_id'   => ['required','numeric', Rule::exists('users', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -152,7 +152,7 @@ class ManageUserController extends Controller
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-            'user_id'   => ['required','numeric'],
+            'user_id'   => ['required','numeric', Rule::exists('users', 'id')],
             'name'   => ['required','string','max:255'],
             'email'   => ['nullable','string','email','max:255', Rule::unique('users')->ignore($request->user_id)],
             'permissions'   => ['required','string'],
@@ -204,7 +204,7 @@ class ManageUserController extends Controller
 
     public function changeStatus(Request $request) {
         $validator = Validator::make($request->all(), [
-            'user_id' => ['required','numeric'],
+            'user_id' => ['required','numeric', Rule::exists('users', 'id')],
             'status'   => ['required', Rule::in(['active', 'inactive'])],
         ]);
 
@@ -259,7 +259,7 @@ class ManageUserController extends Controller
     
     public function delete(Request $request) {
         $validator = Validator::make($request->all(), [
-            'user_id' => ['required','numeric'],
+            'user_id' => ['required','numeric', Rule::exists('users', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -304,7 +304,7 @@ class ManageUserController extends Controller
 
     public function resetPassword(Request $request) {
         $validator = Validator::make($request->all(), [
-            'user_id'   => ['required','numeric'],
+            'user_id'   => ['required','numeric', Rule::exists('users', 'id')],
             'password'   => ['required','string','min:6'],
         ]);
 

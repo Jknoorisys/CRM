@@ -101,7 +101,7 @@ class ManageSourceController extends Controller
 
     public function view(Request $request) {
         $validator = Validator::make($request->all(), [
-            'source_id'   => ['required','numeric'],
+            'source_id'   => ['required','numeric', Rule::exists('sources', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -138,7 +138,7 @@ class ManageSourceController extends Controller
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-            'source_id'   => ['required','numeric'],
+            'source_id'   => ['required','numeric', Rule::exists('sources', 'id')],
             'source'      => ['required','string','max:255', Rule::unique('sources')->ignore($request->source_id)],
         ]);
 
@@ -186,7 +186,7 @@ class ManageSourceController extends Controller
 
     public function changeStatus(Request $request) {
         $validator = Validator::make($request->all(), [
-            'source_id' => ['required','numeric'],
+            'source_id' => ['required','numeric', Rule::exists('sources', 'id')],
             'status'   => ['required', Rule::in(['active', 'inactive'])],
         ]);
 
@@ -232,7 +232,7 @@ class ManageSourceController extends Controller
     
     public function delete(Request $request) {
         $validator = Validator::make($request->all(), [
-            'source_id' => ['required','numeric'],
+            'source_id' => ['required','numeric', Rule::exists('sources', 'id')],
         ]);
 
         if ($validator->fails()) {

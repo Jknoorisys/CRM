@@ -103,7 +103,7 @@ class ManageContactStatusController extends Controller
 
     public function view(Request $request) {
         $validator = Validator::make($request->all(), [
-            'status_id'   => ['required','numeric'],
+            'status_id'   => ['required','numeric', Rule::exists('contact_status', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -140,7 +140,7 @@ class ManageContactStatusController extends Controller
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-            'status_id'   => ['required','numeric'],
+            'status_id'   => ['required','numeric', Rule::exists('contact_status', 'id')],
             'name'      => ['required','string','max:255', Rule::unique('contact_status')->ignore($request->status_id)],
             'color'   => ['required','string','max:255'],
         ]);
@@ -190,7 +190,7 @@ class ManageContactStatusController extends Controller
 
     public function changeStatus(Request $request) {
         $validator = Validator::make($request->all(), [
-            'status_id' => ['required','numeric'],
+            'status_id' => ['required','numeric', Rule::exists('contact_status', 'id')],
             'status'   => ['required', Rule::in(['active', 'inactive'])],
         ]);
 
@@ -236,7 +236,7 @@ class ManageContactStatusController extends Controller
     
     public function delete(Request $request) {
         $validator = Validator::make($request->all(), [
-            'status_id' => ['required','numeric'],
+            'status_id' => ['required','numeric', Rule::exists('contact_status', 'id')],
         ]);
 
         if ($validator->fails()) {

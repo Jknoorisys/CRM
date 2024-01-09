@@ -101,7 +101,7 @@ class ManageStageController extends Controller
 
     public function view(Request $request) {
         $validator = Validator::make($request->all(), [
-            'stage_id'   => ['required','numeric'],
+            'stage_id'   => ['required','numeric', Rule::exists('stages', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -138,7 +138,7 @@ class ManageStageController extends Controller
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-            'stage_id'   => ['required','numeric'],
+            'stage_id'   => ['required','numeric', Rule::exists('stages', 'id')],
             'stage'      => ['required','string','max:255', Rule::unique('stages')->ignore($request->stage_id)],
         ]);
 
@@ -186,7 +186,7 @@ class ManageStageController extends Controller
 
     public function changeStatus(Request $request) {
         $validator = Validator::make($request->all(), [
-            'stage_id' => ['required','numeric'],
+            'stage_id' => ['required','numeric', Rule::exists('stages', 'id')],
             'status'   => ['required', Rule::in(['active', 'inactive'])],
         ]);
 
@@ -232,7 +232,7 @@ class ManageStageController extends Controller
     
     public function delete(Request $request) {
         $validator = Validator::make($request->all(), [
-            'stage_id' => ['required','numeric'],
+            'stage_id' => ['required','numeric', Rule::exists('stages', 'id')],
         ]);
 
         if ($validator->fails()) {

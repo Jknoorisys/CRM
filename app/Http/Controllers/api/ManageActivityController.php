@@ -15,10 +15,10 @@ class ManageActivityController extends Controller
     public function list(Request $request) {
         $validator = Validator::make($request->all(), [
             'page_no'   => ['required','numeric'],
-            'lead_id'   => ['required','string', Rule::notIn(['undefined'])],
+            'lead_id'   => ['required','string', Rule::notIn(['undefined']), Rule::exists('leads', 'id')],
             'search'    => ['nullable','string'],
-            'medium'    => ['nullable', 'numeric'],
-            'user_id'   => ['nullable', 'numeric'],
+            'medium'    => ['nullable', 'numeric', Rule::exists('activity_medium', 'id')],
+            'user_id'   => ['nullable', 'numeric', Rule::exists('users', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -80,12 +80,12 @@ class ManageActivityController extends Controller
 
     public function add(Request $request) {
         $validator = Validator::make($request->all(), [
-            'lead_id' => ['required','string', Rule::notIn(['undefined'])],
-            'medium'  => ['required','numeric'],
-            'stage'   => ['required','numeric'],
+            'lead_id' => ['required','string', Rule::notIn(['undefined']), Rule::exists('leads', 'id')],
+            'medium'  => ['required','numeric', Rule::exists('activity_medium', 'id')],
+            'stage'   => ['required','numeric', Rule::exists('stages', 'id')],
             'summary' => ['required','string'],
             'follow_up_date'   => ['required', 'string'],
-            'user_id' => ['required', 'numeric'],
+            'user_id' => ['required', 'numeric', Rule::exists('users', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -141,7 +141,7 @@ class ManageActivityController extends Controller
 
     public function view(Request $request) {
         $validator = Validator::make($request->all(), [
-            'activity_id'   => ['required','numeric'],
+            'activity_id'   => ['required','numeric', Rule::exists('activities', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -178,11 +178,11 @@ class ManageActivityController extends Controller
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-            'activity_id'   => ['required','numeric'],
-            'lead_id' => ['required','string', Rule::notIn(['undefined'])],
-            'stage'   => ['required','numeric'],
-            'user_id' => ['required', 'numeric'],
-            'medium'  => ['required','numeric'],
+            'activity_id'   => ['required','numeric', Rule::exists('activities', 'id')],
+            'lead_id' => ['required','string', Rule::notIn(['undefined']), Rule::exists('leads', 'id')],
+            'stage'   => ['required','numeric', Rule::exists('stages', 'id')],
+            'user_id' => ['required', 'numeric', Rule::exists('users', 'id')],
+            'medium'  => ['required','numeric', Rule::exists('activity_medium', 'id')],
             'summary' => ['required','string'],
             'follow_up_date'   => ['required', 'string'],
         ]);
@@ -251,8 +251,8 @@ class ManageActivityController extends Controller
 
     public function changeStage(Request $request) {
         $validator = Validator::make($request->all(), [
-            'activity_id' => ['required','numeric'],
-            'stage'       => ['required', 'numeric'],
+            'activity_id' => ['required','numeric', Rule::exists('activities', 'id')],
+            'stage'       => ['required', 'numeric', Rule::exists('stages', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -297,7 +297,7 @@ class ManageActivityController extends Controller
     
     public function delete(Request $request) {
         $validator = Validator::make($request->all(), [
-            'activity_id' => ['required','numeric'],
+            'activity_id' => ['required','numeric', Rule::exists('activities', 'id')],
         ]);
 
         if ($validator->fails()) {
