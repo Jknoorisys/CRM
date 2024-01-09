@@ -26,7 +26,7 @@ class ManageContactController extends Controller
             'linkedin'      => ['required','string'],
             'country'       => ['required','numeric', Rule::exists('countries', 'id')],
             'city'          => ['required','numeric', Rule::exists('cities', 'id')],
-            'referred_by'   => ['required','numeric', Rule::exists('contacts', 'id')],
+            'referred_by'   => ['required','numeric', Rule::exists('referred_by', 'id')],
             'photo'         => ['nullable','image','mimes:jpeg,png,jpg,gif,svg'],
             'status'        => ['required','numeric', Rule::exists('contact_status', 'id')],
         ]);
@@ -115,7 +115,7 @@ class ManageContactController extends Controller
             'designation'   => ['nullable', 'numeric', Rule::exists('designations', 'id')],
             'country'       => ['nullable','numeric', Rule::exists('countries', 'id')],
             'city'          => ['nullable','numeric', Rule::exists('cities', 'id')],
-            'referred_by'   => ['nullable','numeric', Rule::exists('contacts', 'id')],
+            'referred_by'   => ['nullable','numeric', Rule::exists('referred_by', 'id')],
             'status'        => ['nullable','numeric', Rule::exists('contact_status', 'id')],
         ]);
 
@@ -271,7 +271,7 @@ class ManageContactController extends Controller
             'linkedin'      => ['nullable','string'],
             'country'       => ['nullable','numeric', Rule::exists('countries', 'id')],
             'city'          => ['nullable','numeric', Rule::exists('cities', 'id')],
-            'referred_by'   => ['nullable','numeric', Rule::exists('contacts', 'id')],
+            'referred_by'   => ['nullable','numeric', Rule::exists('referred_by', 'id')],
             'photo'         => ['nullable','image','mimes:jpeg,png,jpg,gif,svg'],
             'status'        => ['nullable','numeric', Rule::exists('contact_status', 'id')],
         ]);
