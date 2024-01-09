@@ -28,7 +28,7 @@ class ManageContactController extends Controller
             'city'          => ['required','numeric', Rule::exists('cities', 'id')],
             'referred_by'   => ['required','numeric', Rule::exists('contacts', 'id')],
             'photo'         => ['nullable','image','mimes:jpeg,png,jpg,gif,svg'],
-            'status'        => ['required','numeric', Rule::exists('contact_statuses', 'id')],
+            'status'        => ['required','numeric', Rule::exists('contact_status', 'id')],
         ]);
 
         if ($validator->fails()) 
@@ -116,7 +116,7 @@ class ManageContactController extends Controller
             'country'       => ['nullable','numeric', Rule::exists('countries', 'id')],
             'city'          => ['nullable','numeric', Rule::exists('cities', 'id')],
             'referred_by'   => ['nullable','numeric', Rule::exists('contacts', 'id')],
-            'status'        => ['nullable','numeric', Rule::exists('contact_statuses', 'id')],
+            'status'        => ['nullable','numeric', Rule::exists('contact_status', 'id')],
         ]);
 
         if ($validator->fails()) 
@@ -273,7 +273,7 @@ class ManageContactController extends Controller
             'city'          => ['nullable','numeric', Rule::exists('cities', 'id')],
             'referred_by'   => ['nullable','numeric', Rule::exists('contacts', 'id')],
             'photo'         => ['nullable','image','mimes:jpeg,png,jpg,gif,svg'],
-            'status'        => ['nullable','numeric', Rule::exists('contact_statuses', 'id')],
+            'status'        => ['nullable','numeric', Rule::exists('contact_status', 'id')],
         ]);
 
         if ($validator->fails()) 
@@ -374,7 +374,7 @@ class ManageContactController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'contact_id' => ['required','numeric', Rule::exists('contacts', 'id')],
-            'status'     => ['required', 'numeric', Rule::exists('contact_statuses', 'id')],
+            'status'     => ['required', 'numeric', Rule::exists('contact_status', 'id')],
         ]);
 
         if ($validator->fails()) 
