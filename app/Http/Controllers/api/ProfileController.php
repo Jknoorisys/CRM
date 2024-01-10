@@ -157,7 +157,7 @@ class ProfileController extends Controller
                 ], 400);
             }
 
-            $tasks = $user->assignedTasks()->with('assignedTasks.taskStatus')->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
+            $tasks = $user->assignedTasks()->with('taskStatus')->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
             $total = $user->assignedTasks()->count();
 
             if (!empty($tasks)) {
