@@ -25,24 +25,24 @@ class VerifyJwtToken
      */
     public function handle(Request $request, Closure $next)
     {
-        $headers = apache_request_headers();
+        // $headers = apache_request_headers();
 
-        if (isset($headers['Authorization'])) {
-            $authorizationHeader = $headers['Authorization'];
+        // if (isset($headers['Authorization'])) {
+        //     $authorizationHeader = $headers['Authorization'];
 
-            if (strpos($authorizationHeader, 'Bearer ') === 0) {
-                $jwt_token = substr($authorizationHeader, 7); 
-                $user = User::where('jwt_token', '=', $jwt_token)->first();
+        //     if (strpos($authorizationHeader, 'Bearer ') === 0) {
+        //         $jwt_token = substr($authorizationHeader, 7); 
+        //         $user = User::where('jwt_token', '=', $jwt_token)->first();
 
-                if (!empty($user) && $user->status == 'inactive') {
-                    abort(403, trans('msg.detail.inactive'));
-                }
+        //         if (!empty($user) && $user->status == 'inactive') {
+        //             abort(403, trans('msg.detail.inactive'));
+        //         }
 
-                if (empty($user)) {
-                    abort(403, trans('msg.jwt.unauthorized'));
-                }
-            }
-        }
+        //         if (empty($user)) {
+        //             abort(403, trans('msg.jwt.unauthorized'));
+        //         }
+        //     }
+        // }
 
         try {
             JWTAuth::parseToken($request);
