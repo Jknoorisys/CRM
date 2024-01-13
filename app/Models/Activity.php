@@ -15,6 +15,7 @@ class Activity extends Model
         'lead_id',
         'user_id',
         'medium',
+        'stage',
         'summary',
         'attachment',
         'follow_up_date',
