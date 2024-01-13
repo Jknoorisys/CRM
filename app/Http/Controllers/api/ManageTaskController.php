@@ -34,7 +34,7 @@ class ManageTaskController extends Controller
 
             $query = Tasks::query()->with(['user', 'taskStatus']);
 
-            if ($request->has('search')) {
+            if ($request->has('search') && !empty($request->search)) {
                 $query->where('title', 'like', '%' . $request->search . '%');
             }
 

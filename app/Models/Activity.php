@@ -38,4 +38,9 @@ class Activity extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'id')->withTrashed();
     }
+
+    public function stage() : BelongsTo
+    {
+        return $this->belongsTo(Stage::class, 'stage', 'id')->withTrashed();
+    }
 }

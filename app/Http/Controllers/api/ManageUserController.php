@@ -35,7 +35,7 @@ class ManageUserController extends Controller
 
             $query->where('is_admin', '!=', 'yes');
 
-            if ($request->has('search')) {
+            if ($request->has('search') && !empty($request->search)) {
                 $query->where(function ($query) use ($request) {
                     $query->where('name', 'like', '%' . $request->search . '%')
                         ->orWhere('email', 'like', '%' . $request->search . '%');

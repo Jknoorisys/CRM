@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign('lead_id')->references('id')->on('leads')->onDelete('cascade');
             $table->foreignId('medium')->comment('Activity Medium')->constrained('activity_medium')->onDelete('cascade');
             $table->foreignId('user_id')->comment('Action Performed By')->constrained()->onDelete('cascade');
+            $table->foreignId('stage')->comment('Stage')->constrained('stages')->onDelete('cascade');
             $table->text('summary');
             $table->string('attachment');
             $table->timestamp('follow_up_date');

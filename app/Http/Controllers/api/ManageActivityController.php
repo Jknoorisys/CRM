@@ -35,9 +35,9 @@ class ManageActivityController extends Controller
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
-            $query = Activity::query()->with(['lead' ,'medium', 'user'])->where('lead_id', '=', $request->lead_id);
+            $query = Activity::query()->with(['lead' ,'medium', 'user', 'stage'])->where('lead_id', '=', $request->lead_id);
 
-            if ($request->has('search')) {
+            if ($request->has('search') && !empty($request->search)) {
                 $query->where('summary', 'like', '%' . $request->search . '%');
             }
 
@@ -47,6 +47,10 @@ class ManageActivityController extends Controller
 
             if ($request->has('user_id') && !empty($request->user_id)) {
                 $query->where('user_id', '=', $request->user_id);
+            }
+
+            if ($request->has('stage') && !empty($request->stage)) {
+                $query->where('stage', '=', $request->stage);
             }
 
             if ($request->has('from_date') && $request->has('to_date') && !empty($request->from_date) && !empty($request->to_date)) {
@@ -111,6 +115,7 @@ class ManageActivityController extends Controller
             $insert = Activity::create([
                 'lead_id' => $request->lead_id,
                 'user_id' => $request->user_id,
+                'stage' => $request->stage,
                 'medium' => $request->medium,
                 'title' => $request->title,
                 'summary' => $request->summary,
@@ -154,8 +159,9 @@ class ManageActivityController extends Controller
         }
 
         try {
-            $activity = Activity::where('id', '=', $request->activity_id)->with(['lead' ,'medium', 'lead.stage', 'user'])->first();
+            $activity = Activity::where('id', '=', $request->activity_id)->with(['lead' ,'medium', 'stage', 'user', 'lead.stage'])->first();
             if (!empty($activity)) {
+                // $activity->lead_stage = $activity->lead->stage;
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.detail.success'),
@@ -222,6 +228,7 @@ class ManageActivityController extends Controller
             $update = Activity::where('id', '=', $request->activity_id)->update([
                 'lead_id' => $request->lead_id,
                 'user_id' => $request->user_id,
+                'stage' => $request->stage,
                 'medium' => $request->medium,
                 'summary' => $request->summary,
                 'attachment' => $attachment,
