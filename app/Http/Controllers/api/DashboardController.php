@@ -187,7 +187,7 @@ class DashboardController extends Controller
         try
         {
             $total_contacts   = Contact::count();
-            $total_users      = User::count();
+            $total_users      = User::where('is_admin' , '!=' ,'yes')->count();
             $total_leads      = Lead::count();
             $total_activities = Activity::count();
             
@@ -215,7 +215,7 @@ class DashboardController extends Controller
         try
         {
             $total_contacts   = Contact::whereMonth('created_at',Carbon::now()->month)->count();
-            $total_users      = User::whereMonth('created_at',Carbon::now()->month)->count();
+            $total_users      = User::whereMonth('created_at',Carbon::now()->month)->where('is_admin' , '!=' ,'yes')->count();
             $total_leads      = Lead::whereMonth('created_at',Carbon::now()->month)->count();
             $total_activities = Activity::whereMonth('created_at',Carbon::now()->month)->count();
             
