@@ -13,21 +13,21 @@ return new class extends Migration
     {
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('source')->comment('Source')->constrained('sources')->onDelete('cascade');
-            $table->string('email')->unique();
-            $table->string('fname');
-            $table->string('lname');
-            $table->string('mobile_number', 20)->comment('Mobile Number');
-            $table->string('phone_number', 20)->comment('Phone Number');
-            $table->foreignId('designation')->comment('Designation')->constrained('designations')->onDelete('cascade');
-            $table->string('company');
-            $table->string('website');
-            $table->string('linkedin');
-            $table->foreignId('country')->comment('Country')->constrained('countries')->onDelete('cascade');
-            $table->foreignId('city')->comment('City')->constrained('cities')->onDelete('cascade');
-            $table->foreignId('referred_by')->comment('Referred By')->constrained('referred_by')->onDelete('cascade');
-            $table->string('photo');
-            $table->foreignId('status')->comment('Contact Status')->constrained('contact_status')->onDelete('cascade');
+            $table->bigInteger('source')->comment('Source')->nullable();
+            $table->string('email')->nullable();
+            $table->string('fname')->nullable();
+            $table->string('lname')->nullable();
+            $table->string('mobile_number', 20)->comment('Mobile Number')->nullable();
+            $table->string('phone_number', 20)->comment('Phone Number')->nullable();
+            $table->bigInteger('designation')->comment('Designation')->nullable();
+            $table->string('company')->nullable();
+            $table->string('website')->nullable();
+            $table->string('linkedin')->nullable();
+            $table->bigInteger('country')->comment('Country')->nullable();
+            $table->bigInteger('city')->comment('City')->nullable();
+            $table->bigInteger('referred_by')->comment('Referred By')->nullable();
+            $table->string('photo')->nullable();
+            $table->bigInteger('status')->comment('Contact Status')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

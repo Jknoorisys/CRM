@@ -14,21 +14,21 @@ class ManageContactController extends Controller
     public function add(Request $request)
     {
         $validator = Validator::make($request->all() , [
-            'source'        => ['required','numeric', Rule::exists('sources', 'id')],
-            'email'         => ['required','string','email','max:255','unique:contacts'],
-            'fname'         => ['required','string','max:255'],
-            'lname'         => ['required','string','max:255'],
-            'mobile_number' => ['required','string'],
-            'phone_number'  => ['required','string'],
-            'designation'   => ['required','numeric', Rule::exists('designations', 'id')],
-            'company'       => ['required','string'],
-            'website'       => ['required','string'],
-            'linkedin'      => ['required','string'],
-            'country'       => ['required','numeric', Rule::exists('countries', 'id')],
-            'city'          => ['required','numeric', Rule::exists('cities', 'id')],
-            'referred_by'   => ['required','numeric', Rule::exists('referred_by', 'id')],
+            'source'        => ['nullable','numeric'],
+            'email'         => ['nullable','string','email','max:255'],
+            'fname'         => ['nullable','string','max:255'],
+            'lname'         => ['nullable','string','max:255'],
+            'mobile_number' => ['nullable','string'],
+            'phone_number'  => ['nullable','string'],
+            'designation'   => ['nullable','numeric'],
+            'company'       => ['nullable','string'],
+            'website'       => ['nullable','string'],
+            'linkedin'      => ['nullable','string'],
+            'country'       => ['nullable','numeric'],
+            'city'          => ['nullable','numeric'],
+            'referred_by'   => ['nullable','numeric'],
             'photo'         => ['nullable','image','mimes:jpeg,png,jpg,gif,svg'],
-            'status'        => ['required','numeric', Rule::exists('contact_status', 'id')],
+            'status'        => ['nullable','numeric'],
         ]);
 
         if ($validator->fails()) 
