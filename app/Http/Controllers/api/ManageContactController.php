@@ -136,7 +136,7 @@ class ManageContactController extends Controller
 
             $query = Contact::query()->with(['source', 'designation', 'country', 'city', 'referred_by', 'contactStatus']);
 
-            if ($request->has('search') && !empty($request->search))
+            if (isset($request->search) && !empty($request->search))
             {
                 $query->where(function ($query) use ($request) 
                 {
