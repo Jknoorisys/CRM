@@ -26,31 +26,29 @@ class ImportContact implements ToModel, WithHeadingRow, WithValidation
     */
     public function model(array $row)
     {
-        $source = Source::firstOrCreate(['source' => $row['source']]);
-        $designation = Designation::firstOrCreate(['designation' => $row['designation']]);
-        $country = Country::firstOrCreate(['country' => $row['country']]);
-        $city = City::firstOrCreate(['country_id' => $country->id,'city' => $row['city']]);
-        $referredBy = ReferredBy::firstOrCreate(['referred_by' => $row['referred_by']]);
-        $status = ContactStatus::firstOrCreate(['name' => $row['status']]);
+        $source = $row['source'] ? Source::firstOrCreate(['source' => $row['source']]) : null;
+        $designation = $row['designation'] ? Designation::firstOrCreate(['designation' => $row['designation']]) : null;
+        $country = $row['country'] ? Country::firstOrCreate(['country' => $row['country']]) : null;
+        $city = $row['city'] ? City::firstOrCreate(['country_id' => $country->id,'city' => $row['city']]) : null;
+        $referredBy = $row['referred_by'] ? ReferredBy::firstOrCreate(['referred_by' => $row['referred_by']]) : null;
+        $status = $row['status'] ? ContactStatus::firstOrCreate(['name' => $row['status']]) : null;
 
-        return Contact::updateOrCreate(
-            ['email' => $row['email']],
-            [
-            'source' => $source->id ? $source->id : 1,
-            'designation' => $designation->id ? $designation->id : 1,
-            'country' => $country->id ? $country->id : 1,
-            'city' => $city->id ? $city->id : 1,
-            'referred_by' => $referredBy->id ? $referredBy->id : 1,
-            'email' => $row['email'] ? $row['email'] : '',
-            'fname' => $row['first_name'] ? $row['first_name'] : '',
-            'lname' => $row['last_name'] ? $row['last_name'] : '',
-            'mobile_number' => $row['mobile_number'] ? $row['mobile_number'] : '',
-            'phone_number' => $row['phone_number'] ? $row['phone_number'] : '',
-            'company' => $row['company'] ? $row['company'] : '',
-            'website' => $row['website'] ? $row['website'] : '',
-            'linkedin' => $row['linkedin'] ? $row['linkedin'] : '',
-            'photo' => $row['photo'] ? $row['photo'] : '',
-            'status' => $status->id ? $status->id : 1,
+        return Contact::create([
+            'source' => $source ? $source->id : null,
+            'designation' => $designation ? $designation->id : null,
+            'country' => $country ? $country->id : null,
+            'city' => $city ? $city->id : null,
+            'referred_by' => $referredBy ? $referredBy->id : null,
+            'email' => $row['email'],
+            'fname' => $row['first_name'],
+            'lname' => $row['last_name'],
+            'mobile_number' => $row['mobile_number'],
+            'phone_number' => $row['phone_number'],
+            'company' => $row['company'],
+            'website' => $row['website'],
+            'linkedin' => $row['linkedin'],
+            'photo' => $row['photo'],
+            'status' => $status ? $status->id : null,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
@@ -59,17 +57,17 @@ class ImportContact implements ToModel, WithHeadingRow, WithValidation
     public function rules(): array
     {
         return [
-            'source' => ['required'],
-            'designation' => ['required'],
-            'country' => ['required'],
-            'city' => ['required'],
-            'referred_by' => ['required'],
-            'email' => ['required'],
-            'first_name' => ['required'],
-            'last_name' => ['required'],
-            'mobile_number' => ['required'],
+            'source' => ['nullable'],
+            'designation' => ['nullable'],
+            'country' => ['nullable'],
+            'city' => ['nullable'],
+            'referred_by' => ['nullable'],
+            'email' => ['nullable'],
+            'first_name' => ['nullable'],
+            'last_name' => ['nullable'],
+            'mobile_number' => ['nullable'],
             'phone_number' => ['nullable'],
-            'company' => ['required'],
+            'company' => ['nullable'],
             'website' => 'nullable',
             'linkedin' => 'nullable',
             'photo' => 'nullable',
