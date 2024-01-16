@@ -134,9 +134,9 @@ class ManageContactController extends Controller
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
-            $query = Contact::query();
+            $query = Contact::query()->with(['source', 'designation', 'country', 'city', 'referred_by', 'contactStatus']);
 
-            if (isset($request->search) && !empty($request->search))
+            if ($request->has('search') && !empty($request->search))
             {
                 $query->where(function ($query) use ($request) 
                 {
@@ -181,7 +181,7 @@ class ManageContactController extends Controller
             }
 
             $total = $query->count();
-            $contacts = $query->with(['source', 'designation', 'country', 'city', 'referred_by', 'contactStatus'])->limit($limit)->offset($offset)->orderBy('id','DESC')->get();
+            $contacts = $query->limit($limit)->offset($offset)->orderBy('id','DESC')->get();
 
             if (!empty($contacts)) 
             {
