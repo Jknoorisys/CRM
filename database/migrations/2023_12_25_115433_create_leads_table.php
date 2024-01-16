@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('contact')->comment('Contact')->constrained('contacts')->onDelete('cascade');
+            $table->bigInteger('contact')->comment('Contact')->nullable();
             $table->string('title');
             $table->text('description');
-            $table->foreignId('stage')->comment('Lead Stage')->constrained('stages')->onDelete('cascade');
-            $table->foreignId('source')->comment('Lead Source')->constrained('sources')->onDelete('cascade');
-            $table->foreignId('type')->comment('Lead Type')->constrained('lead_types')->onDelete('cascade');
-            $table->foreignId('assigned_to')->comment('Assigned To')->constrained('users')->onDelete('cascade');
-            $table->foreignId('created_by')->comment('Created By')->constrained('users')->onDelete('cascade');
+            $table->bigInteger('stage')->comment('Lead Stage')->nullable();
+            $table->bigInteger('source')->comment('Lead Source')->nullable();
+            $table->bigInteger('type')->comment('Lead Type')->nullable();
+            $table->bigInteger('assigned_to')->comment('Assigned To')->nullable();
+            $table->bigInteger('created_by')->comment('Created By')->nullable();
             $table->timestamp('last_contacted_date')->nullable();
             $table->softDeletes();
             $table->timestamps();

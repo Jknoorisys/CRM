@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->comment('Assigned To')->constrained()->onDelete('cascade');
+            $table->bigInteger('user_id')->comment('Assigned To')->nullable();
             $table->string('title');
             $table->text('description');
-            $table->foreignId('status')->comment('Task Status')->constrained('task_status')->onDelete('cascade');
+            $table->bigInteger('status')->comment('Task Status')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
