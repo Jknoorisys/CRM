@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
             $table->string('lead_id')->comment('Lead');
-            $table->foreign('lead_id')->references('id')->on('leads')->onDelete('cascade');
-            $table->foreignId('user_id')->comment('Action Performed By')->constrained()->onDelete('cascade');
-            $table->foreignId('medium')->comment('Activity Medium')->constrained('activity_medium')->onDelete('cascade');
-            $table->foreignId('stage')->comment('Lead Stage')->constrained('stages')->onDelete('cascade');
+            $table->bigInteger('user_id')->comment('Action Performed By')->nullable();
+            $table->bigInteger('medium')->comment('Activity Medium')->nullable();
+            $table->bigInteger('stage')->comment('Lead Stage')->nullable();
             $table->text('summary');
             $table->string('attachment');
             $table->timestamp('follow_up_date');

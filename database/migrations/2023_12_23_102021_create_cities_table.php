@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('cities', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('country_id')->constrained('countries')->onDelete('cascade');
+            $table->bigInteger('country_id')->nullable();
             $table->string('city')->unique();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->softDeletes();
