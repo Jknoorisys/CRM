@@ -35,7 +35,7 @@ class Lead extends Model
         static::creating(function ($model) {
             $model->incrementing = false; 
 
-            $lastRecord = self::latest()->first();
+            $lastRecord = self::latest()->withTrashed()->first();
             $nextNumber = $lastRecord ? substr($lastRecord->id, 2) + 1 : 1;
             $model->id = 'NS' . str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
         });
