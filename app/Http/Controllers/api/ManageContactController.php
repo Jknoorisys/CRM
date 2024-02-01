@@ -16,6 +16,7 @@ class ManageContactController extends Controller
         $validator = Validator::make($request->all() , [
             'source'        => ['nullable','numeric'],
             'email'         => ['nullable','string','email','max:255'],
+            'salutation'    => ['nullable','string'],
             'fname'         => ['nullable','string','max:255'],
             'lname'         => ['nullable','string','max:255'],
             'mobile_number' => ['nullable','string'],
@@ -30,7 +31,7 @@ class ManageContactController extends Controller
             'photo'         => ['nullable','image','mimes:jpeg,png,jpg,gif,svg'],
             'status'        => ['nullable','numeric'],
         ]);
-
+        
         if ($validator->fails()) 
         {
             $firstError = current(array_values($validator->errors()->messages()));
@@ -64,6 +65,7 @@ class ManageContactController extends Controller
             $insert = Contact::create([
                 'source'        => $request->source,
                 'email'         => $request->email,
+                'salutation'    => $request->salutation,
                 'fname'         => $request->fname,
                 'lname'         => $request->lname,
                 'mobile_number' => $request->mobile_number,
@@ -261,6 +263,7 @@ class ManageContactController extends Controller
             'contact_id'    => ['required','numeric', Rule::exists('contacts', 'id')],
             'source'        => ['nullable','numeric', Rule::exists('sources', 'id')],
             'email'         => ['nullable','string','email','max:255'],
+            'salutation'    => ['nullable','string'],
             'fname'         => ['nullable','string','max:255'],
             'lname'         => ['nullable','string','max:255'],
             'mobile_number' => ['nullable','string'],
@@ -329,6 +332,7 @@ class ManageContactController extends Controller
                 $update = Contact::where('id', '=', $request->contact_id)->update([
                     'source'            => $request->source ? $request->source : $contact->source,
                     'email'             => $request->email ? $request->email : $contact->email,
+                    'salutation'        => $request->salutation ? $request->salutation : $contact->salutation,
                     'fname'             => $request->fname ? $request->fname : $contact->fname,
                     'lname'             => $request->lname ? $request->lname : $contact->lname,
                     'mobile_number'     => $request->mobile_number ? $request->mobile_number : $contact->mobile_number,

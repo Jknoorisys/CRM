@@ -21,6 +21,7 @@ class ExportContact implements FromCollection, WithHeadings, WithMapping
         return [
             'Source',
             'Email',
+            'Salutation',
             'First Name',
             'Last Name',
             'Mobile Number',
@@ -42,6 +43,7 @@ class ExportContact implements FromCollection, WithHeadings, WithMapping
         return [
             $contact->getSource->source ?? '',
             $contact->email ?? '',
+            $contact->salutation ?? '',
             $contact->fname ?? '',
             $contact->lname ?? '',
             $contact->mobile_number ?? '',

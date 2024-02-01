@@ -13,6 +13,7 @@ class Stage extends Model
     
     protected $fillable = [
         'stage',
+        'color',
         'status',
     ];
 

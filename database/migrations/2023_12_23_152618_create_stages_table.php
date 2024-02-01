@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('stages', function (Blueprint $table) {
             $table->id();
             $table->string('stage')->unique();
+            $table->string('color')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->softDeletes();
             $table->timestamps();

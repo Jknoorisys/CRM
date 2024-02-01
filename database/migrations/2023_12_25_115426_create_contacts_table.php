@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('source')->comment('Source')->nullable();
             $table->string('email')->nullable();
+            $table->enum('salutation', ['Mr.', 'Ms.'])->default('Mr.');
             $table->string('fname')->nullable();
             $table->string('lname')->nullable();
             $table->string('mobile_number', 20)->comment('Mobile Number')->nullable();
