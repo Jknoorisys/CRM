@@ -84,6 +84,7 @@ class ManageActivityController extends Controller
 
     public function add(Request $request) {
         $validator = Validator::make($request->all(), [
+            'title'   => ['required','string'],
             'lead_id' => ['required','string', Rule::notIn(['undefined']), Rule::exists('leads', 'id')],
             'medium'  => ['required','numeric', Rule::exists('activity_medium', 'id')],
             'stage'   => ['required','numeric', Rule::exists('stages', 'id')],
@@ -113,6 +114,7 @@ class ManageActivityController extends Controller
             }
 
             $insert = Activity::create([
+                'title'   => $request->title,
                 'lead_id' => $request->lead_id,
                 'user_id' => $request->user_id,
                 'stage' => $request->stage,
@@ -184,6 +186,7 @@ class ManageActivityController extends Controller
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
             'activity_id'   => ['required','numeric', Rule::exists('activities', 'id')],
+            'title'  => ['nullable','string'],
             'lead_id' => ['required','string', Rule::notIn(['undefined']), Rule::exists('leads', 'id')],
             'stage'   => ['required','numeric', Rule::exists('stages', 'id')],
             'user_id' => ['required', 'numeric', Rule::exists('users', 'id')],
@@ -225,6 +228,7 @@ class ManageActivityController extends Controller
             }
 
             $update = Activity::where('id', '=', $request->activity_id)->update([
+                'title'   => $request->title ? $request->title : $activity->title,
                 'lead_id' => $request->lead_id,
                 'user_id' => $request->user_id,
                 'stage' => $request->stage,

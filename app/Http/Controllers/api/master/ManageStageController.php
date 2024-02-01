@@ -63,6 +63,7 @@ class ManageStageController extends Controller
     public function add(Request $request) {
         $validator = Validator::make($request->all(), [
             'stage'   => ['required','string','max:255', Rule::unique('stages')],
+            'color'   => ['required','string','max:255'],
         ]);
 
         if ($validator->fails()) {
@@ -77,6 +78,7 @@ class ManageStageController extends Controller
         try {
             $insert = Stage::create([
                 'stage' => $request->stage,
+                'color' => $request->color,
             ]);
 
             if ($insert) {
@@ -140,6 +142,7 @@ class ManageStageController extends Controller
         $validator = Validator::make($request->all(), [
             'stage_id'   => ['required','numeric', Rule::exists('stages', 'id')],
             'stage'      => ['required','string','max:255', Rule::unique('stages')->ignore($request->stage_id)],
+            'color'      => ['required','string','max:255'],
         ]);
 
         if ($validator->fails()) {
@@ -162,6 +165,7 @@ class ManageStageController extends Controller
 
             $update = Stage::where('id', '=', $request->stage_id)->update([
                 'stage' => $request->stage ? $request->stage : $stage->stage,
+                'color' => $request->color ? $request->color : $status->color,
             ]);
 
             if ($update) {

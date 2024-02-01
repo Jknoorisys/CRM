@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
+            $table->string('title')->comment('Activity Title');
             $table->string('lead_id')->comment('Lead');
             $table->bigInteger('user_id')->comment('Action Performed By')->nullable();
             $table->bigInteger('medium')->comment('Activity Medium')->nullable();
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->text('summary');
             $table->string('attachment');
             $table->timestamp('follow_up_date');
+            $table->enum('is_action_performed', ['yes', 'no'])->default('no');
             $table->softDeletes();
             $table->timestamps();
         });
