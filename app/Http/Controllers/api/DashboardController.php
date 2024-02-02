@@ -148,16 +148,23 @@ class DashboardController extends Controller
             {
                 $date = now()->format('Y-m-d');
             }
-            $query = Lead::query()->select('leads.*', 'activities.title as activity_title')
-                                ->with(['contact', 'stage', 'source', 'type', 'assignedTo', 'createdBy', 'actionPerformedBy'])
+            
+            $query = Lead::query()->with(['contact', 'stage', 'source', 'type', 'assignedTo', 'createdBy', 'actionPerformedBy'])
                                 ->join('activities', 'leads.id', '=', 'activities.lead_id')
                                 ->whereDate('activities.follow_up_date', $date);
-            
+
             $total = $query->count();
-            $leads = $query->limit($limit)->offset($offset)->orderBy('leads.id','DESC')->get();
+            $leads = $query->limit($limit)->offset($offset)->orderBy('leads.id', 'DESC')->get();
 
             if (!empty($leads)) 
             {
+                foreach($leads as $lead)
+                {
+                    $lead_id = $lead->lead_id;
+                    $fetch_lead_records = Lead::where('id',$lead_id)->get();
+                    $lead_title = $fetch_lead_records[0]->title;
+                    $lead->lead_title = $lead_title;
+                }
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.list.success'),
