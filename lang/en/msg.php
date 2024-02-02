@@ -45,6 +45,8 @@ return [
         'success' => 'Details Updated Successfully',
         'failed'  => 'Update Failed',
         'not-found' => ':entity not found',
+        'activity-status-failure' => 'Action has already been performed on this activity',
+        'activity-status-success' => 'Activity marked as done successfully',
     ],
 
     'detail' => [

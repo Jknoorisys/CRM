@@ -187,5 +187,6 @@ Route::middleware('set.locale')->group(function () {
         Route::post('dashboard/scrollable-leads' , [DashboardController::class, 'scrollable_leads']);
         Route::post('dashboard/count' , [DashboardController::class, 'count']);
         Route::post('dashboard/monthly-count' , [DashboardController::class , 'monthlyCount']);
+        Route::post('dashboard/update-activity-status' , [DashboardController::class , 'updateActivityStatus']);
     });
 });
