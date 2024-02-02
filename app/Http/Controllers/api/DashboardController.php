@@ -148,7 +148,7 @@ class DashboardController extends Controller
             {
                 $date = now()->format('Y-m-d');
             }
-            
+
             $query = Lead::query()->with(['contact', 'stage', 'source', 'type', 'assignedTo', 'createdBy', 'actionPerformedBy'])
                                 ->join('activities', 'leads.id', '=', 'activities.lead_id')
                                 ->whereDate('activities.follow_up_date', $date);
@@ -243,5 +243,66 @@ class DashboardController extends Controller
                 'error'   => $e->getMessage()
             ], 500);
         }
-    }   
+    }  
+    
+    public function updateActivityStatus(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'activity_id' => ['required','numeric', Rule::exists('activities', 'id')],
+        ]);
+
+        if ($validator->fails()) 
+        {
+            $firstError = current(array_values($validator->errors()->messages()));
+
+            return response()->json([
+                'status'  => 'failed',
+                'message' => $firstError[0],
+            ], 400);
+        }
+
+        try
+        {
+            $activity = Activity::where('id', '=', $request->activity_id)->first();
+            if (empty($activity)) 
+            {
+                return response()->json([
+                    'status'    => 'failed',
+                    'message'   => trans('msg.update.not-found', ['entity' => 'activity']),
+                ], 400);
+            }
+
+            if($activity->is_action_performed == 'yes')
+            {
+                return response()->json([
+                    'status'    => 'failed',
+                    'message'   => trans('msg.update.activity-status-failure')
+                ], 400);
+            }
+                
+            $update = Activity::where('id', '=', $request->activity_id)->update(['is_action_performed' => 'yes']);
+            if($update)
+            {
+                return response()->json([
+                    'status'    => 'success',
+                    'message'   => trans('msg.update.activity-status-success'),
+                ], 200);
+            }
+            else
+            {
+                return response()->json([
+                    'status'    => 'failed',
+                    'message'   => trans('msg.update.failed'),
+                ], 400);
+            }
+        }
+        catch (\Throwable $e) 
+        {
+            return response()->json([
+                'status'  => 'failed',
+                'message' => trans('msg.error'),
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
 }
