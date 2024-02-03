@@ -8,6 +8,9 @@ use App\Models\Lead;
 use App\Models\User;
 use App\Models\Contact;
 use App\Models\Activity;
+use App\Models\Source;
+use App\Models\Stage;
+use App\Models\LeadType;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
@@ -295,6 +298,462 @@ class DashboardController extends Controller
                     'message'   => trans('msg.update.failed'),
                 ], 400);
             }
+        }
+        catch (\Throwable $e) 
+        {
+            return response()->json([
+                'status'  => 'failed',
+                'message' => trans('msg.error'),
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function leadsReports(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'option'    => ['required','string', Rule::in(['stage', 'source', 'type'])],
+            'date'      => ['required', 'string' , Rule::in('this_month', 'this_year', 'overall')],
+        ]);
+
+        $validator->setCustomMessages([
+            'option.in' => 'Please enter a valid option. Accepted values are: stage, source, type.',
+            'date.in'   => 'Please enter a valid date. Accepted values are: this_month, this_year, overall.'
+        ]);
+
+        if ($validator->fails()) 
+        {
+            $firstError = current(array_values($validator->errors()->messages()));
+
+            return response()->json([
+                'status'  => 'failed',
+                'message' => $firstError[0],
+            ], 400);
+        }
+
+        try
+        {
+            /* For lead source */
+
+                if($request->option == 'source' && $request->date == 'overall')
+                {
+                    $get_source = Source::all();
+                    $sourceCounts = [];
+                    $totalLeads = Lead::count(); 
+
+                    if($totalLeads > 0)
+                    {
+                        if(!empty($get_source))
+                        {
+                            foreach($get_source as $source)
+                            {
+                                $source_id = $source->id;
+                                $count = Lead::where('source', $source_id)->count();
+                                if($count > 0)
+                                {
+                                    $source_name = $source->source;
+                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    
+                                    $sourceCounts[$source_name] = [
+                                        'count' => $count,
+                                        'percentage' => $percentage,
+                                    ];
+                                }   
+                            }
+                            
+                            return response()->json([
+                                'status'  => 'success',
+                                'message' => trans('msg.lead-reports.success'),
+                                'report'  => $sourceCounts,
+                            ], 200);
+                        }
+                    }
+                    else
+                    {
+                        return response()->json([
+                            'status'  => 'error',
+                            'message' => trans('msg.lead-reports.failed-overall'),
+                            'report'  => [],
+                        ], 400);   
+                    }
+                }
+
+                if($request->option == 'source' && $request->date == 'this_month')
+                {
+                    $currentDate = now();
+                    $currentMonth = $currentDate->format('m');
+
+                    $get_source = Source::all();
+                    $sourceCounts = [];
+                    $totalLeads = Lead::query()->whereMonth('created_at', $currentMonth)->count(); 
+
+                    if($totalLeads > 0)
+                    {
+                        if(!empty($get_source))
+                        {
+                            foreach($get_source as $source)
+                            {
+                                $source_id = $source->id;
+                                $count = Lead::where('source', $source_id)->whereMonth('created_at', $currentMonth)->count();
+                                if($count > 0)
+                                {
+                                    $source_name = $source->source;
+                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    
+                                    $sourceCounts[$source_name] = [
+                                        'count' => $count,
+                                        'percentage' => $percentage,
+                                    ];
+                                }   
+                            }
+                            
+                            return response()->json([
+                                'status'  => 'success',
+                                'message' => trans('msg.lead-reports.success'),
+                                'report'  => $sourceCounts,
+                            ], 200);
+                        }
+                    }
+                    else
+                    {
+                        return response()->json([
+                            'status'  => 'error',
+                            'message' => trans('msg.lead-reports.failed-monthly'),
+                            'report'  => [],
+                        ], 400);   
+                    }
+                }
+
+                if($request->option == 'source' && $request->date == 'this_year')
+                {
+                    $currentDate = now();
+                    $currentYear = $currentDate->format('Y');
+
+                    $get_source = Source::all();
+                    $sourceCounts = [];
+                    $totalLeads = Lead::query()->whereYear('created_at', $currentYear)->count(); 
+                    
+                    if($totalLeads > 0)
+                    {
+                        if(!empty($get_source))
+                        {
+                            foreach($get_source as $source)
+                            {
+                                $source_id = $source->id;
+                                $count = Lead::where('source', $source_id)->whereYear('created_at', $currentYear)->count();
+                                if($count > 0)
+                                {
+                                    $source_name = $source->source;
+                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    
+                                    $sourceCounts[$source_name] = [
+                                        'count'         => $count,
+                                        'percentage'    => $percentage,
+                                    ];
+                                }   
+                            }
+                            
+                            return response()->json([
+                                'status'  => 'success',
+                                'message' => trans('msg.lead-reports.success'),
+                                'report'  => $sourceCounts,
+                            ], 200);
+                        }
+                    }
+                    else
+                    {
+                        return response()->json([
+                            'status'  => 'error',
+                            'message' => trans('msg.lead-reports.failed-yearly'),
+                            'report'  => [],
+                        ], 400);   
+                    }
+                }
+
+            /* End of lead source */
+
+            /* For lead stage */
+
+                if($request->option == 'stage' && $request->date == 'overall')
+                {
+                    $get_stage = Stage::all();
+                    $stageCounts = [];
+                    $totalLeads = Lead::count(); 
+
+                    if($totalLeads > 0)
+                    {
+                        if(!empty($get_stage))
+                        {
+                            foreach($get_stage as $stage)
+                            {
+                                $stage_id = $stage->id;
+                                $count = Lead::where('stage', $stage_id)->count();
+                                if($count > 0)
+                                {
+                                    $stage_name = $stage->stage;
+                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    
+                                    $stageCounts[$stage_name] = [
+                                        'count'         => $count,
+                                        'percentage'    => $percentage,
+                                    ];
+                                }   
+                            }
+                            
+                            return response()->json([
+                                'status'  => 'success',
+                                'message' => trans('msg.lead-reports.success'),
+                                'report'  => $stageCounts,
+                            ], 200);
+                        }
+                    }
+                    else
+                    {
+                        return response()->json([
+                            'status'  => 'error',
+                            'message' => trans('msg.lead-reports.failed-overall'),
+                            'report'  => [],
+                        ], 400);   
+                    }
+                }
+
+                
+                if($request->option == 'stage' && $request->date == 'this_month')
+                {
+                    $currentDate = now();
+                    $currentMonth = $currentDate->format('m');
+                    
+                    $get_stage = Stage::all();
+                    $stageCounts = [];
+                    $totalLeads = Lead::query()->whereMonth('created_at', $currentMonth)->count(); 
+                    
+                    if($totalLeads > 0)
+                    {
+                        if(!empty($get_stage))
+                        {
+                            foreach($get_stage as $stage)
+                            {
+                                $stage_id = $stage->id;
+                                $count = Lead::where('stage', $stage_id)->whereMonth('created_at', $currentMonth)->count();
+                                if($count > 0)
+                                {
+                                    $stage_name = $stage->stage;
+                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    
+                                    $stageCounts[$stage_name] = [
+                                        'count'         => $count,
+                                        'percentage'    => $percentage,
+                                    ];
+                                }   
+                            }
+                            
+                            return response()->json([
+                                'status'  => 'success',
+                                'message' => trans('msg.lead-reports.success'),
+                                'report'  => $stageCounts,
+                            ], 200);
+                        }
+                    }
+                    else
+                    {
+                        return response()->json([
+                            'status'  => 'error',
+                            'message' => trans('msg.lead-reports.failed-monthly'),
+                            'report'  => [],
+                        ], 400);
+                    }
+                }
+
+
+                if($request->option == 'stage' && $request->date == 'this_year')
+                {
+                    $currentDate = now();
+                    $currentYear = $currentDate->format('Y');
+                    
+                    $get_stage = Stage::all();
+                    $stageCounts = [];
+                    $totalLeads = Lead::query()->whereYear('created_at', $currentYear)->count(); 
+                        
+                    if($totalLeads > 0)
+                    {
+                        if(!empty($get_stage))
+                        {
+                            foreach($get_stage as $stage)
+                            {
+                                $stage_id = $stage->id;
+                                $count = Lead::where('stage', $stage_id)->whereYear('created_at', $currentYear)->count();
+                                if($count > 0)
+                                {
+                                    $stage_name = $stage->stage;
+                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    
+                                    $stageCounts[$stage_name] = [
+                                        'count'         => $count,
+                                        'percentage'    => $percentage,
+                                    ];
+                                }   
+                            }
+                            
+                            return response()->json([
+                                'status'  => 'success',
+                                'message' => trans('msg.lead-reports.success'),
+                                'report' => $stageCounts,
+                            ], 200);
+                        }
+                    }
+                    else
+                    {
+                        return response()->json([
+                            'status'  => 'error',
+                            'message' => trans('msg.lead-reports.failed-yearly'),
+                            'report'  => [],
+                        ], 400);
+                    }
+                }
+
+            /* End of lead stage */
+
+            /* For lead type */
+
+                if($request->option == 'type' && $request->date == 'overall')
+                {
+                    $get_lead_types = LeadType::all();
+                    $typeCounts = [];
+                    $totalLeads = Lead::count(); 
+
+                    if($totalLeads > 0)
+                    {
+                        if(!empty($get_lead_types))
+                        {
+                            foreach($get_lead_types as $type)
+                            {
+                                $type_id = $type->id;
+                                $count = Lead::where('type', $type_id)->count();
+                                if($count > 0)
+                                {
+                                    $type_name = $type->type;
+                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    
+                                    $typeCounts[$type_name] = [
+                                        'count'         => $count,
+                                        'percentage'    => $percentage,
+                                    ];
+                                }   
+                            }
+                            
+                            return response()->json([
+                                'status'  => 'success',
+                                'message' => trans('msg.lead-reports.success'),
+                                'report' => $typeCounts,
+                            ], 200);
+                        }
+                    }
+                    else
+                    {
+                        return response()->json([
+                            'status'  => 'error',
+                            'message' => trans('msg.lead-reports.failed-overall'),
+                            'report'  => [],
+                        ],400);
+                    }
+                }
+
+
+                if($request->option == 'type' && $request->date == 'this_month')
+                {
+                    $currentDate = now();
+                    $currentMonth = $currentDate->format('m');
+
+                    $get_lead_types = LeadType::all();
+                    $typeCounts = [];
+                    $totalLeads = Lead::query()->whereMonth('created_at', $currentMonth)->count(); 
+
+                    if($totalLeads > 0)
+                    {
+                        if(!empty($get_lead_types))
+                        {
+                            foreach($get_lead_types as $type)
+                            {
+                                $type_id = $type->id;
+                                $count = Lead::where('type', $type_id)->whereMonth('created_at', $currentMonth)->count();
+                                if($count > 0)
+                                {
+                                    $type_name = $type->type;
+                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    
+                                    $typeCounts[$type_name] = [
+                                        'count'         => $count,
+                                        'percentage'    => $percentage,
+                                    ];
+                                }   
+                            }
+                            
+                            return response()->json([
+                                'status'  => 'success',
+                                'message' => trans('msg.lead-reports.success'),
+                                'report' => $typeCounts,
+                            ], 200);
+                        }
+                    }
+                    else
+                    {
+                        return response()->json([
+                            'status'  => 'error',
+                            'message' => trans('msg.lead-reports.failed-monthly'),
+                            'report'  => [],
+                        ], 400);
+                    }
+                }
+
+
+                if($request->option == 'type' && $request->date == 'this_year')
+                {
+                    $currentDate = now();
+                    $currentYear = $currentDate->format('Y');
+
+                    $get_lead_types = LeadType::all();
+                    $typeCounts = [];
+                    $totalLeads = Lead::query()->whereYear('created_at', $currentYear)->count(); 
+
+                    if($totalLeads > 0)
+                    {
+                        if(!empty($get_lead_types))
+                        {
+                            foreach($get_lead_types as $type)
+                            {
+                                $type_id = $type->id;
+                                $count = Lead::where('type', $type_id)->whereYear('created_at', $currentYear)->count();
+                                if($count > 0)
+                                {
+                                    $type_name = $type->type;
+                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    
+                                    $typeCounts[$type_name] = [
+                                        'count'         => $count,
+                                        'percentage'    => $percentage,
+                                    ];
+                                }   
+                            }
+                            
+                            return response()->json([
+                                'status'  => 'success',
+                                'message' => trans('msg.lead-reports.success'),
+                                'report' => $typeCounts,
+                            ], 200);
+                        }
+                    }
+                    else
+                    {
+                        return response()->json([
+                            'status'  => 'error',
+                            'message' => trans('msg.lead-reports.failed-yearly'),
+                            'report'  => [],
+                        ], 400);   
+                    }
+                }
+            /* End of lead type */
+
+           
         }
         catch (\Throwable $e) 
         {
