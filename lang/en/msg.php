@@ -103,4 +103,11 @@ return [
         'success' => 'File Imported Successfully',
         'failed'  => 'Unable to import file, please try again...',
     ],
+
+    'lead-reports' => [
+        'success' => 'Leads Report Fetched Successfully',
+        'failed-monthly'  => 'No leads found for this month',
+        'failed-yearly'  => 'No leads found for this year',
+        'failed-overall'    => 'No leads found',
+    ]
 ];
