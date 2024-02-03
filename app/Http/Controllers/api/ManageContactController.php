@@ -65,7 +65,7 @@ class ManageContactController extends Controller
             $insert = Contact::create([
                 'source'        => $request->source,
                 'email'         => $request->email,
-                'salutation'    => $request->salutation,
+                'salutation'    => $request->salutation ? $request->salutation : 'Mr.',
                 'fname'         => $request->fname,
                 'lname'         => $request->lname,
                 'mobile_number' => $request->mobile_number,
