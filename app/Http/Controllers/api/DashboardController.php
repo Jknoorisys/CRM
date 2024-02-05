@@ -352,7 +352,7 @@ class DashboardController extends Controller
                                 if($count > 0)
                                 {
                                     $source_name = $source->source;
-                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100 , 2) : 0;
                                     
                                     $sourceCounts[$source_name] = [
                                         'count' => $count,
@@ -398,7 +398,7 @@ class DashboardController extends Controller
                                 if($count > 0)
                                 {
                                     $source_name = $source->source;
-                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100 , 2) : 0;
                                     
                                     $sourceCounts[$source_name] = [
                                         'count' => $count,
@@ -444,7 +444,7 @@ class DashboardController extends Controller
                                 if($count > 0)
                                 {
                                     $source_name = $source->source;
-                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100 , 2) : 0;
                                     
                                     $sourceCounts[$source_name] = [
                                         'count'         => $count,
@@ -491,7 +491,7 @@ class DashboardController extends Controller
                                 if($count > 0)
                                 {
                                     $stage_name = $stage->stage;
-                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100 , 2) : 0;
                                     
                                     $stageCounts[$stage_name] = [
                                         'count'         => $count,
@@ -538,7 +538,7 @@ class DashboardController extends Controller
                                 if($count > 0)
                                 {
                                     $stage_name = $stage->stage;
-                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100 , 2) : 0;
                                     
                                     $stageCounts[$stage_name] = [
                                         'count'         => $count,
@@ -585,7 +585,7 @@ class DashboardController extends Controller
                                 if($count > 0)
                                 {
                                     $stage_name = $stage->stage;
-                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100 , 2) : 0;
                                     
                                     $stageCounts[$stage_name] = [
                                         'count'         => $count,
@@ -632,7 +632,7 @@ class DashboardController extends Controller
                                 if($count > 0)
                                 {
                                     $type_name = $type->type;
-                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100 , 2) : 0;
                                     
                                     $typeCounts[$type_name] = [
                                         'count'         => $count,
@@ -679,7 +679,7 @@ class DashboardController extends Controller
                                 if($count > 0)
                                 {
                                     $type_name = $type->type;
-                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100 , 2) : 0;
                                     
                                     $typeCounts[$type_name] = [
                                         'count'         => $count,
@@ -726,7 +726,7 @@ class DashboardController extends Controller
                                 if($count > 0)
                                 {
                                     $type_name = $type->type;
-                                    $percentage = ($totalLeads > 0) ? ($count / $totalLeads) * 100 : 0;
+                                    $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100 , 2) : 0;
                                     
                                     $typeCounts[$type_name] = [
                                         'count'         => $count,
