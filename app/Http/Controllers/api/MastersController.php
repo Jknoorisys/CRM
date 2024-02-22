@@ -15,6 +15,7 @@ use App\Models\Source;
 use App\Models\Stage;
 use App\Models\TaskStatus;
 use App\Models\User;
+use App\Models\Contact;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -300,6 +301,38 @@ class MastersController extends Controller
                 ], 400);
             }
         } catch (\Throwable $e) {
+            return response()->json([
+                'status'  => 'failed',
+                'message' => trans('msg.error'),
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function contacts()
+    {
+        try 
+        {
+            $data = Contact::orderBy('created_at', 'desc')->get();
+
+            if (!empty($data)) 
+            {
+                return response()->json([
+                    'status'    => 'success',
+                    'message'   => trans('msg.list.success'),
+                    'data'      => $data,
+                ], 200);
+            } 
+            else 
+            {
+                return response()->json([
+                    'status'    => 'failed',
+                    'message'   => trans('msg.list.failed'),
+                ], 400);
+            }
+        } 
+        catch (\Throwable $e) 
+        {
             return response()->json([
                 'status'  => 'failed',
                 'message' => trans('msg.error'),
