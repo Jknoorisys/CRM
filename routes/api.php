@@ -154,6 +154,7 @@ Route::middleware('set.locale')->group(function () {
         Route::get('master/activity-medium' , [MastersController::class, 'activityMedium']);
         Route::get('master/task-status' , [MastersController::class, 'taskStatus']);
         Route::get('master/users' , [MastersController::class, 'users']);
+        Route::get('master/contacts' , [MastersController::class , 'contacts']);
 
         // Manage Contacts
         Route::post('contact/list' , [ManageContactController::class, 'list']);
