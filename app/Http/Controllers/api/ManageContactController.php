@@ -61,6 +61,16 @@ class ManageContactController extends Controller
                     $avatar_url = "";
                 }
             }
+
+            $conatctExists = Contact::where('email', '=', $request->email)->first();
+            if (!empty($conatctExists)) 
+            {
+                return response()->json([
+                    'status'    => 'failed',
+                    'message'   => trans('msg.add.already-exists'),
+                ], 400);
+            }
+
             
             $insert = Contact::create([
                 'source'        => $request->source,
