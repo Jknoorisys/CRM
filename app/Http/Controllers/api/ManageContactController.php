@@ -63,7 +63,7 @@ class ManageContactController extends Controller
             }
 
             $conatctExists = Contact::where('email', '=', $request->email)->first();
-            if (!empty($conatctExists)) 
+            if (!empty($conatctExists) && $request->email != '') 
             {
                 return response()->json([
                     'status'    => 'failed',
