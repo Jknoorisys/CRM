@@ -140,7 +140,7 @@ class ManageLeadController extends Controller
             }
 
             $total = $query->count();
-            $leads = $query->limit($limit)->offset($offset)->orderBy('id','DESC')->get();
+            $leads = $query->limit($limit)->offset($offset)->orderBy('created_at','DESC')->get();
 
             if (!empty($leads)) 
             {

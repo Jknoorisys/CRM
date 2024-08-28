@@ -23,7 +23,7 @@ class MastersController extends Controller
 {
     public function referredBy() {
         try {
-            $data = ReferredBy::where('status', 'active')->orderBy('created_at', 'desc')->get();
+            $data = ReferredBy::where('status', 'active')->orderBy('referred_by', 'asc')->get();
             if (!empty($data)) {
                 return response()->json([
                     'status'    => 'success',
@@ -47,7 +47,7 @@ class MastersController extends Controller
 
     public function country() {
         try {
-            $data = Country::where('status', 'active')->orderBy('created_at', 'desc')->get();
+            $data = Country::where('status', 'active')->orderBy('country', 'asc')->get();
             if (!empty($data)) {
                 return response()->json([
                     'status'    => 'success',
@@ -94,7 +94,7 @@ class MastersController extends Controller
                 $query->where('country_id', '=' , $country_id);
             }
 
-            $data = $query->where('status', 'active')->orderBy('created_at', 'desc')->get();
+            $data = $query->where('status', 'active')->orderBy('city', 'asc')->get();
 
             if (!empty($data)) {
                 return response()->json([
@@ -119,7 +119,7 @@ class MastersController extends Controller
 
     public function designation() {
         try {
-            $data = Designation::where('status', 'active')->orderBy('created_at', 'desc')->get();
+            $data = Designation::where('status', 'active')->orderBy('designation', 'asc')->get();
             if (!empty($data)) {
                 return response()->json([
                     'status'    => 'success',
@@ -143,7 +143,7 @@ class MastersController extends Controller
 
     public function contactStatus() {
         try {
-            $data = ContactStatus::where('status', 'active')->orderBy('created_at', 'desc')->get();
+            $data = ContactStatus::where('status', 'active')->orderBy('name', 'asc')->get();
             if (!empty($data)) {
                 return response()->json([
                     'status'    => 'success',
@@ -167,7 +167,7 @@ class MastersController extends Controller
 
     public function stage() {
         try {
-            $data = Stage::where('status', 'active')->orderBy('created_at', 'desc')->get();
+            $data = Stage::where('status', 'active')->orderBy('stage', 'asc')->get();
             if (!empty($data)) {
                 return response()->json([
                     'status'    => 'success',
@@ -191,7 +191,7 @@ class MastersController extends Controller
 
     public function leadType() {
         try {
-            $data = LeadType::where('status', 'active')->orderBy('created_at', 'desc')->get();
+            $data = LeadType::where('status', 'active')->orderBy('type', 'asc')->get();
             if (!empty($data)) {
                 return response()->json([
                     'status'    => 'success',
@@ -215,7 +215,7 @@ class MastersController extends Controller
 
     public function source() {
         try {
-            $data = Source::where('status', 'active')->orderBy('created_at', 'desc')->get();
+            $data = Source::where('status', 'active')->orderBy('source', 'asc')->get();
             if (!empty($data)) {
                 return response()->json([
                     'status'    => 'success',
@@ -239,7 +239,7 @@ class MastersController extends Controller
 
     public function activityMedium() {
         try {
-            $data = ActivityMedium::where('status', 'active')->orderBy('created_at', 'desc')->get();
+            $data = ActivityMedium::where('status', 'active')->orderBy('medium', 'asc')->get();
             if (!empty($data)) {
                 return response()->json([
                     'status'    => 'success',
@@ -263,7 +263,7 @@ class MastersController extends Controller
 
     public function taskStatus() {
         try {
-            $data = TaskStatus::where('status', 'active')->orderBy('created_at', 'desc')->get();
+            $data = TaskStatus::where('status', 'active')->orderBy('name', 'asc')->get();
             if (!empty($data)) {
                 return response()->json([
                     'status'    => 'success',
@@ -287,7 +287,7 @@ class MastersController extends Controller
 
     public function users() {
         try {
-            $data = User::where('status', 'active')->where('is_admin', '!=', 'yes')->orderBy('created_at', 'desc')->get();
+            $data = User::where('status', 'active')->where('is_admin', '!=', 'yes')->orderBy('name', 'asc')->get();
             if (!empty($data)) {
                 return response()->json([
                     'status'    => 'success',
