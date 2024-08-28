@@ -313,7 +313,7 @@ class MastersController extends Controller
     {
         try 
         {
-            $data = Contact::orderBy('created_at', 'desc')->get();
+            $data = Contact::orderBy('fname', 'asc')->get();
 
             if (!empty($data)) 
             {
