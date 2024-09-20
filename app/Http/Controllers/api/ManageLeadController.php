@@ -69,6 +69,7 @@ class ManageLeadController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'page_no'      => ['required','numeric'],
+            'per_page'     => ['numeric'],
             'search'       => ['nullable','string'],
             'contact'      => ['nullable', 'numeric', Rule::exists('contacts', 'id')],
             'stage'        => ['nullable', 'numeric', Rule::exists('stages', 'id')],
@@ -89,7 +90,7 @@ class ManageLeadController extends Controller
         }
         try
         {
-            $limit = 10; 
+            $limit = $request->input(key: 'per_page', default: 10);  
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
@@ -413,6 +414,7 @@ class ManageLeadController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'page_no' => ['required','numeric'],
+            'per_page'=> ['numeric'],
             'lead_id' => ['required','alpha_num', Rule::exists('leads', 'id')],
         ]);
 
@@ -428,7 +430,7 @@ class ManageLeadController extends Controller
 
         try
         {
-            $limit = 10; 
+            $limit = $request->input(key: 'per_page', default: 10);  
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 

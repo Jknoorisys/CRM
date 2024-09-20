@@ -13,6 +13,7 @@ class ManageTaskController extends Controller
     public function list(Request $request) {
         $validator = Validator::make($request->all(), [
             'page_no'   => ['required','numeric'],
+            'per_page'  => ['numeric'],
             'search'    => ['nullable','string'],
             'status'    => ['nullable', 'numeric', Rule::exists('task_status', 'id')],
             'user_id'   => ['nullable','numeric', Rule::exists('users', 'id')],
@@ -28,7 +29,7 @@ class ManageTaskController extends Controller
         }
 
         try {            
-            $limit = 10; 
+            $limit = $request->input(key: 'per_page', default: 10);  
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 

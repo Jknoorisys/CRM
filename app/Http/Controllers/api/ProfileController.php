@@ -133,6 +133,7 @@ class ProfileController extends Controller
                 $query->where('status', 'active');
             })],
             'page_no'   => ['required','numeric'],
+            'per_page'  => ['numeric'],
         ]);
 
         if ($validator->fails()) {
@@ -145,7 +146,7 @@ class ProfileController extends Controller
         }
 
         try {
-            $limit = 10; 
+            $limit = $request->input(key: 'per_page', default: 10);  
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 

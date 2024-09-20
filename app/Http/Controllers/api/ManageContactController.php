@@ -142,7 +142,7 @@ class ManageContactController extends Controller
         }
         try
         {
-            $limit = 10; 
+            $limit = $request->input(key: 'per_page', default: 10); 
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
@@ -359,6 +359,7 @@ class ManageContactController extends Controller
                     'city'              => $request->city ? $request->city : $contact->city,
                     'referred_by'       => $request->referred_by ? $request->referred_by : $contact->referred_by,
                     'photo'             => (isset($avatar_url) && !empty($avatar_url)) ? $avatar_url : $contact->photo,
+                    'status'            => $request->status ? $request->status : $contact->status,
                     "updated_at"        => date('Y-m-d H:i:s')
                 ]);
 

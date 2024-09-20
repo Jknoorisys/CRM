@@ -15,6 +15,7 @@ class ManageActivityController extends Controller
     public function list(Request $request) {
         $validator = Validator::make($request->all(), [
             'page_no'   => ['required','numeric'],
+            'per_page'  => ['numeric'],
             'lead_id'   => ['required','string', Rule::notIn(['undefined']), Rule::exists('leads', 'id')],
             'search'    => ['nullable','string'],
             'medium'    => ['nullable', 'numeric', Rule::exists('activity_medium', 'id')],
@@ -31,7 +32,7 @@ class ManageActivityController extends Controller
         }
 
         try {            
-            $limit = 10; 
+            $limit = $request->input(key: 'per_page', default: 10);  
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
