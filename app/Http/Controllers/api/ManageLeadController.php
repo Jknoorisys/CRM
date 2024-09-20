@@ -99,8 +99,15 @@ class ManageLeadController extends Controller
             {
                 $query->where(function ($query) use ($request) 
                 {
-                    $query->where('id', 'like', '%' . $request->search . '%')
-                          ->orWhere('title', 'like', '%' . $request->search . '%');
+                    $query->where('title', 'like', '%' . $request->search . '%')
+                    ->orWhereHas('contact', function ($query) use ($request) {
+                        $query->where('fname', 'like','%' . $request->search . '%')
+                              ->orWhere('lname', 'like','%' . $request->search . '%')
+                              ->orWhere('email', 'like','%' . $request->search . '%')
+                              ->orWhere('mobile_number', 'like','%' . $request->search . '%')
+                              ->orWhere('phone_number', 'like', '%' . $request->search . '%')
+                              ->orWhere('company', 'like', '%' . $request->search . '%');
+                    });
                 });
             }
 
