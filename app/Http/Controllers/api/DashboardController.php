@@ -21,6 +21,7 @@ class DashboardController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'page_no'      => ['required','numeric'],
+            'per_page'     => ['numeric'],
             'stage'        => ['nullable','numeric', Rule::exists('stages', 'id')],
             'source'       => ['nullable', 'numeric', Rule::exists('sources', 'id')],
             'to_date'      => ['nullable', 'date_format:Y-m-d'],
@@ -40,7 +41,8 @@ class DashboardController extends Controller
 
         try
         {
-            $limit = 10; 
+            
+            $limit = $request->input(key: 'per_page', default: 10);
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
@@ -104,6 +106,7 @@ class DashboardController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'page_no'  => ['required','numeric'],
+            'per_page' => ['numeric'],
             'date'    => ['nullable','string', Rule::in(['today', 'yesterday', 'day_before_yesterday', 'tomorrow', 'day_after_tomorrow'])],
         ]);
 
@@ -123,7 +126,7 @@ class DashboardController extends Controller
 
         try
         {
-            $limit = 10; 
+            $limit = $request->input(key: 'per_page', default: 10);  
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 

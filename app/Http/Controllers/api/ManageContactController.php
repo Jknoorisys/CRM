@@ -132,7 +132,7 @@ class ManageContactController extends Controller
         }
         try
         {
-            $limit = 10; 
+            $limit = $request->input(key: 'per_page', default: 10); 
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 

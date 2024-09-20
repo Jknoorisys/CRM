@@ -15,6 +15,7 @@ class ManageUserController extends Controller
     public function list(Request $request) {
         $validator = Validator::make($request->all(), [
             'page_no'   => ['required','numeric'],
+            'per_page'  => ['numeric'],
         ]);
 
         if ($validator->fails()) {
@@ -27,7 +28,7 @@ class ManageUserController extends Controller
         }
 
         try {            
-            $limit = 10; 
+            $limit = $request->input(key: 'per_page', default: 10);  
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
