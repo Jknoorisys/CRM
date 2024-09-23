@@ -109,5 +109,6 @@ return [
         'failed-monthly'  => 'No leads found for this month',
         'failed-yearly'  => 'No leads found for this year',
         'failed-overall'    => 'No leads found',
+        'missing-dates' => 'Please provide start and end date',
     ]
 ];

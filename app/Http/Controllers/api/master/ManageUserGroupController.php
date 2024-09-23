@@ -1,20 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\api;
+namespace App\Http\Controllers\api\master;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\UserGroups;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
-class ManageUserController extends Controller
+class ManageUserGroupController extends Controller
 {
     public function list(Request $request) {
         $validator = Validator::make($request->all(), [
-            'page_no'   => ['required','numeric'],
+            'page_no'   => ['required', 'numeric'],
             'per_page'  => ['numeric'],
         ]);
 
@@ -32,33 +30,21 @@ class ManageUserController extends Controller
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
-            $query = User::query();
+            $query = UserGroups::query();
 
-            $query->where('is_admin', '!=', 'yes');
-
-            if ($request->has('search') && !empty($request->search)) {
-                $query->where(function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->search . '%')
-                        ->orWhere('email', 'like', '%' . $request->search . '%');
-                });
+            if ($request->has('search')) {
+                $query->where('name', 'like', '%' . $request->search . '%');
             }
 
             $total = $query->count();
-            $users = $query->limit($limit)->offset($offset)->orderBy('created_at', 'desc')->get();
+            $userGroups = $query->limit($limit)->offset($offset)->orderBy('created_at', 'desc')->get();
 
-            if (!empty($users)) {
-                return response()->json([
-                    'status'    => 'success',
-                    'message'   => trans('msg.list.success'),
-                    'total'     => $total,
-                    'data'      => $users,
-                ], 200);
-            } else {
-                return response()->json([
-                    'status'    => 'failed',
-                    'message'   => trans('msg.list.failed'),
-                ], 400);
-            }
+            return response()->json([
+                'status'    => 'success',
+                'message'   => trans('msg.list.success'),
+                'total'     => $total,
+                'data'      => $userGroups,
+            ], 200);
         } catch (\Throwable $e) {
             return response()->json([
                 'status'  => 'failed',
@@ -70,12 +56,17 @@ class ManageUserController extends Controller
 
     public function add(Request $request) {
         $validator = Validator::make($request->all(), [
-            'name'   => ['required','string','max:255'],
-            'email'   => ['required','string','email','max:255','unique:users'],
-            'password'   => ['required','string','min:6'],
-            'permissions'   => ['required','string'],
-            'user_group_id'   => ['nullable','numeric', Rule::exists('user_groups', 'id')],
+            'name' => ['required', 'string', 'max:255', Rule::unique('user_groups')],
+            'login_access' => ['required', 'boolean'],
         ]);
+
+        if ($request->login_access) {
+            $validator = Validator::make($request->all(), [
+                'contact_permissions' => ['nullable', 'string', 'max:255', 'required_without_all:lead_permissions,activity_permissions'],
+                'lead_permissions' => ['nullable', 'string', 'max:255', 'required_without_all:contact_permissions,activity_permissions'],
+                'activity_permissions' => ['nullable', 'string', 'max:255', 'required_without_all:contact_permissions,lead_permissions'],
+            ]);
+        }
 
         if ($validator->fails()) {
             $firstError = current(array_values($validator->errors()->messages()));
@@ -87,12 +78,12 @@ class ManageUserController extends Controller
         }
 
         try {
-            $insert = User::create([
+            $insert = UserGroups::create([
                 'name' => $request->name,
-                'email' => $request->email,
-                'password' => $request->password,
-                'permissions' => $request->permissions,
-                'user_group_id' => $request->user_group_id,
+                'login_access' => $request->login_access,
+                'contact_permissions' => $request->contact_permissions,
+                'lead_permissions' => $request->lead_permissions,
+                'activity_permissions' => $request->activity_permissions,
             ]);
 
             if ($insert) {
@@ -117,7 +108,7 @@ class ManageUserController extends Controller
 
     public function view(Request $request) {
         $validator = Validator::make($request->all(), [
-            'user_id'   => ['required','numeric', Rule::exists('users', 'id')],
+            'group_id'   => ['required','numeric', Rule::exists('user_groups', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -130,13 +121,12 @@ class ManageUserController extends Controller
         }
 
         try {
-            $user = User::where('id', '=', $request->user_id)->with('tasks','userGroup')->first();
-            if (!empty($user)) {
-                $user->permissions = explode(',', $user->permissions);
+            $group = UserGroups::where('id', '=', $request->group_id)->first();
+            if (!empty($group)) {
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.detail.success'),
-                    'data'      => $user,
+                    'data'      => $group,
                 ], 200);
             } else {
                 return response()->json([
@@ -155,11 +145,12 @@ class ManageUserController extends Controller
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
-            'user_id'   => ['required','numeric', Rule::exists('users', 'id')],
-            'name'   => ['required','string','max:255'],
-            'email'   => ['nullable','string','email','max:255', Rule::unique('users')->ignore($request->user_id)],
-            'permissions'   => ['required','string'],
-            'user_group_id'   => ['nullable','numeric', Rule::exists('user_groups', 'id')],
+            'group_id'   => ['required','numeric', Rule::exists('user_groups', 'id')],
+            'name' => ['nullable', 'string', 'max:255', Rule::unique('user_groups')->ignore($request->group_id)],
+            'login_access' => ['nullable', 'boolean'],
+            'contact_permissions' => ['nullable', 'string', 'max:255'],
+            'lead_permissions' => ['nullable', 'string', 'max:255'],
+            'activity_permissions' => ['nullable', 'string', 'max:255'],
         ]);
 
         if ($validator->fails()) {
@@ -172,19 +163,20 @@ class ManageUserController extends Controller
         }
 
         try {
-            $user = User::where('id', '=', $request->user_id)->first();
-            if (empty($user)) {
+            $group = UserGroups::where('id', '=', $request->group_id)->first();
+            if (empty($group)) {
                 return response()->json([
                     'status'    => 'failed',
-                    'message'   => trans('msg.update.not-found', ['entity' => 'User']),
+                    'message'   => trans('msg.update.not-found', ['entity' => 'user group']),
                 ], 400);
             }
 
-            $update = User::where('id', '=', $request->user_id)->update([
-                'name' => $request->name,
-                'email' => $request->email ? $request->email : $user->email,
-                'permissions' => $request->permissions,
-                'user_group_id' => $request->user_group_id,
+            $update = UserGroups::where('id', '=', $request->group_id)->update([
+                'name' => $request->name ?? $group->name,
+                'login_access' => $request->login_access ?? $group->login_access,
+                'contact_permissions' => $request->contact_permissions ?? $group->contact_permissions,
+                'lead_permissions' => $request->lead_permissions ?? $group->lead_permissions,
+                'activity_permissions' => $request->activity_permissions ?? $group->activity_permissions,
             ]);
 
             if ($update) {
@@ -209,7 +201,7 @@ class ManageUserController extends Controller
 
     public function changeStatus(Request $request) {
         $validator = Validator::make($request->all(), [
-            'user_id' => ['required','numeric', Rule::exists('users', 'id')],
+            'group_id'   => ['required','numeric', Rule::exists('user_groups', 'id')],
             'status'   => ['required', Rule::in(['active', 'inactive'])],
         ]);
 
@@ -219,30 +211,21 @@ class ManageUserController extends Controller
             return response()->json([
                 'status'  => 'failed',
                 'message' => $firstError[0],
-            ], 400);
+            ], 400); 
         }
 
         try {
-            $user = User::where('id', '=', $request->user_id)->first();
-            if (empty($user)) {
+            $group = UserGroups::where('id', '=', $request->group_id)->first();
+            if (empty($group)) {
                 return response()->json([
                     'status'    => 'failed',
-                    'message'   => trans('msg.change-status.not-found', ['entity' => 'User']),
+                    'message'   => trans('msg.change-status.not-found', ['entity' => 'task status']),
                 ], 400);
             }
 
-            $update = User::where('id', '=', $request->user_id)->update(['status' => $request->status]);
+            $update = UserGroups::where('id', '=', $request->group_id)->update(['status' => $request->status]);
 
             if ($update) {
-                if ($request->status == 'inactive' && !empty($user->jwt_token)) {
-                    if (!empty($user->jwt_token)) {
-                        JWTAuth::setToken($user->jwt_token)->invalidate();
-                    }
-                    
-                    $user->jwt_token = '';
-                    $user->save();
-                }
-
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.change-status.success'),
@@ -261,10 +244,10 @@ class ManageUserController extends Controller
             ], 500);
         }
     }
-    
+
     public function delete(Request $request) {
         $validator = Validator::make($request->all(), [
-            'user_id' => ['required','numeric', Rule::exists('users', 'id')],
+            'group_id'   => ['required','numeric', Rule::exists('user_groups', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -273,19 +256,19 @@ class ManageUserController extends Controller
             return response()->json([
                 'status'  => 'failed',
                 'message' => $firstError[0],
-            ], 400);
+            ], 400);   
         }
 
         try {
-            $user = User::where('id', '=', $request->user_id)->first();
-            if (empty($user)) {
+            $group = UserGroups::where('id', '=', $request->group_id)->first();
+            if (empty($group)) {
                 return response()->json([
                     'status'    => 'failed',
-                    'message'   => trans('msg.change-status.not-found', ['entity' => 'User']),
+                    'message'   => trans('msg.change-status.not-found', ['entity' => 'task status']),
                 ], 400);
             }
 
-            $delete = User::where('id', '=', $request->user_id)->delete();
+            $delete = UserGroups::where('id', '=', $request->group_id)->delete();
 
             if ($delete) {
                 return response()->json([
@@ -296,52 +279,6 @@ class ManageUserController extends Controller
                 return response()->json([
                     'status'    => 'failed',
                     'message'   => trans('msg.delete.failed'),
-                ], 400);
-            }
-        } catch (\Throwable $e) {
-            return response()->json([
-                'status'  => 'failed',
-                'message' => trans('msg.error'),
-                'error'   => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function resetPassword(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'user_id'   => ['required','numeric', Rule::exists('users', 'id')],
-            'password'   => ['required','string','min:6'],
-        ]);
-
-        if ($validator->fails()) {
-            $firstError = current(array_values($validator->errors()->messages()));
-
-            return response()->json([
-                'status'  => 'failed',
-                'message' => $firstError[0],
-            ], 400);
-        }
-
-        try {
-            $user = User::where('id', '=', $request->user_id)->first();
-            if (empty($user)) {
-                return response()->json([
-                    'status'    => 'failed',
-                    'message'   => trans('msg.reset-password.not-found', ['entity' => 'User']),
-                ], 400);
-            }
-
-            $update = User::where('id', '=', $request->user_id)->update(['password' => Hash::make($request->password)]);
-
-            if ($update) {
-                return response()->json([
-                    'status'    => 'success',
-                    'message'   => trans('msg.reset-password.success'),
-                ], 200);
-            } else {
-                return response()->json([
-                    'status'    => 'failed',
-                    'message'   => trans('msg.reset-password.failed'),
                 ], 400);
             }
         } catch (\Throwable $e) {

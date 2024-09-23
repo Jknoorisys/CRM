@@ -21,15 +21,16 @@ class ManageContactController extends Controller
             'lname'         => ['nullable','string','max:255'],
             'mobile_number' => ['nullable','string'],
             'phone_number'  => ['nullable','string'],
-            'designation'   => ['nullable','numeric'],
+            'designation'   => ['nullable','numeric', Rule::exists('designations', 'id')],
             'company'       => ['nullable','string'],
             'website'       => ['nullable','string'],
             'linkedin'      => ['nullable','string'],
-            'country'       => ['nullable','numeric'],
-            'city'          => ['nullable','numeric'],
-            'referred_by'   => ['nullable','numeric'],
+            'country'       => ['nullable','numeric', Rule::exists('countries', 'id')],
+            'city'          => ['nullable','numeric', Rule::exists('cities', 'id')],
+            'referred_by'   => ['nullable','numeric', Rule::exists('referred_by', 'id')],
+            'created_by'    => ['nullable','numeric', Rule::exists('users', 'id')],
             'photo'         => ['nullable','image','mimes:jpeg,png,jpg,gif,svg'],
-            'status'        => ['nullable','numeric'],
+            'status'        => ['nullable','numeric', Rule::exists('contact_status', 'id')],
         ]);
         
         if ($validator->fails()) 
@@ -77,6 +78,7 @@ class ManageContactController extends Controller
                 'country'       => $request->country,
                 'city'          => $request->city,
                 'referred_by'   => $request->referred_by,
+                'created_by'    => $request->created_by,
                 'photo'         => isset($avatar_url) ? $avatar_url : '',
                 'status'        => $request->status,
                 "created_at"    => date('Y-m-d H:i:s')
@@ -118,6 +120,7 @@ class ManageContactController extends Controller
             'country'       => ['nullable','numeric', Rule::exists('countries', 'id')],
             'city'          => ['nullable','numeric', Rule::exists('cities', 'id')],
             'referred_by'   => ['nullable','numeric', Rule::exists('referred_by', 'id')],
+            'created_by'    => ['nullable','numeric', Rule::exists('users', 'id')],
             'status'        => ['nullable','numeric', Rule::exists('contact_status', 'id')],
         ]);
 
@@ -136,7 +139,7 @@ class ManageContactController extends Controller
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
-            $query = Contact::query()->with(['source', 'designation', 'country', 'city', 'referred_by', 'contactStatus']);
+            $query = Contact::query()->with(['source', 'designation', 'country', 'city', 'referred_by', 'contactStatus', 'createdBy']);
 
             if ($request->has('search') && !empty($request->search))
             {
@@ -174,6 +177,10 @@ class ManageContactController extends Controller
             if (isset($request->referred_by) && !empty($request->referred_by))
             {
                 $query->where('referred_by', '=', $request->referred_by);
+            }
+
+            if (isset($request->created_by) && !empty($request->created_by)){
+                $query->where('created_by', '=', $request->created_by);
             }
 
             if (isset($request->status) && !empty($request->status))
@@ -234,7 +241,7 @@ class ManageContactController extends Controller
 
         try
         {
-            $contact = Contact::where('id', '=', $request->contact_id)->with(['source', 'designation', 'country', 'city', 'referred_by', 'contactStatus'])->first();
+            $contact = Contact::where('id', '=', $request->contact_id)->with(['source', 'designation', 'country', 'city', 'referred_by', 'contactStatus', 'createdBy'])->first();
             if (!empty($contact)) 
             {
                 return response()->json([
@@ -279,6 +286,7 @@ class ManageContactController extends Controller
             'country'       => ['nullable','numeric', Rule::exists('countries', 'id')],
             'city'          => ['nullable','numeric', Rule::exists('cities', 'id')],
             'referred_by'   => ['nullable','numeric', Rule::exists('referred_by', 'id')],
+            'created_by'    => ['nullable','numeric', Rule::exists('users', 'id')],
             'photo'         => ['nullable','image','mimes:jpeg,png,jpg,gif,svg'],
             'status'        => ['nullable','numeric', Rule::exists('contact_status', 'id')],
         ]);
@@ -348,6 +356,7 @@ class ManageContactController extends Controller
                     'country'           => $request->country ? $request->country : $contact->country,
                     'city'              => $request->city ? $request->city : $contact->city,
                     'referred_by'       => $request->referred_by ? $request->referred_by : $contact->referred_by,
+                    'created_by'        => $request->created_by ? $request->created_by : $contact->created_by,
                     'photo'             => (isset($avatar_url) && !empty($avatar_url)) ? $avatar_url : $contact->photo,
                     'status'            => $request->status ? $request->status : $contact->status,
                     "updated_at"        => date('Y-m-d H:i:s')

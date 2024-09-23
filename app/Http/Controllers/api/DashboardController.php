@@ -317,11 +317,15 @@ class DashboardController extends Controller
         $validator = Validator::make($request->all(),[
             'option'    => ['required','string', Rule::in(['stage', 'source', 'type'])],
             'date'      => ['required', 'string' , Rule::in('this_month', 'this_year', 'overall')],
+            'start_date' => ['nullable', 'date_format:Y-m-d'],
+            'end_date'   => ['nullable', 'date_format:Y-m-d'],
         ]);
 
         $validator->setCustomMessages([
             'option.in' => 'Please enter a valid option. Accepted values are: stage, source, type.',
-            'date.in'   => 'Please enter a valid date. Accepted values are: this_month, this_year, overall.'
+            'date.in'   => 'Please enter a valid date. Accepted values are: this_month, this_year, overall.',
+            'start_date.date_format' => 'Please enter a valid start date format. Accepted format is: Y-m-d.',
+            'end_date.date_format'   => 'Please enter a valid end date format. Accepted format is: Y-m-d.',
         ]);
 
         if ($validator->fails()) 
@@ -340,44 +344,102 @@ class DashboardController extends Controller
 
                 if($request->option == 'source' && $request->date == 'overall')
                 {
-                    $get_source = Source::all();
-                    $sourceCounts = [];
-                    $totalLeads = Lead::count(); 
-
-                    if($totalLeads > 0)
-                    {
-                        if(!empty($get_source))
-                        {
-                            foreach($get_source as $source)
-                            {
-                                $source_id = $source->id;
-                                $count = Lead::where('source', $source_id)->count();
-                                if($count > 0)
-                                {
-                                    $source_name = $source->source;
-                                    $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100 , 2) : 0;
-                                    
-                                    $sourceCounts[$source_name] = [
-                                        'count' => $count,
-                                        'percentage' => $percentage,
-                                    ];
-                                }   
-                            }
-                            
+                    if ($request->has('start_date') && isset($request->start_date) && !empty($request->start_date) && $request->has('end_date') && isset($request->end_date) && !empty($request->end_date)){
+                        $startDate = $request->input('start_date');
+                        $endDate = $request->input('end_date');
+                    
+                        // Validate start and end dates
+                        if (!$startDate || !$endDate) {
                             return response()->json([
-                                'status'  => 'success',
-                                'message' => trans('msg.lead-reports.success'),
-                                'report'  => $sourceCounts,
-                            ], 200);
+                                'status'  => 'error',
+                                'message' => trans('msg.lead-reports.missing-dates'),
+                                'report'  => [],
+                            ], 400);
                         }
-                    }
-                    else
-                    {
-                        return response()->json([
-                            'status'  => 'error',
-                            'message' => trans('msg.lead-reports.failed-overall'),
-                            'report'  => [],
-                        ], 400);   
+                    
+                        // Convert to Carbon instances to ensure proper date comparison
+                        $startDate = Carbon::parse($startDate)->startOfDay();
+                        $endDate = Carbon::parse($endDate)->endOfDay();
+                    
+                        $get_source = Source::all();
+                        $sourceCounts = [];
+                    
+                        // Get total leads within the date range
+                        $totalLeads = Lead::whereBetween('created_at', [$startDate, $endDate])->count();
+                    
+                        if ($totalLeads > 0) {
+                            if (!empty($get_source)) {
+                                foreach ($get_source as $source) {
+                                    $source_id = $source->id;
+                    
+                                    // Count leads for each source within the date range
+                                    $count = Lead::where('source', $source_id)
+                                        ->whereBetween('created_at', [$startDate, $endDate])
+                                        ->count();
+                    
+                                    if ($count > 0) {
+                                        $source_name = $source->source;
+                                        $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100, 2) : 0;
+                    
+                                        $sourceCounts[$source_name] = [
+                                            'count' => $count,
+                                            'percentage' => $percentage,
+                                        ];
+                                    }
+                                }
+                    
+                                return response()->json([
+                                    'status'  => 'success',
+                                    'message' => trans('msg.lead-reports.success'),
+                                    'report'  => $sourceCounts,
+                                ], 200);
+                            }
+                        } else {
+                            return response()->json([
+                                'status'  => 'error',
+                                'message' => trans('msg.lead-reports.failed-overall'),
+                                'report'  => [],
+                            ], 400);
+                        }
+                    } else {
+                            $get_source = Source::all();
+                            $sourceCounts = [];
+                            $totalLeads = Lead::count(); 
+
+                            if($totalLeads > 0) {
+                                if(!empty($get_source))
+                                {
+                                    foreach($get_source as $source)
+                                    {
+                                        $source_id = $source->id;
+                                        $count = Lead::where('source', $source_id)->count();
+                                        if($count > 0)
+                                        {
+                                            $source_name = $source->source;
+                                            $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100 , 2) : 0;
+                                            
+                                            $sourceCounts[$source_name] = [
+                                                'count' => $count,
+                                                'percentage' => $percentage,
+                                            ];
+                                        }   
+                                    }
+
+                                    
+                                    
+                                    return response()->json([
+                                        'status'  => 'success',
+                                        'message' => trans('msg.lead-reports.success'),
+                                        'report'  => $sourceCounts,
+                                    ], 200);
+                                }
+                            } else {
+                                return response()->json([
+                                    'status'  => 'error',
+                                    'message' => trans('msg.lead-reports.failed-overall'),
+                                    'report'  => [],
+                                ], 400);   
+                            }
                     }
                 }
 
@@ -479,45 +541,105 @@ class DashboardController extends Controller
 
                 if($request->option == 'stage' && $request->date == 'overall')
                 {
-                    $get_stage = Stage::all();
-                    $stageCounts = [];
-                    $totalLeads = Lead::count(); 
+                    if ($request->has('start_date') && isset($request->start_date) && !empty($request->start_date) && $request->has('end_date') && isset($request->end_date) && !empty($request->end_date)) {
+                        $startDate = $request->input('start_date');
+                        $endDate = $request->input('end_date');
 
-                    if($totalLeads > 0)
-                    {
-                        if(!empty($get_stage))
-                        {
-                            foreach($get_stage as $stage)
-                            {
-                                $stage_id = $stage->id;
-                                $count = Lead::where('stage', $stage_id)->count();
-                                if($count > 0)
-                                {
-                                    $stage_name = $stage->stage;
-                                    $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100 , 2) : 0;
-                                    
-                                    $stageCounts[$stage_name] = [
-                                        'count'         => $count,
-                                        'percentage'    => $percentage,
-                                    ];
-                                }   
-                            }
-                            
+                        // Validate start and end dates
+                        if (!$startDate || !$endDate) {
                             return response()->json([
-                                'status'  => 'success',
-                                'message' => trans('msg.lead-reports.success'),
-                                'report'  => $stageCounts,
-                            ], 200);
+                                'status'  => 'error',
+                                'message' => trans('msg.lead-reports.missing-dates'),
+                                'report'  => [],
+                            ], 400);
+                        }
+
+                        // Convert to Carbon instances to ensure proper date comparison
+                        $startDate = Carbon::parse($startDate)->startOfDay();
+                        $endDate = Carbon::parse($endDate)->endOfDay();
+
+                        $get_stage = Stage::all();
+                        $stageCounts = [];
+
+                        // Get total leads within the date range
+                        $totalLeads = Lead::whereBetween('created_at', [$startDate, $endDate])->count();
+
+                        if ($totalLeads > 0) {
+                            if (!empty($get_stage)) {
+                                foreach ($get_stage as $stage) {
+                                    $stage_id = $stage->id;
+
+                                    // Count leads for each stage within the date range
+                                    $count = Lead::where('stage', $stage_id)
+                                        ->whereBetween('created_at', [$startDate, $endDate])
+                                        ->count();
+
+                                    if ($count > 0) {
+                                        $stage_name = $stage->stage;
+                                        $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100, 2) : 0;
+
+                                        $stageCounts[$stage_name] = [
+                                            'count'         => $count,
+                                            'percentage'    => $percentage,
+                                        ];
+                                    }
+                                }
+
+                                return response()->json([
+                                    'status'  => 'success',
+                                    'message' => trans('msg.lead-reports.success'),
+                                    'report'  => $stageCounts,
+                                ], 200);
+                            }
+                        } else {
+                            return response()->json([
+                                'status'  => 'error',
+                                'message' => trans('msg.lead-reports.failed-overall'),
+                                'report'  => [],
+                            ], 400);
+                        }
+                    } else {
+                        $get_stage = Stage::all();
+                        $stageCounts = [];
+                        $totalLeads = Lead::count(); 
+
+                        if($totalLeads > 0)
+                        {
+                            if(!empty($get_stage))
+                            {
+                                foreach($get_stage as $stage)
+                                {
+                                    $stage_id = $stage->id;
+                                    $count = Lead::where('stage', $stage_id)->count();
+                                    if($count > 0)
+                                    {
+                                        $stage_name = $stage->stage;
+                                        $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100 , 2) : 0;
+                                        
+                                        $stageCounts[$stage_name] = [
+                                            'count'         => $count,
+                                            'percentage'    => $percentage,
+                                        ];
+                                    }   
+                                }
+                                
+                                return response()->json([
+                                    'status'  => 'success',
+                                    'message' => trans('msg.lead-reports.success'),
+                                    'report'  => $stageCounts,
+                                ], 200);
+                            }
+                        }
+                        else
+                        {
+                            return response()->json([
+                                'status'  => 'error',
+                                'message' => trans('msg.lead-reports.failed-overall'),
+                                'report'  => [],
+                            ], 400);   
                         }
                     }
-                    else
-                    {
-                        return response()->json([
-                            'status'  => 'error',
-                            'message' => trans('msg.lead-reports.failed-overall'),
-                            'report'  => [],
-                        ], 400);   
-                    }
+                    
                 }
 
                 
@@ -620,45 +742,106 @@ class DashboardController extends Controller
 
                 if($request->option == 'type' && $request->date == 'overall')
                 {
-                    $get_lead_types = LeadType::all();
-                    $typeCounts = [];
-                    $totalLeads = Lead::count(); 
+                    if ($request->has('start_date') && isset($request->start_date) && !empty($request->start_date) && $request->has('end_date') && isset($request->end_date) && !empty($request->end_date)) {
+                        $startDate = $request->input('start_date');
+                        $endDate = $request->input('end_date');
 
-                    if($totalLeads > 0)
-                    {
-                        if(!empty($get_lead_types))
-                        {
-                            foreach($get_lead_types as $type)
-                            {
-                                $type_id = $type->id;
-                                $count = Lead::where('type', $type_id)->count();
-                                if($count > 0)
-                                {
-                                    $type_name = $type->type;
-                                    $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100 , 2) : 0;
-                                    
-                                    $typeCounts[$type_name] = [
-                                        'count'         => $count,
-                                        'percentage'    => $percentage,
-                                    ];
-                                }   
-                            }
-                            
+                        // Validate start and end dates
+                        if (!$startDate || !$endDate) {
                             return response()->json([
-                                'status'  => 'success',
-                                'message' => trans('msg.lead-reports.success'),
-                                'report' => $typeCounts,
-                            ], 200);
+                                'status'  => 'error',
+                                'message' => trans('msg.lead-reports.missing-dates'),
+                                'report'  => [],
+                            ], 400);
+                        }
+
+                        // Convert to Carbon instances to ensure proper date comparison
+                        $startDate = Carbon::parse($startDate)->startOfDay();
+                        $endDate = Carbon::parse($endDate)->endOfDay();
+
+                        $get_lead_types = LeadType::all();
+                        $typeCounts = [];
+
+                        // Get total leads within the date range
+                        $totalLeads = Lead::whereBetween('created_at', [$startDate, $endDate])->count();
+
+                        if ($totalLeads > 0) {
+                            if (!empty($get_lead_types)) {
+                                foreach ($get_lead_types as $type) {
+                                    $type_id = $type->id;
+
+                                    // Count leads for each type within the date range
+                                    $count = Lead::where('type', $type_id)
+                                        ->whereBetween('created_at', [$startDate, $endDate])
+                                        ->count();
+
+                                    if ($count > 0) {
+                                        $type_name = $type->type;
+                                        $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100, 2) : 0;
+
+                                        $typeCounts[$type_name] = [
+                                            'count'         => $count,
+                                            'percentage'    => $percentage,
+                                        ];
+                                    }
+                                }
+
+                                return response()->json([
+                                    'status'  => 'success',
+                                    'message' => trans('msg.lead-reports.success'),
+                                    'report'  => $typeCounts,
+                                ], 200);
+                            }
+                        } else {
+                            return response()->json([
+                                'status'  => 'error',
+                                'message' => trans('msg.lead-reports.failed-overall'),
+                                'report'  => [],
+                            ], 400);
+                        }
+
+                    } else {
+                        $get_lead_types = LeadType::all();
+                        $typeCounts = [];
+                        $totalLeads = Lead::count(); 
+
+                        if($totalLeads > 0)
+                        {
+                            if(!empty($get_lead_types))
+                            {
+                                foreach($get_lead_types as $type)
+                                {
+                                    $type_id = $type->id;
+                                    $count = Lead::where('type', $type_id)->count();
+                                    if($count > 0)
+                                    {
+                                        $type_name = $type->type;
+                                        $percentage = ($totalLeads > 0) ? round(($count / $totalLeads) * 100 , 2) : 0;
+                                        
+                                        $typeCounts[$type_name] = [
+                                            'count'         => $count,
+                                            'percentage'    => $percentage,
+                                        ];
+                                    }   
+                                }
+                                
+                                return response()->json([
+                                    'status'  => 'success',
+                                    'message' => trans('msg.lead-reports.success'),
+                                    'report' => $typeCounts,
+                                ], 200);
+                            }
+                        }
+                        else
+                        {
+                            return response()->json([
+                                'status'  => 'error',
+                                'message' => trans('msg.lead-reports.failed-overall'),
+                                'report'  => [],
+                            ],400);
                         }
                     }
-                    else
-                    {
-                        return response()->json([
-                            'status'  => 'error',
-                            'message' => trans('msg.lead-reports.failed-overall'),
-                            'report'  => [],
-                        ],400);
-                    }
+                    
                 }
 
 
