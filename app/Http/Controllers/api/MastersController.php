@@ -16,6 +16,7 @@ use App\Models\Stage;
 use App\Models\TaskStatus;
 use App\Models\User;
 use App\Models\Contact;
+use App\Models\UserGroups;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -288,6 +289,30 @@ class MastersController extends Controller
     public function users() {
         try {
             $data = User::where('status', 'active')->where('is_admin', '!=', 'yes')->orderBy('name', 'asc')->get();
+            if (!empty($data)) {
+                return response()->json([
+                    'status'    => 'success',
+                    'message'   => trans('msg.list.success'),
+                    'data'      => $data,
+                ], 200);
+            } else {
+                return response()->json([
+                    'status'    => 'failed',
+                    'message'   => trans('msg.list.failed'),
+                ], 400);
+            }
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status'  => 'failed',
+                'message' => trans('msg.error'),
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function userGroups() {
+        try {
+            $data = UserGroups::where('status', 'active')->orderBy('name', 'asc')->get();
             if (!empty($data)) {
                 return response()->json([
                     'status'    => 'success',

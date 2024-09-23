@@ -20,6 +20,7 @@ class ManageActivityController extends Controller
             'search'    => ['nullable','string'],
             'medium'    => ['nullable', 'numeric', Rule::exists('activity_medium', 'id')],
             'user_id'   => ['nullable', 'numeric', Rule::exists('users', 'id')],
+            'created_by' => ['nullable', 'numeric', Rule::exists('users', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -36,7 +37,7 @@ class ManageActivityController extends Controller
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
-            $query = Activity::query()->with(['lead' ,'medium', 'user', 'stage'])->where('lead_id', '=', $request->lead_id);
+            $query = Activity::query()->with(['lead' ,'medium', 'user', 'stage', 'createdBy'])->where('lead_id', '=', $request->lead_id);
 
             if ($request->has('search') && !empty($request->search)) {
                 $query->where('summary', 'like', '%' . $request->search . '%');
@@ -48,6 +49,10 @@ class ManageActivityController extends Controller
 
             if ($request->has('user_id') && !empty($request->user_id)) {
                 $query->where('user_id', '=', $request->user_id);
+            }
+
+            if ($request->has('created_by') && !empty($request->created_by)) {
+                $query->where('created_by', '=', $request->created_by);
             }
 
             if ($request->has('stage') && !empty($request->stage)) {
@@ -92,6 +97,7 @@ class ManageActivityController extends Controller
             'summary' => ['required','string'],
             'follow_up_date'   => ['required', 'string'],
             'user_id' => ['required', 'numeric', Rule::exists('users', 'id')],
+            'created_by' => ['required', 'numeric', Rule::exists('users', 'id')],
         ]);
 
         if ($validator->fails()) {
@@ -118,6 +124,7 @@ class ManageActivityController extends Controller
                 'title'   => $request->title,
                 'lead_id' => $request->lead_id,
                 'user_id' => $request->user_id,
+                'created_by' => $request->created_by,
                 'stage' => $request->stage,
                 'medium' => $request->medium,
                 'title' => $request->title,
@@ -162,7 +169,7 @@ class ManageActivityController extends Controller
         }
 
         try {
-            $activity = Activity::where('id', '=', $request->activity_id)->with(['lead' ,'medium', 'stage', 'user', 'lead.stage'])->first();
+            $activity = Activity::where('id', '=', $request->activity_id)->with(['lead' ,'medium', 'stage', 'user', 'lead.stage', 'createdBy'])->first();
             if (!empty($activity)) {
                 return response()->json([
                     'status'    => 'success',
@@ -187,6 +194,7 @@ class ManageActivityController extends Controller
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
             'activity_id'   => ['required','numeric', Rule::exists('activities', 'id')],
+            'created_by' => ['required', 'numeric', Rule::exists('users', 'id')],
             'title'  => ['nullable','string'],
             'lead_id' => ['required','string', Rule::notIn(['undefined']), Rule::exists('leads', 'id')],
             'stage'   => ['required','numeric', Rule::exists('stages', 'id')],
@@ -230,6 +238,7 @@ class ManageActivityController extends Controller
 
             $update = Activity::where('id', '=', $request->activity_id)->update([
                 'title'   => $request->title ? $request->title : $activity->title,
+                'created_by' => $request->created_by,
                 'lead_id' => $request->lead_id,
                 'user_id' => $request->user_id,
                 'stage' => $request->stage,
