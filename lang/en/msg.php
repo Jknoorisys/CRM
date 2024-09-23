@@ -33,6 +33,7 @@ return [
     'add' => [
         'success' => 'Details Added Successfully',
         'failed'  => 'Add Failed',
+        'already-exists' => 'Email already exists',
     ],
 
     'delete' => [
