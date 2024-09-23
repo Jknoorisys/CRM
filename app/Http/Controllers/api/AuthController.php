@@ -61,6 +61,12 @@ class AuthController extends Controller
             $user->permissions = explode(',', $user->permissions);
 
             $user->user_group = $user->userGroup()->first();
+
+            if ($user->user_group != null && !empty($user->user_group)) {
+                $user->user_group->contact_permissions = explode(',', $user->user_group->contact_permissions);
+                $user->user_group->lead_permissions = explode(',', $user->user_group->lead_permissions);
+                $user->user_group->activity_permissions = explode(',', $user->user_group->activity_permissions);
+            }
             return response()->json([
                 'status'  => 'success',
                 'message' => trans('msg.login.success'),
