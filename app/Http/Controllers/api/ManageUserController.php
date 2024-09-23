@@ -130,9 +130,15 @@ class ManageUserController extends Controller
         }
 
         try {
-            $user = User::where('id', '=', $request->user_id)->with('tasks','userGroup')->first();
+            $user = User::where('id', '=', $request->user_id)->with('tasks')->first();
             if (!empty($user)) {
                 $user->permissions = explode(',', $user->permissions);
+                $user->user_group = $user->userGroup()->first();
+                if ($user->user_group != null && !empty($user->user_group)) {
+                    $user->user_group->contact_permissions = explode(',', $user->user_group->contact_permissions);
+                    $user->user_group->lead_permissions = explode(',', $user->user_group->lead_permissions);
+                    $user->user_group->activity_permissions = explode(',', $user->user_group->activity_permissions);
+                }
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.detail.success'),
