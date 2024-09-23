@@ -60,6 +60,7 @@ class AuthController extends Controller
 
             $user->permissions = explode(',', $user->permissions);
 
+            $user->user_group = $user->userGroup()->first();
             return response()->json([
                 'status'  => 'success',
                 'message' => trans('msg.login.success'),

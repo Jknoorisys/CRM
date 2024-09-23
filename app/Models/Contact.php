@@ -85,6 +85,11 @@ class Contact extends Model
         return $this->belongsTo(ReferredBy::class, 'referred_by')->withTrashed();
     }
 
+    public function createdBy() : BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by')->withTrashed();
+    }
+
     public function contactStatus() : BelongsTo
     {
         return $this->belongsTo(ContactStatus::class, 'status')->withTrashed();

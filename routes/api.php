@@ -21,6 +21,7 @@ use App\Http\Controllers\api\MastersController;
 use App\Http\Controllers\api\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\DashboardController;
+use App\Http\Controllers\api\master\ManageUserGroupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -132,6 +133,14 @@ Route::middleware('set.locale')->group(function () {
             Route::post('referred-by/update' , [ManageReferredByController::class, 'update']);
             Route::post('referred-by/change-status' , [ManageReferredByController::class, 'changeStatus']);
             Route::post('referred-by/delete' , [ManageReferredByController::class, 'delete']);
+
+            // Manage User Group
+            Route::post('user-group/list' , [ManageUserGroupController::class, 'list']);
+            Route::post('user-group/add' , [ManageUserGroupController::class, 'add']);
+            Route::post('user-group/view' , [ManageUserGroupController::class, 'view']);
+            Route::post('user-group/update' , [ManageUserGroupController::class, 'update']);
+            Route::post('user-group/change-status' , [ManageUserGroupController::class, 'changeStatus']);
+            Route::post('user-group/delete' , [ManageUserGroupController::class, 'delete']);
         });
 
         // Manage Tasks
@@ -154,6 +163,7 @@ Route::middleware('set.locale')->group(function () {
         Route::get('master/activity-medium' , [MastersController::class, 'activityMedium']);
         Route::get('master/task-status' , [MastersController::class, 'taskStatus']);
         Route::get('master/users' , [MastersController::class, 'users']);
+        Route::get('master/user-groups' , [MastersController::class, 'userGroups']);
         Route::get('master/contacts' , [MastersController::class , 'contacts']);
 
         // Manage Contacts
