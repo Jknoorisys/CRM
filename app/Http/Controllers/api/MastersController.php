@@ -22,7 +22,8 @@ use Illuminate\Validation\Rule;
 
 class MastersController extends Controller
 {
-    public function referredBy() {
+    public function referredBy()
+    {
         try {
             $data = ReferredBy::where('status', 'active')->orderBy('referred_by', 'asc')->get();
             if (!empty($data)) {
@@ -46,7 +47,8 @@ class MastersController extends Controller
         }
     }
 
-    public function country() {
+    public function country()
+    {
         try {
             $data = Country::where('status', 'active')->orderBy('country', 'asc')->get();
             if (!empty($data)) {
@@ -70,9 +72,10 @@ class MastersController extends Controller
         }
     }
 
-    public function city(Request $request) {
+    public function city(Request $request)
+    {
         $validator = Validator::make($request->all(), [
-            'country_id'   => ['nullable','numeric', Rule::exists('countries', 'id')->where(function ($query) {
+            'country_id'   => ['nullable', 'numeric', Rule::exists('countries', 'id')->where(function ($query) {
                 $query->where('status', 'active');
             })],
         ]);
@@ -92,7 +95,7 @@ class MastersController extends Controller
             $query = City::query();
 
             if ($request->has('country_id')) {
-                $query->where('country_id', '=' , $country_id);
+                $query->where('country_id', '=', $country_id);
             }
 
             $data = $query->where('status', 'active')->orderBy('city', 'asc')->get();
@@ -118,7 +121,8 @@ class MastersController extends Controller
         }
     }
 
-    public function designation() {
+    public function designation()
+    {
         try {
             $data = Designation::where('status', 'active')->orderBy('designation', 'asc')->get();
             if (!empty($data)) {
@@ -142,7 +146,8 @@ class MastersController extends Controller
         }
     }
 
-    public function contactStatus() {
+    public function contactStatus()
+    {
         try {
             $data = ContactStatus::where('status', 'active')->orderBy('name', 'asc')->get();
             if (!empty($data)) {
@@ -190,7 +195,50 @@ class MastersController extends Controller
         }
     }
 
-    public function leadType() {
+
+    // Stages for category Leads
+    public function categoryStage(Request $request)
+    {
+        try {
+            // Validate the incoming request for status
+            $request->validate([
+                'status' => 'nullable|string|in:active lead,inactive lead,others lead', // Adjust based on your requirements
+            ]);
+
+            // Start building the query
+            $query = Stage::query();
+
+            // Filter by status if provided
+            if ($request->filled('status')) {
+                $query->where('lead_category', $request->status);
+            }
+
+            // Fetch stages with 'active' status, ordered by 'stage'
+            $data = $query->where('status', 'active')->orderBy('stage', 'asc')->get();
+
+            if ($data->isNotEmpty()) {
+                return response()->json([
+                    'status'    => 'success',
+                    'message'   => trans('msg.list.success'),
+                    'data'      => $data,
+                ], 200);
+            } else {
+                return response()->json([
+                    'status'    => 'failed',
+                    'message'   => trans('msg.list.failed'),
+                ], 400);
+            }
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status'  => 'failed',
+                'message' => trans('msg.error'),
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function leadType()
+    {
         try {
             $data = LeadType::where('status', 'active')->orderBy('type', 'asc')->get();
             if (!empty($data)) {
@@ -214,7 +262,8 @@ class MastersController extends Controller
         }
     }
 
-    public function source() {
+    public function source()
+    {
         try {
             $data = Source::where('status', 'active')->orderBy('source', 'asc')->get();
             if (!empty($data)) {
@@ -238,7 +287,8 @@ class MastersController extends Controller
         }
     }
 
-    public function activityMedium() {
+    public function activityMedium()
+    {
         try {
             $data = ActivityMedium::where('status', 'active')->orderBy('medium', 'asc')->get();
             if (!empty($data)) {
@@ -262,7 +312,8 @@ class MastersController extends Controller
         }
     }
 
-    public function taskStatus() {
+    public function taskStatus()
+    {
         try {
             $data = TaskStatus::where('status', 'active')->orderBy('name', 'asc')->get();
             if (!empty($data)) {
@@ -286,7 +337,8 @@ class MastersController extends Controller
         }
     }
 
-    public function users() {
+    public function users()
+    {
         try {
             $data = User::where('status', 'active')->where('is_admin', '!=', 'yes')->orderBy('name', 'asc')->get();
             if (!empty($data)) {
@@ -310,7 +362,8 @@ class MastersController extends Controller
         }
     }
 
-    public function userGroups() {
+    public function userGroups()
+    {
         try {
             $data = UserGroups::where('status', 'active')->orderBy('name', 'asc')->get();
             if (!empty($data)) {
@@ -336,28 +389,22 @@ class MastersController extends Controller
 
     public function contacts()
     {
-        try 
-        {
+        try {
             $data = Contact::orderBy('fname', 'asc')->get();
 
-            if (!empty($data)) 
-            {
+            if (!empty($data)) {
                 return response()->json([
                     'status'    => 'success',
                     'message'   => trans('msg.list.success'),
                     'data'      => $data,
                 ], 200);
-            } 
-            else 
-            {
+            } else {
                 return response()->json([
                     'status'    => 'failed',
                     'message'   => trans('msg.list.failed'),
                 ], 400);
             }
-        } 
-        catch (\Throwable $e) 
-        {
+        } catch (\Throwable $e) {
             return response()->json([
                 'status'  => 'failed',
                 'message' => trans('msg.error'),

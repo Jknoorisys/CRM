@@ -178,6 +178,7 @@ Route::middleware('set.locale')->group(function () {
 
         // Manage Leads
         Route::post('lead/list' , [ManageLeadController::class, 'list']);
+        Route::post('lead/lead-list' , [ManageLeadController::class, 'leadlist']);
         Route::post('lead/add' , [ManageLeadController::class, 'add']);
         Route::post('lead/view' , [ManageLeadController::class, 'view']);
         Route::post('lead/update' , [ManageLeadController::class, 'update']);
