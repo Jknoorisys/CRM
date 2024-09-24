@@ -20,6 +20,7 @@ class Activity extends Model
         'summary',
         'attachment',
         'follow_up_date',
+        'created_by',
     ];
 
     protected $hidden = [
