@@ -27,6 +27,7 @@ class Contact extends Model
         'country',
         'city',
         'referred_by',
+        'created_by',
         'photo',
         'status',
     ];
