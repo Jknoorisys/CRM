@@ -172,11 +172,11 @@ class ManageUserGroupController extends Controller
             }
 
             $update = UserGroups::where('id', '=', $request->group_id)->update([
-                'name' => $request->name ?? $group->name,
-                'login_access' => $request->login_access ?? $group->login_access,
-                'contact_permissions' => $request->contact_permissions ?? $group->contact_permissions,
-                'lead_permissions' => $request->lead_permissions ?? $group->lead_permissions,
-                'activity_permissions' => $request->activity_permissions ?? $group->activity_permissions,
+                'name' => $request->name,
+                'login_access' => $request->login_access,
+                'contact_permissions' => $request->contact_permissions,
+                'lead_permissions' => $request->lead_permissions,
+                'activity_permissions' => $request->activity_permissions,
             ]);
 
             if ($update) {
