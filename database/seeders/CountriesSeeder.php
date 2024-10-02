@@ -77,7 +77,6 @@ class CountriesSeeder extends Seeder
             ['country' => 'Jordan', 'status' => 'active'],
             ['country' => 'Kazakhstan', 'status' => 'active'],
             ['country' => 'Kiribati', 'status' => 'active'],
-            ['country' => 'Kuwait', 'status' => 'active'],
             ['country' => 'Kyrgyzstan', 'status' => 'active'],
             ['country' => 'Laos', 'status' => 'active'],
             ['country' => 'Latvia', 'status' => 'active'],
@@ -142,7 +141,6 @@ class CountriesSeeder extends Seeder
             ['country' => 'Uruguay', 'status' => 'active'],
             ['country' => 'Uzbekistan', 'status' => 'active'],
             ['country' => 'Vanuatu', 'status' => 'active'],
-            ['country' => 'Vatican City', 'status' => 'active'],
             ['country' => 'Venezuela', 'status' => 'active'],
             ['country' => 'Vietnam', 'status' => 'active'],
             ['country' => 'Zambia', 'status' => 'active']
