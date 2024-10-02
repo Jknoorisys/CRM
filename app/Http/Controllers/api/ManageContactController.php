@@ -72,6 +72,15 @@ class ManageContactController extends Controller
                 ], 400);
             }
 
+            $mobileNoExists = Contact::where('mobile_number', '=', $request->mobile_number)->first();
+            if (!empty($mobileNoExists) && $request->mobile_number != '') 
+            {
+                return response()->json([
+                    'status'    => 'failed',
+                    'message'   => trans('msg.add.mob-already-exists'),
+                ], 400);
+            }
+
             
             $insert = Contact::create([
                 'source'        => $request->source,

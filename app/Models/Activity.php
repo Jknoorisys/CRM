@@ -21,34 +21,39 @@ class Activity extends Model
         'attachment',
         'follow_up_date',
         'created_by',
+        'action_performed_by'
     ];
 
     protected $hidden = [
         'deleted_at',
     ];
 
-    public function lead() : BelongsTo
+    public function lead(): BelongsTo
     {
         return $this->belongsTo(Lead::class, 'lead_id', 'id')->withTrashed();
     }
 
-    public function medium() : BelongsTo
+    public function medium(): BelongsTo
     {
         return $this->belongsTo(ActivityMedium::class, 'medium', 'id')->withTrashed();
     }
 
-    public function user() : BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id')->withTrashed();
     }
 
-    public function createdBy() : BelongsTo
+    public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by')->withTrashed();
     }
 
-    public function stage() : BelongsTo
+    public function stage(): BelongsTo
     {
         return $this->belongsTo(Stage::class, 'stage', 'id')->withTrashed();
+    }
+    public function actionPerformedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'action_performed_by')->withTrashed();
     }
 }

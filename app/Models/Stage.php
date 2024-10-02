@@ -15,6 +15,7 @@ class Stage extends Model
         'stage',
         'color',
         'status',
+        'lead_category'
     ];
 
     protected $hidden = [

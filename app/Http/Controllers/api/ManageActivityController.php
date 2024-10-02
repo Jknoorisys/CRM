@@ -37,7 +37,9 @@ class ManageActivityController extends Controller
             $pageNo = $request->input(key: 'page_no', default: 1); 
             $offset = ($pageNo - 1) * $limit;
 
-            $query = Activity::query()->with(['lead' ,'medium', 'user', 'stage', 'createdBy'])->where('lead_id', '=', $request->lead_id);
+            // $query = Activity::query()->with(['lead' ,'medium', 'user', 'stage', 'createdBy'])->where('lead_id', '=', $request->lead_id);
+            $query = Activity::query()->with(['lead', 'medium', 'user', 'stage', 'createdBy', 'actionPerformedBy'])->where('lead_id', '=', $request->lead_id);
+
 
             if ($request->has('search') && !empty($request->search)) {
                 $query->where('summary', 'like', '%' . $request->search . '%');
