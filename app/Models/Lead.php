@@ -46,6 +46,11 @@ class Lead extends Model
         return $this->belongsTo(User::class, 'user_id')->withTrashed();
     }
 
+    public function actionPerformedByUser() : BelongsTo
+    {
+        return $this->belongsTo(User::class, 'action_performed_by')->withTrashed();
+    }
+
     public function contact() : BelongsTo
     {
         return $this->belongsTo(Contact::class, 'contact')->withTrashed();

@@ -17,8 +17,82 @@ use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
+    // public function active_leads(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'page_no'      => ['required', 'numeric'],
+    //         'per_page'     => ['numeric'],
+    //         'stage'        => ['nullable', 'numeric', Rule::exists('stages', 'id')],
+    //         'source'       => ['nullable', 'numeric', Rule::exists('sources', 'id')],
+    //         'to_date'      => ['nullable', 'date_format:Y-m-d'],
+    //         'from_date'    => ['nullable', 'date_format:Y-m-d'],
+    //         'assigned_to'  => ['nullable', 'numeric', Rule::exists('users', 'id')],
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         $firstError = current(array_values($validator->errors()->messages()));
+
+    //         return response()->json([
+    //             'status'  => 'failed',
+    //             'message' => $firstError[0],
+    //         ], 400);
+    //     }
+
+    //     try {
+
+    //         $limit = $request->input(key: 'per_page', default: 10);
+    //         $pageNo = $request->input(key: 'page_no', default: 1);
+    //         $offset = ($pageNo - 1) * $limit;
+
+    //         $startDate = now()->subMonth();
+    //         $endDate = now();
+
+    //         $query = Lead::query()->with(['contact', 'stage', 'source', 'type', 'assignedTo', 'createdBy', 'latestActivity'])
+    //             ->whereBetween('last_contacted_date', [$startDate, $endDate]);
+
+    //         if (isset($request->stage) && !empty($request->stage)) {
+    //             $query->where('stage', '=', $request->stage);
+    //         }
+
+    //         if (isset($request->soruce) && !empty($request->source)) {
+    //             $query->where('source', '=', $request->source);
+    //         }
+
+    //         if ((isset($request->from_date) && !empty($request->from_date)) && (isset($request->to_date) && !empty($request->to_date))) {
+    //             $query->whereBetween('last_contacted_date', [$request->from_date . ' 00:00:00', $request->to_date . ' 23:59:59']);
+    //         }
+
+    //         if (isset($request->assigned_to) && !empty($request->assigned_to)) {
+    //             $query->where('assigned_to', '=', $request->assigned_to);
+    //         }
+
+    //         $total = $query->count();
+    //         $leads = $query->limit($limit)->offset($offset)->orderBy('id', 'DESC')->get();
+
+    //         if (!empty($leads)) {
+    //             return response()->json([
+    //                 'status'    => 'success',
+    //                 'message'   => trans('msg.list.success'),
+    //                 'total'     => $total,
+    //                 'data'      => $leads,
+    //             ], 200);
+    //         } else {
+    //             return response()->json([
+    //                 'status'    => 'failed',
+    //                 'message'   => trans('msg.list.failed'),
+    //             ], 400);
+    //         }
+    //     } catch (\Throwable $e) {
+    //         return response()->json([
+    //             'status'  => 'failed',
+    //             'message' => trans('msg.error'),
+    //             'error'   => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
     public function active_leads(Request $request)
     {
+        // Validate the request parameters
         $validator = Validator::make($request->all(), [
             'page_no'      => ['required', 'numeric'],
             'per_page'     => ['numeric'],
@@ -27,11 +101,12 @@ class DashboardController extends Controller
             'to_date'      => ['nullable', 'date_format:Y-m-d'],
             'from_date'    => ['nullable', 'date_format:Y-m-d'],
             'assigned_to'  => ['nullable', 'numeric', Rule::exists('users', 'id')],
+            'created_by'   => ['nullable', 'numeric', Rule::exists('users', 'id')], // Add created_by validation
         ]);
 
+        // Check if validation fails
         if ($validator->fails()) {
             $firstError = current(array_values($validator->errors()->messages()));
-
             return response()->json([
                 'status'  => 'failed',
                 'message' => $firstError[0],
@@ -39,36 +114,51 @@ class DashboardController extends Controller
         }
 
         try {
-
-            $limit = $request->input(key: 'per_page', default: 10);
-            $pageNo = $request->input(key: 'page_no', default: 1);
+            // Pagination parameters
+            $limit = $request->input('per_page', 10);
+            $pageNo = $request->input('page_no', 1);
             $offset = ($pageNo - 1) * $limit;
 
+            // Default date range: last 30 days
             $startDate = now()->subMonth();
             $endDate = now();
 
+            // Build the base query
             $query = Lead::query()->with(['contact', 'stage', 'source', 'type', 'assignedTo', 'createdBy', 'latestActivity'])
                 ->whereBetween('last_contacted_date', [$startDate, $endDate]);
 
-            if (isset($request->stage) && !empty($request->stage)) {
-                $query->where('stage', '=', $request->stage);
+            // Apply stage filter if provided
+            if ($request->filled('stage')) {
+                $query->where('stage', $request->stage);
             }
 
-            if (isset($request->soruce) && !empty($request->source)) {
-                $query->where('source', '=', $request->source);
+            // Apply source filter if provided
+            if ($request->filled('source')) {
+                $query->where('source', $request->source);
             }
 
-            if ((isset($request->from_date) && !empty($request->from_date)) && (isset($request->to_date) && !empty($request->to_date))) {
+            // Apply date range filter if provided
+            if ($request->filled('from_date') && $request->filled('to_date')) {
                 $query->whereBetween('last_contacted_date', [$request->from_date . ' 00:00:00', $request->to_date . ' 23:59:59']);
             }
 
-            if (isset($request->assigned_to) && !empty($request->assigned_to)) {
-                $query->where('assigned_to', '=', $request->assigned_to);
+            // Apply assigned_to filter if provided
+            if ($request->filled('assigned_to')) {
+                $query->where('assigned_to', $request->assigned_to);
             }
 
+            // Apply created_by filter if provided and not empty
+            if ($request->filled('created_by')) {
+                $query->where('created_by', $request->created_by);
+            }
+
+            // Get total count of leads
             $total = $query->count();
+
+            // Get the leads data with pagination
             $leads = $query->limit($limit)->offset($offset)->orderBy('id', 'DESC')->get();
 
+            // Check if leads are available
             if (!empty($leads)) {
                 return response()->json([
                     'status'    => 'success',
@@ -91,21 +181,102 @@ class DashboardController extends Controller
         }
     }
 
+
+    // public function scrollable_leads(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'page_no'  => ['required', 'numeric'],
+    //         'per_page' => ['numeric'],
+    //         'date'    => ['nullable', 'string', Rule::in(['today', 'yesterday', 'day_before_yesterday', 'tomorrow', 'day_after_tomorrow'])],
+    //         'created_by'    => ['nullable','numeric', Rule::exists('users', 'id')],
+
+    //     ]);
+
+    //     $validator->setCustomMessages([
+    //         'date.in' => 'Please enter a valid date. Accepted values are: today, yesterday, day_before_yesterday, tomorrow, day_after_tomorrow.'
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         $firstError = current(array_values($validator->errors()->messages()));
+
+    //         return response()->json([
+    //             'status'  => 'failed',
+    //             'message' => $firstError[0],
+    //         ], 400);
+    //     }
+
+    //     try {
+    //         $limit = $request->input(key: 'per_page', default: 10);
+    //         $pageNo = $request->input(key: 'page_no', default: 1);
+    //         $offset = ($pageNo - 1) * $limit;
+
+    //         if ($request->date == 'today') {
+    //             $date = now()->format('Y-m-d');
+    //         } else if ($request->date == 'yesterday') {
+    //             $date = now()->subDay()->format('Y-m-d');
+    //         } else if ($request->date == 'day_before_yesterday') {
+    //             $date = now()->subDays(2)->format('Y-m-d');
+    //         } else if ($request->date == 'tomorrow') {
+    //             $date = now()->addDay()->format('Y-m-d');
+    //         } else if ($request->date == 'day_after_tomorrow') {
+    //             $date = now()->addDays(2)->format('Y-m-d');
+    //         } else {
+    //             $date = now()->format('Y-m-d');
+    //         }
+
+    //         $query = Lead::query()->with(['contact', 'stage', 'source', 'type', 'assignedTo', 'createdBy', 'actionPerformedBy'])
+    //             ->join('activities', 'leads.id', '=', 'activities.lead_id')
+    //             ->whereDate('activities.follow_up_date', $date);
+
+    //         $total = $query->count();
+    //         $leads = $query->limit($limit)->offset($offset)->orderBy('leads.id', 'DESC')->get();
+
+    //         if (!empty($leads)) {
+    //             foreach ($leads as $lead) {
+    //                 $lead_id = $lead->lead_id;
+    //                 $fetch_lead_records = Lead::where('id', $lead_id)->get();
+    //                 $lead_title = $fetch_lead_records[0]->title;
+    //                 $lead->lead_title = $lead_title;
+    //             }
+    //             return response()->json([
+    //                 'status'    => 'success',
+    //                 'message'   => trans('msg.list.success'),
+    //                 'total'     => $total,
+    //                 'data'      => $leads,
+    //             ], 200);
+    //         } else {
+    //             return response()->json([
+    //                 'status'    => 'failed',
+    //                 'message'   => trans('msg.list.failed'),
+    //             ], 400);
+    //         }
+    //     } catch (\Throwable $e) {
+    //         return response()->json([
+    //             'status'  => 'failed',
+    //             'message' => trans('msg.error'),
+    //             'error'   => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+
     public function scrollable_leads(Request $request)
     {
+        // Validate the request
         $validator = Validator::make($request->all(), [
-            'page_no'  => ['required', 'numeric'],
-            'per_page' => ['numeric'],
-            'date'    => ['nullable', 'string', Rule::in(['today', 'yesterday', 'day_before_yesterday', 'tomorrow', 'day_after_tomorrow'])],
+            'page_no'   => ['required', 'numeric'],
+            'per_page'  => ['numeric'],
+            'date'      => ['nullable', 'string', Rule::in(['today', 'yesterday', 'day_before_yesterday', 'tomorrow', 'day_after_tomorrow'])],
+            'created_by' => ['nullable', 'numeric', Rule::exists('users', 'id')],
         ]);
 
+        // Custom validation messages
         $validator->setCustomMessages([
             'date.in' => 'Please enter a valid date. Accepted values are: today, yesterday, day_before_yesterday, tomorrow, day_after_tomorrow.'
         ]);
 
+        // Check for validation errors
         if ($validator->fails()) {
             $firstError = current(array_values($validator->errors()->messages()));
-
             return response()->json([
                 'status'  => 'failed',
                 'message' => $firstError[0],
@@ -113,10 +284,12 @@ class DashboardController extends Controller
         }
 
         try {
-            $limit = $request->input(key: 'per_page', default: 10);
-            $pageNo = $request->input(key: 'page_no', default: 1);
+            // Pagination parameters
+            $limit = $request->input('per_page', 10);
+            $pageNo = $request->input('page_no', 1);
             $offset = ($pageNo - 1) * $limit;
 
+            // Date filtering logic
             if ($request->date == 'today') {
                 $date = now()->format('Y-m-d');
             } else if ($request->date == 'yesterday') {
@@ -131,19 +304,28 @@ class DashboardController extends Controller
                 $date = now()->format('Y-m-d');
             }
 
-            $query = Lead::query()->with(['contact', 'stage', 'source', 'type', 'assignedTo', 'createdBy', 'actionPerformedBy'])
+            // Build the query
+            $query = Lead::query()->with(['contact', 'stage', 'source', 'type', 'assignedTo', 'createdBy', 'actionPerformedByUser'])
                 ->join('activities', 'leads.id', '=', 'activities.lead_id')
                 ->whereDate('activities.follow_up_date', $date);
 
+            // Apply 'created_by' filter if provided and not empty
+            if ($request->filled('created_by')) { // Use 'filled' method to check for non-empty value
+                $query->where('leads.created_by', $request->created_by);
+            }
+
+            // Get the total count
             $total = $query->count();
+
+            // Get the leads data with pagination
             $leads = $query->limit($limit)->offset($offset)->orderBy('leads.id', 'DESC')->get();
 
+            // Check if leads are available
             if (!empty($leads)) {
                 foreach ($leads as $lead) {
                     $lead_id = $lead->lead_id;
-                    $fetch_lead_records = Lead::where('id', $lead_id)->get();
-                    $lead_title = $fetch_lead_records[0]->title;
-                    $lead->lead_title = $lead_title;
+                    $fetch_lead_records = Lead::where('id', $lead_id)->first();
+                    $lead->lead_title = $fetch_lead_records->title;
                 }
                 return response()->json([
                     'status'    => 'success',
@@ -165,6 +347,8 @@ class DashboardController extends Controller
             ], 500);
         }
     }
+
+
 
     public function count(Request $request)
     {
@@ -279,7 +463,9 @@ class DashboardController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'activity_id' => ['required', 'numeric', Rule::exists('activities', 'id')],
-            'status' => ['required', 'in:yes,no'], 
+            'status' => ['required', 'in:yes,no'],
+            'action_performed_by' => ['required', 'numeric']
+
         ]);
 
         if ($validator->fails()) {
@@ -310,7 +496,7 @@ class DashboardController extends Controller
 
             // Update the activity's status based on the request
             $update = Activity::where('id', '=', $request->activity_id)
-                ->update(['is_action_performed' => $request->status]);
+                ->update(['is_action_performed' => $request->status,'action_performed_by'=>$request->action_performed_by]);
 
             if ($update) {
                 return response()->json([

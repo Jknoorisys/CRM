@@ -34,6 +34,8 @@ return [
         'success' => 'Details Added Successfully',
         'failed'  => 'Add Failed',
         'already-exists' => 'Email already exists',
+        'mob-already-exists' => 'Mobile No already exists',
+
     ],
 
     'delete' => [

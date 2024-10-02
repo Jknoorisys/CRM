@@ -185,7 +185,7 @@ class ManageLeadController extends Controller
         $validator = Validator::make($request->all(), [
             'page_no'      => ['required', 'numeric'],
             'per_page'     => ['numeric'],
-            'category_stage'       => ['required', 'string', 'in:active lead,inactive lead,others lead'],
+            'category_stage'       => ['nullable', 'string', 'in:active lead,inactive lead,others lead'],
             'search'       => ['nullable', 'string'],
             'contact'      => ['nullable', 'numeric', Rule::exists('contacts', 'id')],
             'stage'        => ['nullable', 'numeric', Rule::exists('stages', 'id')],

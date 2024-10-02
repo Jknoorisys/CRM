@@ -196,7 +196,7 @@ class MastersController extends Controller
     }
 
 
-    // Stages for category Leads
+    // Stages for category Stage
     public function categoryStage(Request $request)
     {
         try {
